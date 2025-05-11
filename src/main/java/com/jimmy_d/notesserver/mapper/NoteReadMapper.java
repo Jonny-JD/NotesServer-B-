@@ -1,8 +1,6 @@
 package com.jimmy_d.notesserver.mapper;
 
 import com.jimmy_d.notesserver.database.entity.Note;
-import com.jimmy_d.notesserver.database.repository.UserRepository;
-import com.jimmy_d.notesserver.dto.NoteCreateDto;
 import com.jimmy_d.notesserver.dto.NoteReadDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +19,7 @@ public class NoteReadMapper implements Mapper<Note, NoteReadDto> {
         UserReadDto author = Optional.ofNullable(note.getAuthor())
                 .map(userReadMapper::map)
                 .orElse(null);
-        return new NoteReadDto(note.getTitle(), note.getTag(), note.getContent(), author);
+        return new NoteReadDto(note.getId(), note.getTitle(), note.getTag(), note.getContent(), author);
     }
 
 }

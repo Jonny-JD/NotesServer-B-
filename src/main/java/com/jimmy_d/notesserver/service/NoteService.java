@@ -1,6 +1,5 @@
 package com.jimmy_d.notesserver.service;
 
-import com.jimmy_d.notesserver.database.entity.Note;
 import com.jimmy_d.notesserver.database.entity.User;
 import com.jimmy_d.notesserver.database.repository.NoteRepository;
 import com.jimmy_d.notesserver.dto.NoteCreateDto;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -23,17 +23,15 @@ public class NoteService {
     private final NoteReadMapper noteReadMapper;
 
     @Transactional
-    public Long save(NoteCreateDto noteCreateDto) {
-        Note note = noteCreateMapper.map(noteCreateDto);
+    public NoteReadDto save(NoteCreateDto noteCreateDto) {
+        var note = noteCreateMapper.map(noteCreateDto);
         var savedNote = noteRepository.saveAndFlush(note);
-        return savedNote.getId();
+        return noteReadMapper.map(savedNote);
     }
 
-    public NoteReadDto findById(Long id) {
-        return noteRepository
-                .findById(id)
-                .map(noteReadMapper::map)
-                .orElse(null); //TODO Custom exception
+    public Optional<NoteReadDto> findById(Long id) {
+        return noteRepository.findById(id).map(noteReadMapper::map);
+        //TODO Custom exception
     }
 
     public List<NoteReadDto> findAllByAuthor(User author) {

@@ -8,13 +8,11 @@ import com.jimmy_d.notesserver.dto.UserReadDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.Optional;
-
 @Component
 @RequiredArgsConstructor
 public class NoteCreateMapper implements Mapper<NoteCreateDto, Note> {
 
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public Note map(NoteCreateDto noteCreateDto) {
@@ -30,9 +28,8 @@ public class NoteCreateMapper implements Mapper<NoteCreateDto, Note> {
         note.setAuthor(getAuthor(noteCreateDto.author()));
     }
 
-    private User getAuthor(String author) {
-        return Optional.ofNullable(author)
-                .flatMap(userRepository::findByUsername)
-                .orElse(null);
+    private User getAuthor(UserReadDto author) {
+        var foundedAuthor = userRepository.findById(author.id());
+        return foundedAuthor.orElse(null);
     }
 }
