@@ -10,10 +10,10 @@ import com.jimmy_d.notesserver.service.NoteService;
 import com.jimmy_d.notesserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 
 
 @RequiredArgsConstructor
@@ -21,6 +21,7 @@ class NoteServiceTest extends IntegrationTestBase {
 
     private final NoteService noteService;
     private final UserService userService;
+    private final JdbcTemplate jdbcTemplate;
 
     private final User DUMMY_USER = new User(1L, "Dummy_user#1", "dummy_#1_pass", "dummy_#1_email");
 
@@ -32,34 +33,33 @@ class NoteServiceTest extends IntegrationTestBase {
             DUMMY_USER
     );
 
-    private final NoteCreateDto DUMMY_NOTE_CREATE_DTO = new NoteCreateDto(
-            DUMMY_NOTE.getTitle(),
-            DUMMY_NOTE.getTag(),
-            DUMMY_NOTE.getContent(),
-            new UserReadDto(DUMMY_USER.getId(), DUMMY_USER.getUsername(), DUMMY_USER.getEmail())
-    );
-
     private final UserCreateDto DUMMY_USER_CREATE_DTO = new UserCreateDto(
             DUMMY_USER.getUsername(),
             DUMMY_USER.getPassword(),
             DUMMY_USER.getEmail()
     );
 
+
     @Test
     void save() {
-        userService.save(DUMMY_USER_CREATE_DTO);
-        var savedNote = noteService.save(DUMMY_NOTE_CREATE_DTO);
+        var savedUser = userService.save(DUMMY_USER_CREATE_DTO);
+        var noteCreateDto = new NoteCreateDto(DUMMY_NOTE.getTitle(),
+                DUMMY_NOTE.getTag(),
+                DUMMY_NOTE.getContent(),
+                new UserReadDto(savedUser.id(),
+                        savedUser.username(),
+                        savedUser.email()));
+        var savedNote = noteService.save(noteCreateDto);
+
         assertNotNull(savedNote);
         assertNotNull(savedNote.id());
-        assertEquals(savedNote.author(), DUMMY_NOTE_CREATE_DTO.author());
+        assertEquals(savedNote.author(), noteCreateDto.author());
     }
 
     @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     void findById() {
-        userService.save(DUMMY_USER_CREATE_DTO);
-        var savedNote = noteService.save(DUMMY_NOTE_CREATE_DTO);
-        assertNotNull(savedNote);
-        var foundedNote = noteService.findById(savedNote.id());
+        var foundedNote = noteService.findById(1L);
         var notFoundedNote = noteService.findById(-1L);
         assertTrue(foundedNote.isPresent());
         assertFalse(notFoundedNote.isPresent());
@@ -78,5 +78,23 @@ class NoteServiceTest extends IntegrationTestBase {
     void findAllByTag() {
         var allByTag = noteService.findAllByTag(DUMMY_NOTE.getTag());
         assertTrue(allByTag.size() >= 2);
+    }
+
+    @Test
+    void deleteNoteById() {
+        var savedUser = userService.save(DUMMY_USER_CREATE_DTO);
+        var noteCreateDto = new NoteCreateDto(DUMMY_NOTE.getTitle(),
+                DUMMY_NOTE.getTag(),
+                DUMMY_NOTE.getContent(),
+                new UserReadDto(savedUser.id(),
+                        savedUser.username(),
+                        savedUser.email()));
+        var savedNote = noteService.save(noteCreateDto);
+
+        var positiveResult = noteService.deleteById(savedNote.id());
+        var negativeResult = noteService.deleteById(savedNote.id());
+
+        assertTrue(positiveResult);
+        assertFalse(negativeResult);
     }
 }

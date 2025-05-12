@@ -24,14 +24,16 @@ public class NoteService {
 
     @Transactional
     public NoteReadDto save(NoteCreateDto noteCreateDto) {
-        var note = noteCreateMapper.map(noteCreateDto);
-        var savedNote = noteRepository.saveAndFlush(note);
-        return noteReadMapper.map(savedNote);
+        return Optional.of(noteCreateDto)
+                .map(noteCreateMapper::map)
+                .map(noteRepository::save)
+                .map(noteReadMapper::map)
+                .orElseThrow();
+        //TODO Exception
     }
 
     public Optional<NoteReadDto> findById(Long id) {
         return noteRepository.findById(id).map(noteReadMapper::map);
-        //TODO Custom exception
     }
 
     public List<NoteReadDto> findAllByAuthor(User author) {
@@ -50,6 +52,12 @@ public class NoteService {
                 .collect(Collectors.toList());
     }
 
-
+    public boolean deleteById(Long id) {
+        return noteRepository.findById(id)
+                .map(note -> {
+                    noteRepository.delete(note);
+                    return true;
+                }).orElse(false);
+    }
 
 }

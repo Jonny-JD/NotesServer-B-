@@ -21,14 +21,30 @@ public class UserService {
 
     @Transactional
     public UserReadDto save(UserCreateDto userCreateDto) {
-        var user = userCreateMapper.map(userCreateDto);
-        var savedUser = userRepository.saveAndFlush(user);
-        return userReadMapper.map(savedUser);
+        return Optional.of(userCreateDto)
+                .map(userCreateMapper::map)
+                .map(userRepository::save)
+                .map(userReadMapper::map)
+                .orElseThrow();
+        //TODO Exception
     }
 
     @Transactional
     public boolean deleteByUsername(String username) {
-        return userRepository.deleteByUsername(username) != 0;
+        return userRepository.findByUsername(username)
+                .map(user -> {
+                    userRepository.delete(user);
+                    return true;
+                }).orElse(false);
+    }
+
+    @Transactional
+    public boolean deleteById(Long id) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    userRepository.delete(user);
+                    return true;
+                }).orElse(false);
     }
 
     public Optional<UserReadDto> findByUsername(String username) {
