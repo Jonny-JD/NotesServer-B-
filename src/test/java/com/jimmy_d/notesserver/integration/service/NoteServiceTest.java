@@ -4,13 +4,12 @@ import com.jimmy_d.notesserver.database.entity.Note;
 import com.jimmy_d.notesserver.database.entity.User;
 import com.jimmy_d.notesserver.dto.NoteCreateDto;
 import com.jimmy_d.notesserver.dto.UserCreateDto;
-import com.jimmy_d.notesserver.dto.UserReadDto;
 import com.jimmy_d.notesserver.integration.IntegrationTestBase;
+import com.jimmy_d.notesserver.mapper.UserReadMapper;
 import com.jimmy_d.notesserver.service.NoteService;
 import com.jimmy_d.notesserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,7 +20,7 @@ class NoteServiceTest extends IntegrationTestBase {
 
     private final NoteService noteService;
     private final UserService userService;
-    private final JdbcTemplate jdbcTemplate;
+    private final UserReadMapper userReadMapper;
 
     private final User DUMMY_USER = new User(1L, "Dummy_user#1", "dummy_#1_pass", "dummy_#1_email");
 
@@ -46,7 +45,7 @@ class NoteServiceTest extends IntegrationTestBase {
         var noteCreateDto = new NoteCreateDto(DUMMY_NOTE.getTitle(),
                 DUMMY_NOTE.getTag(),
                 DUMMY_NOTE.getContent(),
-                new UserReadDto(savedUser.id(),
+                new com.jimmy_d.notesserver.dto.UserReadDto(savedUser.id(),
                         savedUser.username(),
                         savedUser.email()));
         var savedNote = noteService.save(noteCreateDto);
@@ -68,7 +67,7 @@ class NoteServiceTest extends IntegrationTestBase {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     @Test
     void findAllByAuthor() {
-        var allByAuthor = noteService.findAllByAuthor(DUMMY_USER);
+        var allByAuthor = noteService.findAllByAuthor(userReadMapper.map(DUMMY_USER));
         assertNotNull(allByAuthor);
         assertTrue(allByAuthor.size() >= 2);
     }
@@ -86,7 +85,7 @@ class NoteServiceTest extends IntegrationTestBase {
         var noteCreateDto = new NoteCreateDto(DUMMY_NOTE.getTitle(),
                 DUMMY_NOTE.getTag(),
                 DUMMY_NOTE.getContent(),
-                new UserReadDto(savedUser.id(),
+                new com.jimmy_d.notesserver.dto.UserReadDto(savedUser.id(),
                         savedUser.username(),
                         savedUser.email()));
         var savedNote = noteService.save(noteCreateDto);

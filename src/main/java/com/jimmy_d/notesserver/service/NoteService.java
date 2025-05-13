@@ -1,11 +1,12 @@
 package com.jimmy_d.notesserver.service;
 
-import com.jimmy_d.notesserver.database.entity.User;
 import com.jimmy_d.notesserver.database.repository.NoteRepository;
 import com.jimmy_d.notesserver.dto.NoteCreateDto;
 import com.jimmy_d.notesserver.dto.NoteReadDto;
+import com.jimmy_d.notesserver.dto.UserReadDto;
 import com.jimmy_d.notesserver.mapper.NoteCreateMapper;
 import com.jimmy_d.notesserver.mapper.NoteReadMapper;
+import com.jimmy_d.notesserver.mapper.UserReadMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +22,7 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final NoteCreateMapper noteCreateMapper;
     private final NoteReadMapper noteReadMapper;
+    private final UserReadMapper userReadMapper;
 
     @Transactional
     public NoteReadDto save(NoteCreateDto noteCreateDto) {
@@ -36,9 +38,10 @@ public class NoteService {
         return noteRepository.findById(id).map(noteReadMapper::map);
     }
 
-    public List<NoteReadDto> findAllByAuthor(User author) {
+    public List<NoteReadDto> findAllByAuthor(UserReadDto author) {
+
         return noteRepository
-                .findAllByAuthor(author)
+                .findAllByAuthor(userReadMapper.map(author))
                 .stream()
                 .map(noteReadMapper::map)
                 .collect(Collectors.toList());

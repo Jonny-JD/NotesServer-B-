@@ -11,4 +11,13 @@ public class UserReadMapper implements Mapper<User, UserReadDto> {
     public UserReadDto map(User user) {
         return new UserReadDto(user.getId(), user.getUsername(), user.getEmail());
     }
+
+    public User map(UserReadDto userReadDto) {
+        return User.builder()
+                .id(userReadDto.id())
+                .username(userReadDto.username())
+                .email(userReadDto.email())
+                .build();
+
+    }
 }

@@ -1,5 +1,6 @@
 --liquibase formatted sql
 
+
 --changeset jimmyD:1
 CREATE TABLE IF NOT EXISTS users
 (
@@ -21,7 +22,7 @@ CREATE TABLE IF NOT EXISTS notes
     title       VARCHAR(128),
     tag         VARCHAR(64),
     content     TEXT        NOT NULL,
-    author      BIGINT NOT NULL REFERENCES users(id),
+    author      BIGINT NOT NULL REFERENCES  users(id) ON DELETE CASCADE,
 
     created_at  TIMESTAMP,
     modified_at TIMESTAMP,

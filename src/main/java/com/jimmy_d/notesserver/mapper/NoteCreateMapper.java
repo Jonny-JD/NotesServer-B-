@@ -4,7 +4,6 @@ import com.jimmy_d.notesserver.database.entity.Note;
 import com.jimmy_d.notesserver.database.entity.User;
 import com.jimmy_d.notesserver.database.repository.UserRepository;
 import com.jimmy_d.notesserver.dto.NoteCreateDto;
-import com.jimmy_d.notesserver.dto.UserReadDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +27,7 @@ public class NoteCreateMapper implements Mapper<NoteCreateDto, Note> {
         note.setAuthor(getAuthor(noteCreateDto.author()));
     }
 
-    private User getAuthor(UserReadDto author) {
+    private User getAuthor(com.jimmy_d.notesserver.dto.UserReadDto author) {
         var foundedAuthor = userRepository.findById(author.id());
         return foundedAuthor.orElse(null);
     }

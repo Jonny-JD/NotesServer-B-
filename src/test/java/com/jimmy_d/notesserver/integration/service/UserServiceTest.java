@@ -2,7 +2,6 @@ package com.jimmy_d.notesserver.integration.service;
 
 import com.jimmy_d.notesserver.database.entity.User;
 import com.jimmy_d.notesserver.dto.UserCreateDto;
-import com.jimmy_d.notesserver.dto.UserReadDto;
 import com.jimmy_d.notesserver.integration.IntegrationTestBase;
 import com.jimmy_d.notesserver.service.UserService;
 import lombok.RequiredArgsConstructor;
