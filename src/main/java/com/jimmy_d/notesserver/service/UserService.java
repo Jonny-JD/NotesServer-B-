@@ -1,5 +1,6 @@
 package com.jimmy_d.notesserver.service;
 
+import com.jimmy_d.notesserver.database.entity.Role;
 import com.jimmy_d.notesserver.database.repository.UserRepository;
 import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,12 +22,23 @@ public class UserService {
     private final UserReadMapper userReadMapper;
 
     @Transactional
-    public UserReadDto save(UserCreateDto userCreateDto) {
-        return Optional.of(userCreateDto)
+    public UserReadDto createUser(UserCreateDto user) {
+        return Optional.of(user)
                 .map(userCreateMapper::map)
                 .map(userRepository::save)
                 .map(userReadMapper::map)
                 .orElseThrow();
+        //TODO Exception
+    }
+
+    public UserReadDto updateUser(UserReadDto user) {
+        var userForUpdate = userRepository.findById(user.id()).orElseThrow(() -> new RuntimeException("User not found"));
+        userForUpdate.setUsername(user.username());
+        userForUpdate.setEmail(user.email());
+        userForUpdate.setRoles(user.roles().stream()
+                .map(Role::valueOf)
+                .collect(Collectors.toSet()));
+        return userReadMapper.map(userRepository.save(userForUpdate));
         //TODO Exception
     }
 

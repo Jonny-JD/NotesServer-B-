@@ -1,5 +1,4 @@
 spring:
-
   application:
     name: "Notes-Server"
 
@@ -15,3 +14,23 @@ spring:
         show_sql: true
         format_sql: true
         hbm2ddl.auto: validate
+
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    root: info
+    org:
+      hibernate:
+        SQL: debug
+        orm:
+          jdbc:
+            bind: trace
+        stat: debug
+        cache: debug
+        SQL_SLOW: debug
+
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

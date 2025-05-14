@@ -19,7 +19,7 @@ public class UserRestController {
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public UserReadDto createUser(@RequestBody UserCreateDto user) {
-        return userService.save(user);
+        return userService.createUser(user);
     }
 
     @DeleteMapping("/{username}/delete")

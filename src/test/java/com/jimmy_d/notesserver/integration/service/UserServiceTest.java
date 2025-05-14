@@ -1,8 +1,9 @@
 package com.jimmy_d.notesserver.integration.service;
 
-import com.jimmy_d.notesserver.database.entity.User;
-import com.jimmy_d.notesserver.dto.UserCreateDto;
+import com.jimmy_d.notesserver.database.entity.Role;
 import com.jimmy_d.notesserver.integration.IntegrationTestBase;
+import com.jimmy_d.notesserver.integration.TestFactory;
+import com.jimmy_d.notesserver.mapper.UserReadMapper;
 import com.jimmy_d.notesserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -12,57 +13,66 @@ import static org.junit.jupiter.api.Assertions.*;
 @RequiredArgsConstructor
 class UserServiceTest extends IntegrationTestBase {
 
-    private final User DUMMY_USER = User.builder()
-            .username("DummyUsername")
-            .password("DummyPassword")
-            .email("DummyEmail")
-            .build();
-
-    private final UserCreateDto DUMMY_USER_CREATE_DTO = new UserCreateDto(DUMMY_USER.getUsername(),
-            DUMMY_USER.getPassword(),
-            DUMMY_USER.getEmail());
-
     private final UserService userService;
+    private final UserReadMapper userReadMapper;
+    private final TestFactory testFactory;
 
 
     @Test
-    void save() {
-        var savedUser = userService.save(DUMMY_USER_CREATE_DTO);
+    void createUser() {
+        var userCreateDto = testFactory.dummyUserCreateDto();
+        var savedUser = userService.createUser(userCreateDto);
+
         assertNotNull(savedUser);
         assertNotNull(savedUser.id());
-        assertEquals(savedUser.username(), DUMMY_USER_CREATE_DTO.username());
-        assertEquals(savedUser.email(), DUMMY_USER_CREATE_DTO.email());
-        //TODO createdBy etc.
+        assertEquals(userCreateDto.username(), savedUser.username());
+        assertEquals(userCreateDto.email(), savedUser.email());
     }
 
     @Test
     void findByUsername() {
-        var savedUser = userService.save(DUMMY_USER_CREATE_DTO);
-        var foundedUser = userService.findByUsername(DUMMY_USER_CREATE_DTO.username());
-        var notFoundedUser = userService.findByUsername("");
-        assertTrue(foundedUser.isPresent());
-        assertFalse(notFoundedUser.isPresent());
-        assertEquals(savedUser, foundedUser.get());
+        var savedUser = userService.createUser(testFactory.dummyUserCreateDto());
+
+        var foundUser = userService.findByUsername(savedUser.username());
+        var notFoundUser = userService.findByUsername("non_existent");
+
+        assertTrue(foundUser.isPresent());
+        assertFalse(notFoundUser.isPresent());
+        assertEquals(savedUser, foundUser.get());
     }
 
     @Test
     void deleteUserByUsername() {
-        userService.save(DUMMY_USER_CREATE_DTO);
-        var positiveResult = userService.deleteByUsername(DUMMY_USER_CREATE_DTO.username());
-        var negativeResult = userService.deleteByUsername(DUMMY_USER_CREATE_DTO.username());
+        var userDto = testFactory.dummyUserCreateDto();
+        userService.createUser(userDto);
 
-        assertTrue(positiveResult);
-        assertFalse(negativeResult);
+        var firstDelete = userService.deleteByUsername(userDto.username());
+        var secondDelete = userService.deleteByUsername(userDto.username());
+
+        assertTrue(firstDelete);
+        assertFalse(secondDelete);
     }
 
     @Test
     void deleteUserById() {
-        var savedUser = userService.save(DUMMY_USER_CREATE_DTO);
-        var positiveResult = userService.deleteById(savedUser.id());
-        var negativeResult = userService.deleteById(savedUser.id());
+        var savedUser = userService.createUser(testFactory.dummyUserCreateDto());
 
-        assertTrue(positiveResult);
-        assertFalse(negativeResult);
+        var firstDelete = userService.deleteById(savedUser.id());
+        var secondDelete = userService.deleteById(savedUser.id());
+
+        assertTrue(firstDelete);
+        assertFalse(secondDelete);
     }
 
+    @Test
+    void updateUser() {
+        var savedUser = userService.createUser(testFactory.dummyUserCreateDto());
+        var userToUpdate = userReadMapper.map(savedUser);
+        userToUpdate.addRole(Role.ADMIN);
+
+        var updatedUser = userService.updateUser(userReadMapper.map(userToUpdate));
+
+        assertTrue(updatedUser.roles().contains(Role.ADMIN.name()));
+        assertFalse(savedUser.roles().contains(Role.ADMIN.name()));
+    }
 }

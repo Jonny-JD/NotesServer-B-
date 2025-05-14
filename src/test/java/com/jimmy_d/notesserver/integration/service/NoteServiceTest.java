@@ -1,10 +1,7 @@
 package com.jimmy_d.notesserver.integration.service;
 
-import com.jimmy_d.notesserver.database.entity.Note;
-import com.jimmy_d.notesserver.database.entity.User;
-import com.jimmy_d.notesserver.dto.NoteCreateDto;
-import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.integration.IntegrationTestBase;
+import com.jimmy_d.notesserver.integration.TestFactory;
 import com.jimmy_d.notesserver.mapper.UserReadMapper;
 import com.jimmy_d.notesserver.service.NoteService;
 import com.jimmy_d.notesserver.service.UserService;
@@ -19,81 +16,59 @@ import static org.junit.jupiter.api.Assertions.*;
 class NoteServiceTest extends IntegrationTestBase {
 
     private final NoteService noteService;
-    private final UserService userService;
+    private final TestFactory testFactory;
     private final UserReadMapper userReadMapper;
-
-    private final User DUMMY_USER = new User(1L, "Dummy_user#1", "dummy_#1_pass", "dummy_#1_email");
-
-    private final Note DUMMY_NOTE = new Note(
-            1L,
-            "dummy_title_#1_1",
-            "dummy_tag_#1_1",
-            "dummy_content_#1_1",
-            DUMMY_USER
-    );
-
-    private final UserCreateDto DUMMY_USER_CREATE_DTO = new UserCreateDto(
-            DUMMY_USER.getUsername(),
-            DUMMY_USER.getPassword(),
-            DUMMY_USER.getEmail()
-    );
+    private final UserService userService;
 
 
     @Test
     void save() {
-        var savedUser = userService.save(DUMMY_USER_CREATE_DTO);
-        var noteCreateDto = new NoteCreateDto(DUMMY_NOTE.getTitle(),
-                DUMMY_NOTE.getTag(),
-                DUMMY_NOTE.getContent(),
-                new com.jimmy_d.notesserver.dto.UserReadDto(savedUser.id(),
-                        savedUser.username(),
-                        savedUser.email()));
+        var user = testFactory.createAndSaveUser();
+        var noteCreateDto = testFactory.dummyNoteCreateDto(userReadMapper.map(user));
         var savedNote = noteService.save(noteCreateDto);
 
         assertNotNull(savedNote);
         assertNotNull(savedNote.id());
-        assertEquals(savedNote.author(), noteCreateDto.author());
+        assertEquals(savedNote.author().id(), user.getId());
     }
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     void findById() {
-        var foundedNote = noteService.findById(1L);
-        var notFoundedNote = noteService.findById(-1L);
-        assertTrue(foundedNote.isPresent());
-        assertFalse(notFoundedNote.isPresent());
+        var foundNote = noteService.findById(1L);
+        var notFoundNote = noteService.findById(-1L);
+
+        assertTrue(foundNote.isPresent());
+        assertFalse(notFoundNote.isPresent());
     }
 
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     void findAllByAuthor() {
-        var allByAuthor = noteService.findAllByAuthor(userReadMapper.map(DUMMY_USER));
-        assertNotNull(allByAuthor);
-        assertTrue(allByAuthor.size() >= 2);
+        var user = userService.findByUsername(testFactory.dummyUserCreateDto().username()).orElseThrow(() -> new RuntimeException("Test user Not Found"));
+        var notes = noteService.findAllByAuthor(user);
+
+        assertNotNull(notes);
+        assertTrue(notes.size() >= 2);
     }
 
-    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     void findAllByTag() {
-        var allByTag = noteService.findAllByTag(DUMMY_NOTE.getTag());
-        assertTrue(allByTag.size() >= 2);
+        var notes = noteService.findAllByTag("dummy_tag_#1_1");
+        assertTrue(notes.size() >= 2);
     }
 
     @Test
     void deleteNoteById() {
-        var savedUser = userService.save(DUMMY_USER_CREATE_DTO);
-        var noteCreateDto = new NoteCreateDto(DUMMY_NOTE.getTitle(),
-                DUMMY_NOTE.getTag(),
-                DUMMY_NOTE.getContent(),
-                new com.jimmy_d.notesserver.dto.UserReadDto(savedUser.id(),
-                        savedUser.username(),
-                        savedUser.email()));
+        var user = testFactory.createAndSaveUser();
+        var noteCreateDto = testFactory.dummyNoteCreateDto(userReadMapper.map(user));
         var savedNote = noteService.save(noteCreateDto);
 
-        var positiveResult = noteService.deleteById(savedNote.id());
-        var negativeResult = noteService.deleteById(savedNote.id());
+        var firstDelete = noteService.deleteById(savedNote.id());
+        var secondDelete = noteService.deleteById(savedNote.id());
 
-        assertTrue(positiveResult);
-        assertFalse(negativeResult);
+        assertTrue(firstDelete);
+        assertFalse(secondDelete);
     }
 }
