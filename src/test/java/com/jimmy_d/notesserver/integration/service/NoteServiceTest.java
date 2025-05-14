@@ -1,5 +1,6 @@
 package com.jimmy_d.notesserver.integration.service;
 
+import com.jimmy_d.notesserver.dto.NoteReadDto;
 import com.jimmy_d.notesserver.integration.IntegrationTestBase;
 import com.jimmy_d.notesserver.integration.TestFactory;
 import com.jimmy_d.notesserver.mapper.UserReadMapper;
@@ -8,6 +9,9 @@ import com.jimmy_d.notesserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.jdbc.Sql;
+
+import java.time.Instant;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,5 +74,18 @@ class NoteServiceTest extends IntegrationTestBase {
 
         assertTrue(firstDelete);
         assertFalse(secondDelete);
+    }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
+    void testGetNextNotes() {
+        Instant cursor = Instant.parse("2025-01-02T00:00:02Z").plusSeconds(1);
+
+        List<NoteReadDto> notes = noteService.getNextNotes(cursor);
+
+        assertAll("Verify retrieved notes",
+                () -> assertNotNull(notes, "Notes should not be null"),
+                () -> assertEquals(10, notes.size(), "Should return 10 notes due to page size")
+        );
     }
 }

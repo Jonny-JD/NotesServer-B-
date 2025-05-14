@@ -22,7 +22,7 @@ class UserServiceTest extends IntegrationTestBase {
     void createUser() {
         var userCreateDto = testFactory.dummyUserCreateDto();
         var savedUser = userService.createUser(userCreateDto)
-                .orElseThrow(() -> new RuntimeException("Failed to create user"));;
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));
 
         assertNotNull(savedUser);
         assertNotNull(savedUser.id());
@@ -70,12 +70,12 @@ class UserServiceTest extends IntegrationTestBase {
     @Test
     void updateUser() {
         var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
-                .orElseThrow(() -> new RuntimeException("Failed to create user"));;
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));
         var userToUpdate = userReadMapper.map(savedUser);
         userToUpdate.addRole(Role.ADMIN);
 
         var updatedUser = userService.updateUser(userReadMapper.map(userToUpdate))
-                .orElseThrow(() -> new RuntimeException("Failed to create user"));;
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));
 
         assertTrue(updatedUser.roles().contains(Role.ADMIN.name()));
         assertFalse(savedUser.roles().contains(Role.ADMIN.name()));

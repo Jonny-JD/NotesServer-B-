@@ -63,7 +63,4 @@ public class User extends AuditingEntity<Long> {
         roles.add(role);
     }
 
-    public void removeRole(Role role) {
-        roles.remove(role);
-    }
 }
