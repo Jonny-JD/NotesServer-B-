@@ -3,12 +3,14 @@ package com.jimmy_d.notesserver.http.controller.rest;
 import com.jimmy_d.notesserver.dto.NoteCreateDto;
 import com.jimmy_d.notesserver.dto.NoteReadDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
+import com.jimmy_d.notesserver.exceptions.rest.NoteNotFoundException;
 import com.jimmy_d.notesserver.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -27,11 +29,9 @@ public class NoteRestController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public NoteReadDto getById(@PathVariable Long id) {
-        var note = noteService.findById(id);
-        if (note.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
-        }
-        return note.get();
+        return noteService.findById(id)
+                .orElseThrow(() -> new NoteNotFoundException("id", id));
+
     }
 
     @GetMapping("/author")
@@ -50,8 +50,13 @@ public class NoteRestController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         if (!noteService.deleteById(id)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
+            throw new NoteNotFoundException("id", id);
         }
+    }
+
+    @GetMapping("/api/notes")
+    public List<NoteReadDto> getNextNotes(@RequestParam Instant cursor) {
+        return noteService.getNextNotes(cursor);
     }
 
 }

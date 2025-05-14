@@ -38,7 +38,9 @@ public class TestFactory {
     }
 
     public User createAndSaveUser() {
-        return userReadMapper.map(userService.createUser(dummyUserCreateDto()));
+        return userService.createUser(dummyUserCreateDto())
+                .map(userReadMapper::map)
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));
     }
 
     public UserReadDto dummyUserReadDto(Long userId) {

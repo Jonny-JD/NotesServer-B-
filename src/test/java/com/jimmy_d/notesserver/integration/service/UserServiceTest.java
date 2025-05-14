@@ -21,7 +21,8 @@ class UserServiceTest extends IntegrationTestBase {
     @Test
     void createUser() {
         var userCreateDto = testFactory.dummyUserCreateDto();
-        var savedUser = userService.createUser(userCreateDto);
+        var savedUser = userService.createUser(userCreateDto)
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));;
 
         assertNotNull(savedUser);
         assertNotNull(savedUser.id());
@@ -31,7 +32,8 @@ class UserServiceTest extends IntegrationTestBase {
 
     @Test
     void findByUsername() {
-        var savedUser = userService.createUser(testFactory.dummyUserCreateDto());
+        var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));
 
         var foundUser = userService.findByUsername(savedUser.username());
         var notFoundUser = userService.findByUsername("non_existent");
@@ -55,7 +57,8 @@ class UserServiceTest extends IntegrationTestBase {
 
     @Test
     void deleteUserById() {
-        var savedUser = userService.createUser(testFactory.dummyUserCreateDto());
+        var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));
 
         var firstDelete = userService.deleteById(savedUser.id());
         var secondDelete = userService.deleteById(savedUser.id());
@@ -66,11 +69,13 @@ class UserServiceTest extends IntegrationTestBase {
 
     @Test
     void updateUser() {
-        var savedUser = userService.createUser(testFactory.dummyUserCreateDto());
+        var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));;
         var userToUpdate = userReadMapper.map(savedUser);
         userToUpdate.addRole(Role.ADMIN);
 
-        var updatedUser = userService.updateUser(userReadMapper.map(userToUpdate));
+        var updatedUser = userService.updateUser(userReadMapper.map(userToUpdate))
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));;
 
         assertTrue(updatedUser.roles().contains(Role.ADMIN.name()));
         assertFalse(savedUser.roles().contains(Role.ADMIN.name()));

@@ -22,24 +22,23 @@ public class UserService {
     private final UserReadMapper userReadMapper;
 
     @Transactional
-    public UserReadDto createUser(UserCreateDto user) {
+    public Optional<UserReadDto> createUser(UserCreateDto user) {
         return Optional.of(user)
                 .map(userCreateMapper::map)
                 .map(userRepository::save)
-                .map(userReadMapper::map)
-                .orElseThrow();
-        //TODO Exception
+                .map(userReadMapper::map);
     }
 
-    public UserReadDto updateUser(UserReadDto user) {
-        var userForUpdate = userRepository.findById(user.id()).orElseThrow(() -> new RuntimeException("User not found"));
-        userForUpdate.setUsername(user.username());
-        userForUpdate.setEmail(user.email());
-        userForUpdate.setRoles(user.roles().stream()
-                .map(Role::valueOf)
-                .collect(Collectors.toSet()));
-        return userReadMapper.map(userRepository.save(userForUpdate));
-        //TODO Exception
+    public Optional<UserReadDto> updateUser(UserReadDto user) {
+        return userRepository.findById(user.id())
+                .map(userForUpdate -> {
+                    userForUpdate.setUsername(user.username());
+                    userForUpdate.setEmail(user.email());
+                    userForUpdate.setRoles(user.roles().stream()
+                            .map(Role::valueOf)
+                            .collect(Collectors.toSet()));
+                    return userReadMapper.map(userRepository.save(userForUpdate));
+                });
     }
 
     @Transactional

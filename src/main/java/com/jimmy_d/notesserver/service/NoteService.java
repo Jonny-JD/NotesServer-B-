@@ -8,9 +8,12 @@ import com.jimmy_d.notesserver.mapper.NoteCreateMapper;
 import com.jimmy_d.notesserver.mapper.NoteReadMapper;
 import com.jimmy_d.notesserver.mapper.UserReadMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -61,6 +64,14 @@ public class NoteService {
                     noteRepository.delete(note);
                     return true;
                 }).orElse(false);
+    }
+
+    public List<NoteReadDto> getNextNotes(Instant cursor) {
+        Pageable pageable = PageRequest.of(0, 10);
+        var notes = noteRepository.findNextNotes(cursor, pageable);
+        return notes.stream()
+                .map(noteReadMapper::map)
+                .toList();
     }
 
 }
