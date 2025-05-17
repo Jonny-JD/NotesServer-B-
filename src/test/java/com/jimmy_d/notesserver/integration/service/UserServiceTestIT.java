@@ -17,9 +17,8 @@ class UserServiceTestIT extends IntegrationTestBase {
     private final UserReadMapper userReadMapper;
     private final TestFactory testFactory;
 
-
     @Test
-    void createUser_shouldSaveUserSuccessfully() {
+    void createUserShouldSaveUserSuccessfully() {
         var userCreateDto = testFactory.dummyUserCreateDto();
         var savedUser = userService.createUser(userCreateDto)
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
@@ -31,7 +30,7 @@ class UserServiceTestIT extends IntegrationTestBase {
     }
 
     @Test
-    void findByUsername_shouldReturnUserIfExists() {
+    void findByUsernameShouldReturnUserIfExists() {
         var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
 
@@ -44,7 +43,7 @@ class UserServiceTestIT extends IntegrationTestBase {
     }
 
     @Test
-    void findById_shouldReturnUserIfExists() {
+    void findByIdShouldReturnUserIfExists() {
         var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
 
@@ -57,7 +56,7 @@ class UserServiceTestIT extends IntegrationTestBase {
     }
 
     @Test
-    void deleteUserByUsername_shouldDeleteUserOnceAndReturnFalseNextTime() {
+    void deleteUserByUsernameShouldDeleteUserOnceAndReturnFalseNextTime() {
         var userDto = testFactory.dummyUserCreateDto();
         userService.createUser(userDto);
 
@@ -69,7 +68,7 @@ class UserServiceTestIT extends IntegrationTestBase {
     }
 
     @Test
-    void deleteUserById_shouldDeleteUserOnceAndReturnFalseNextTime() {
+    void deleteUserByIdShouldDeleteUserOnceAndReturnFalseNextTime() {
         var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
 
@@ -81,7 +80,7 @@ class UserServiceTestIT extends IntegrationTestBase {
     }
 
     @Test
-    void updateUser_shouldAddRoleSuccessfully() {
+    void updateUserShouldAddRoleSuccessfully() {
         var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
         var userToUpdate = userReadMapper.map(savedUser);

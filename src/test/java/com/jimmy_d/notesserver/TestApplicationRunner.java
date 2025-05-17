@@ -1,4 +1,4 @@
-package com.jimmy_d.notesserver.integration.service;
+package com.jimmy_d.notesserver;
 
 import org.springframework.boot.test.context.TestConfiguration;
 

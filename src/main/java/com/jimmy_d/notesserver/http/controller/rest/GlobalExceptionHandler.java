@@ -1,9 +1,11 @@
 package com.jimmy_d.notesserver.http.controller.rest;
 
-import com.jimmy_d.notesserver.exceptions.rest.UserCreateException;
+import com.jimmy_d.notesserver.exceptions.rest.InvalidNoteQueryException;
+import com.jimmy_d.notesserver.exceptions.rest.UserExistsException;
 import com.jimmy_d.notesserver.exceptions.rest.UserNotFoundException;
 import com.jimmy_d.notesserver.exceptions.rest.UserUpdateException;
 import com.jimmy_d.notesserver.validation.ApiExceptionDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -28,8 +31,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
-    @ExceptionHandler(UserCreateException.class)
-    public ResponseEntity<ApiExceptionDto> handleUserCreateException(UserCreateException exception) {
+    @ExceptionHandler(UserExistsException.class)
+    public ResponseEntity<ApiExceptionDto> handleUserCreateException(UserExistsException exception) {
         Map<String, String> errors = Map.of("user", exception.getMessage());
         ApiExceptionDto apiError = new ApiExceptionDto(HttpStatus.BAD_REQUEST, errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
@@ -47,5 +50,20 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = Map.of("user", exception.getMessage());
         ApiExceptionDto apiError = new ApiExceptionDto(HttpStatus.NOT_FOUND, errors);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
+    }
+
+    @ExceptionHandler(InvalidNoteQueryException.class)
+    public ResponseEntity<ApiExceptionDto> handleInvalidNoteQueryException(InvalidNoteQueryException exception) {
+        Map<String, String> errors = Map.of("query", exception.getMessage());
+        ApiExceptionDto apiError = new ApiExceptionDto(HttpStatus.NOT_FOUND, errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ApiExceptionDto> handleAllExceptions(Exception ex) {
+        log.error("Unhandled exception caught: ", ex);
+        Map<String, String> errors = Map.of("error", "Internal server error occurred");
+        ApiExceptionDto apiError = new ApiExceptionDto(HttpStatus.INTERNAL_SERVER_ERROR, errors);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 }

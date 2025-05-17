@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '3.4.5'
     id 'io.spring.dependency-management' version '1.1.7'
     id("io.freefair.lombok") version "8.13.1"
+    id 'jacoco'
 }
 
 group = 'com.jimmy_D'
@@ -11,6 +12,14 @@ version = '0.0.1-SNAPSHOT'
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+jacocoTestReport {
+    dependsOn test // сначала запуск тестов
+    reports {
+        xml.required = true
+        html.required = true
     }
 }
 
@@ -34,6 +43,8 @@ dependencies {
     implementation 'org.bouncycastle:bcprov-jdk18on:1.80'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.8'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8'
 
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

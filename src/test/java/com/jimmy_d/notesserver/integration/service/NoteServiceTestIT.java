@@ -15,7 +15,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @RequiredArgsConstructor
 class NoteServiceTestIT extends IntegrationTestBase {
 
@@ -24,9 +23,8 @@ class NoteServiceTestIT extends IntegrationTestBase {
     private final UserReadMapper userReadMapper;
     private final UserService userService;
 
-
     @Test
-    void save_shouldSaveNoteSuccessfully() {
+    void saveShouldSaveNoteSuccessfully() {
         var user = testFactory.createAndSaveUser();
         var noteCreateDto = testFactory.dummyNoteCreateDto(userReadMapper.map(user));
         var savedNote = noteService.save(noteCreateDto);
@@ -38,7 +36,7 @@ class NoteServiceTestIT extends IntegrationTestBase {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
-    void findById_shouldReturnNoteIfExists() {
+    void findByIdShouldReturnNoteIfExists() {
         var foundNote = noteService.findById(1L);
         var notFoundNote = noteService.findById(-1L);
 
@@ -48,7 +46,7 @@ class NoteServiceTestIT extends IntegrationTestBase {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
-    void findAllByAuthor_shouldReturnNotesList() {
+    void findAllByAuthorShouldReturnNotesList() {
         var user = userService.findByUsername(testFactory.dummyUserCreateDto().username())
                 .orElseThrow(() -> new RuntimeException("Test user Not Found"));
         var notes = noteService.findAllByAuthor(user);
@@ -59,13 +57,13 @@ class NoteServiceTestIT extends IntegrationTestBase {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
-    void findAllByTag_shouldReturnNotesList() {
+    void findAllByTagShouldReturnNotesList() {
         var notes = noteService.findAllByTag("dummy_tag_#1_1");
         assertTrue(notes.size() >= 2);
     }
 
     @Test
-    void deleteNoteById_shouldDeleteOnceAndReturnFalseSecondTime() {
+    void deleteNoteByIdShouldDeleteOnceAndReturnFalseSecondTime() {
         var user = testFactory.createAndSaveUser();
         var noteCreateDto = testFactory.dummyNoteCreateDto(userReadMapper.map(user));
         var savedNote = noteService.save(noteCreateDto);
@@ -79,7 +77,7 @@ class NoteServiceTestIT extends IntegrationTestBase {
 
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
-    void getNextNotes_shouldReturnNextPageOfNotes() {
+    void getNextNotesShouldReturnNextPageOfNotes() {
         Instant cursor = Instant.parse("2025-01-02T00:00:02Z").plusSeconds(1);
 
         List<NoteReadDto> notes = noteService.getNextNotes(cursor);
