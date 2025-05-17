@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @RequiredArgsConstructor
-class UserServiceTest extends IntegrationTestBase {
+class UserServiceTestIT extends IntegrationTestBase {
 
     private final UserService userService;
     private final UserReadMapper userReadMapper;
@@ -19,7 +19,7 @@ class UserServiceTest extends IntegrationTestBase {
 
 
     @Test
-    void createUser() {
+    void createUser_shouldSaveUserSuccessfully() {
         var userCreateDto = testFactory.dummyUserCreateDto();
         var savedUser = userService.createUser(userCreateDto)
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
@@ -31,7 +31,7 @@ class UserServiceTest extends IntegrationTestBase {
     }
 
     @Test
-    void findByUsername() {
+    void findByUsername_shouldReturnUserIfExists() {
         var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
 
@@ -44,7 +44,20 @@ class UserServiceTest extends IntegrationTestBase {
     }
 
     @Test
-    void deleteUserByUsername() {
+    void findById_shouldReturnUserIfExists() {
+        var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));
+
+        var foundUser = userService.findById(savedUser.id());
+        var notFoundUser = userService.findById(-1L);
+
+        assertTrue(foundUser.isPresent());
+        assertFalse(notFoundUser.isPresent());
+        assertEquals(savedUser, foundUser.get());
+    }
+
+    @Test
+    void deleteUserByUsername_shouldDeleteUserOnceAndReturnFalseNextTime() {
         var userDto = testFactory.dummyUserCreateDto();
         userService.createUser(userDto);
 
@@ -56,7 +69,7 @@ class UserServiceTest extends IntegrationTestBase {
     }
 
     @Test
-    void deleteUserById() {
+    void deleteUserById_shouldDeleteUserOnceAndReturnFalseNextTime() {
         var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
 
@@ -68,7 +81,7 @@ class UserServiceTest extends IntegrationTestBase {
     }
 
     @Test
-    void updateUser() {
+    void updateUser_shouldAddRoleSuccessfully() {
         var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
         var userToUpdate = userReadMapper.map(savedUser);

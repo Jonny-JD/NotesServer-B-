@@ -4,6 +4,7 @@ import com.jimmy_d.notesserver.database.entity.Role;
 import com.jimmy_d.notesserver.database.repository.UserRepository;
 import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
+import com.jimmy_d.notesserver.exceptions.rest.UserCreateException;
 import com.jimmy_d.notesserver.mapper.UserCreateMapper;
 import com.jimmy_d.notesserver.mapper.UserReadMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,15 @@ public class UserService {
 
     @Transactional
     public Optional<UserReadDto> createUser(UserCreateDto user) {
+        var foundedUser = userRepository.findOneByEmailOrUsername(user.email(), user.username());
+        if (foundedUser.isPresent()) {
+            var type = user.username().equals(foundedUser.get().getUsername()) ? "username" : "email";
+            if (type.equals("username")) {
+                throw new UserCreateException(type, user.username());
+            } else {
+                throw new UserCreateException(type, user.email());
+            }
+        }
         return Optional.of(user)
                 .map(userCreateMapper::map)
                 .map(userRepository::save)
@@ -61,6 +71,10 @@ public class UserService {
 
     public Optional<UserReadDto> findByUsername(String username) {
         return userRepository.findByUsername(username).map(userReadMapper::map);
+    }
+
+    public Optional<UserReadDto> findById(Long id) {
+        return userRepository.findById(id).map(userReadMapper::map);
     }
 
 }

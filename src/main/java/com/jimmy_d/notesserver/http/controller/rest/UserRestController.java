@@ -4,9 +4,11 @@ package com.jimmy_d.notesserver.http.controller.rest;
 import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
 import com.jimmy_d.notesserver.exceptions.rest.UserNotFoundException;
+import com.jimmy_d.notesserver.exceptions.rest.UserUpdateException;
 import com.jimmy_d.notesserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,43 +18,48 @@ public class UserRestController {
 
     private final UserService userService;
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserReadDto createUser(@RequestBody UserCreateDto user) {
-        return userService.createUser(user).orElseThrow();//TODO
+    public UserReadDto create(@RequestBody @Validated UserCreateDto user) {
+        return userService.createUser(user).orElseThrow();
     }
 
-    @DeleteMapping("/{username}/delete")
+    @DeleteMapping("/by-username/{username}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserByUsername(@PathVariable String username) {
+    public void deleteByUsername(@PathVariable String username) {
         if (!userService.deleteByUsername(username)) {
             throw new UserNotFoundException("username", username);
         }
     }
 
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserById(@PathVariable long id) {
+    public void deleteById(@PathVariable long id) {
         if (!userService.deleteById(id)) {
             throw new UserNotFoundException("id", id);
         }
     }
 
-    @GetMapping("/{username}")
-    public UserReadDto getUserByUsername(@PathVariable("username") String username) {
+    @GetMapping("/by-username/{username}")
+    public UserReadDto getByUsername(@PathVariable String username) {
         return userService.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("username", username));
-
     }
 
-    @PutMapping("/{id}/update")
-    public UserReadDto updateUser(@PathVariable Long id, @RequestBody UserReadDto userDto) {
-        if (!id.equals(userDto.id())) {
-            throw new IllegalArgumentException("ID in path and body must match");
-        }
-
-        return userService.updateUser(userDto)
+    @GetMapping("/{id}")
+    public UserReadDto getById(@PathVariable Long id) {
+        return userService.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("id", id));
     }
 
+    @PutMapping("/{id}")
+    public UserReadDto update(@PathVariable Long id, @RequestBody UserReadDto user) {
+        if (!id.equals(user.id())) {
+            throw new UserUpdateException();
+        }
+
+        return userService.updateUser(user)
+                .orElseThrow(() -> new UserNotFoundException("id", id));
+    }
 }
+
