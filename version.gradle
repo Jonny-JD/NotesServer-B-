@@ -1,0 +1,5 @@
+ext {
+    versions = [
+        'querydsl': '5.1.0'
+    ]
+}

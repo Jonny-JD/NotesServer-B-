@@ -19,43 +19,43 @@ public class NoteRestController {
 
     private final NoteService noteService;
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public NoteReadDto save(@RequestBody NoteCreateDto note) {
         return noteService.save(note);
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public NoteReadDto getById(@PathVariable Long id) {
         return noteService.findById(id)
                 .orElseThrow(() -> new NoteNotFoundException("id", id));
-
     }
 
-    @GetMapping("/author")
-    @ResponseStatus(HttpStatus.OK)
-    public List<NoteReadDto> getAllByAuthor(@RequestBody UserReadDto author) {
-        return noteService.findAllByAuthor(author);
+    @GetMapping
+    public List<NoteReadDto> getNotes(
+            @RequestParam(required = false) String tag,
+            @RequestBody(required = false) UserReadDto author,
+            @RequestParam(required = false) Instant cursor
+    ) {
+        if (tag != null) {
+            return noteService.findAllByTag(tag);
+        }
+        if (author != null) {
+            return noteService.findAllByAuthor(author);
+        }
+        if (cursor != null) {
+            return noteService.getNextNotes(cursor);
+        }
+
+        // Можно вернуть все или выбросить исключение
+        return List.of(); // или throw new BadRequestException(...);
     }
 
-    @GetMapping("/tag")
-    @ResponseStatus(HttpStatus.OK)
-    public List<NoteReadDto> getAllByTag(@RequestBody String tag) {
-        return noteService.findAllByTag(tag);
-    }
-
-    @DeleteMapping("/{id}/delete")
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         if (!noteService.deleteById(id)) {
             throw new NoteNotFoundException("id", id);
         }
     }
-
-    @GetMapping("/api/notes")
-    public List<NoteReadDto> getNextNotes(@RequestParam Instant cursor) {
-        return noteService.getNextNotes(cursor);
-    }
-
 }
