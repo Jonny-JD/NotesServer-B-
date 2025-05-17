@@ -22,7 +22,7 @@ public class TestFactory {
     // Константы
     private static final String DUMMY_USERNAME = "Dummy_user_#1";
     private static final String DUMMY_PASSWORD = "dummy_#1_pass";
-    private static final String DUMMY_EMAIL = "dummy_#1_email";
+    private static final String DUMMY_EMAIL = "dummy_#1@email.com";
     private static final String DUMMY_TITLE = "dummy_title_#1_1";
     private static final String DUMMY_TAG = "dummy_tag_#1_1";
     private static final String DUMMY_CONTENT = "dummy_content_#1_1";
