@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidNoteQueryException.class)
     public ResponseEntity<ApiExceptionDto> handleInvalidNoteQueryException(InvalidNoteQueryException exception) {
-        return buildErrorResponse(HttpStatus.NOT_FOUND, "query", exception.getMessage());
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "query", exception.getMessage());
     }
 
     @ExceptionHandler(UserNotExistsException.class)
