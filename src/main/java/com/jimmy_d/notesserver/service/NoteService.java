@@ -79,10 +79,18 @@ public class NoteService {
     }
 
     public boolean deleteAllByTag(String tag) {
-        return noteRepository.deleteAllByTag(tag);
+        return noteRepository.findFirstByTag(tag)
+                        .map(note -> {
+                            noteRepository.deleteAllByTag(tag);
+                            return true;
+                        }).orElse(false);
     }
 
     public boolean deleteAllByAuthor(Long authorId) {
-        return noteRepository.deleteAllByAuthor_Id(authorId);
+        return noteRepository.findFirstByAuthor_Id(authorId)
+                .map(note -> {
+                    noteRepository.deleteAllByAuthor_Id(authorId);
+                    return true;
+                }).orElse(false);
     }
 }

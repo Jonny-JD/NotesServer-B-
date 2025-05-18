@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface NoteRepository extends JpaRepository<Note, Long>, FilterNoteRepository {
@@ -22,9 +23,13 @@ public interface NoteRepository extends JpaRepository<Note, Long>, FilterNoteRep
             """)
     List<Note> findNextNotes(@Param("cursor") Instant cursor, Pageable pageable);
 
-    boolean deleteAllByTag(String tag);
+    void deleteAllByTag(String tag);
 
-    boolean deleteAllByAuthor_Id(Long authorId);
+    void deleteAllByAuthor_Id(Long authorId);
 
     List<Note> findAllByAuthorId(Long authorId);
+
+    Optional<Note> findFirstByTag(String tag);
+
+    Optional<Note> findFirstByAuthor_Id(Long authorId);
 }

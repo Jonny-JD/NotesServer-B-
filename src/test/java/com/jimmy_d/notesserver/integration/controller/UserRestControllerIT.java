@@ -71,12 +71,6 @@ class UserRestControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void shouldReturn404WhenUserNotFound() throws Exception {
-        mockMvc.perform(get("/api/v1/users/9999"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     void shouldGetUserByUsername() throws Exception {
         var user = createRestUser("anna", "anna@example.com");
         mockMvc.perform(get("/api/v1/users/by-username/" + user.username()))

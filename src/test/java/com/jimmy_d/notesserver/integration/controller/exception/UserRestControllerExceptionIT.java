@@ -52,6 +52,12 @@ class UserRestControllerExceptionIT extends IntegrationTestBase {
     }
 
     @Test
+    void shouldReturn404WhenUserNotFound() throws Exception {
+        mockMvc.perform(get("/api/v1/users/9999"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void createUserWithInvalidDataShouldReturnBadRequest() throws Exception {
         mockMvc.perform(post("/api/v1/users")
                 .contentType(MediaType.APPLICATION_JSON)
