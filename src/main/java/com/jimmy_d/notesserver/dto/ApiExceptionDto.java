@@ -1,4 +1,4 @@
-package com.jimmy_d.notesserver.validation;
+package com.jimmy_d.notesserver.dto;
 
 import lombok.Getter;
 import lombok.Setter;

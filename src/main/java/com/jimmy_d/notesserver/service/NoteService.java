@@ -26,13 +26,12 @@ public class NoteService {
     private final NoteReadMapper noteReadMapper;
 
     @Transactional
-    public NoteReadDto save(NoteCreateDto noteCreateDto) {
-        return Optional.of(noteCreateDto)
-                .map(noteCreateMapper::map)
-                .map(noteRepository::save)
-                .map(noteReadMapper::map)
-                .orElseThrow();
-        //TODO Exception
+    public NoteReadDto save(NoteCreateDto dto) {
+        return noteReadMapper.map(
+                noteRepository.save(
+                        noteCreateMapper.map(dto)
+                )
+        );
     }
 
     public Optional<NoteReadDto> findById(Long id) {

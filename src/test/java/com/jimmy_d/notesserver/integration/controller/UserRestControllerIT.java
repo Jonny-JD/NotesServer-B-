@@ -77,6 +77,14 @@ class UserRestControllerIT extends IntegrationTestBase {
     }
 
     @Test
+    void shouldGetUserByUsername() throws Exception {
+        var user = createRestUser("anna", "anna@example.com");
+        mockMvc.perform(get("/api/v1/users/by-username/" + user.username()))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("anna"));
+    }
+
+    @Test
     void shouldUpdateUser() throws Exception {
         var user = createRestUser("kate", "kate@example.com");
         var updated = new UserReadDto(user.id(), "kate", "new@example.com", Set.of("USER", "ADMIN"));

@@ -52,6 +52,23 @@ class UserRestControllerExceptionIT extends IntegrationTestBase {
     }
 
     @Test
+    void createUserWithInvalidDataShouldReturnBadRequest() throws Exception {
+        mockMvc.perform(post("/api/v1/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content( """
+                        {
+                            "username": "testuser",
+                            "email": "invalid-email"
+                        }
+                        """))
+                .andExpectAll(
+                        status().isBadRequest(),
+                        jsonPath("$.status").value(400),
+                        jsonPath("$.error").value("Bad Request")
+                );
+    }
+
+    @Test
     void deleteByUsernameShouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
         mockMvc.perform(delete("/api/v1/users/by-username/nonexistent"))
                 .andExpectAll(
@@ -96,7 +113,7 @@ class UserRestControllerExceptionIT extends IntegrationTestBase {
     }
 
     @Test
-    void updateUserShouldReturnConflictWhenIdsDoNotMatch() throws Exception {
+    void updateUserShouldReturnConflictWhenUserNotExists() throws Exception {
         var user = testFactory.createAndSaveUser();
         var dto = new UserReadDto(user.getId() + 1, user.getUsername(), user.getEmail(), Set.of("USER"));
 
@@ -109,5 +126,6 @@ class UserRestControllerExceptionIT extends IntegrationTestBase {
                         jsonPath("$.status").value(409)
                 );
     }
+
 }
 

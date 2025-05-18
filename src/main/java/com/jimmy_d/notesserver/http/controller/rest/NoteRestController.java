@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -62,7 +63,7 @@ public class NoteRestController {
         }
     }
 
-    @DeleteMapping("/tag/{tag}")
+    @DeleteMapping("/all-by-tag/{tag}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAllByTag(@PathVariable String tag) {
         if (!noteService.deleteAllByTag(tag)) {
@@ -77,5 +78,11 @@ public class NoteRestController {
             throw new NoteNotFoundException("author id", authorId);
         }
     }
+
+    @GetMapping("/fresh")
+    public List<NoteReadDto> getFreshNotes(@RequestParam Instant from) {
+        return noteService.getNextNotes(from);
+    }
+
 
 }
