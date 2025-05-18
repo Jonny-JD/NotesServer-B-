@@ -31,6 +31,16 @@ public class NoteRestController {
                 .orElseThrow(() -> new NoteNotFoundException("id", id));
     }
 
+    @GetMapping("/all-by-tag/{tag}")
+    public List<NoteReadDto> getAllByTag(@PathVariable String tag) {
+        return noteService.findAllByTag(tag);
+    }
+
+    @GetMapping("/all-by-author-id/{authorId}")
+    public List<NoteReadDto> getAllByAuthor(@PathVariable Long authorId) {
+        return noteService.findAllByAuthorId(authorId);
+    }
+
     @GetMapping
     public List<NoteReadDto> getNotes(
             @RequestParam(required = false) String title,
@@ -51,4 +61,21 @@ public class NoteRestController {
             throw new NoteNotFoundException("id", id);
         }
     }
+
+    @DeleteMapping("/tag/{tag}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAllByTag(@PathVariable String tag) {
+        if (!noteService.deleteAllByTag(tag)) {
+            throw new NoteNotFoundException("tag", tag);
+        }
+    }
+
+    @DeleteMapping("/all-by-author/{authorId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAllByAuthorId(@PathVariable Long authorId) {
+        if (!noteService.deleteAllByAuthor(authorId)) {
+            throw new NoteNotFoundException("author id", authorId);
+        }
+    }
+
 }

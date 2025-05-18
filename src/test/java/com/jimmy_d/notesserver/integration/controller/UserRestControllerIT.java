@@ -81,7 +81,7 @@ class UserRestControllerIT extends IntegrationTestBase {
         var user = createRestUser("kate", "kate@example.com");
         var updated = new UserReadDto(user.id(), "kate", "new@example.com", Set.of("USER", "ADMIN"));
 
-        mockMvc.perform(put("/api/v1/users/" + user.id())
+        mockMvc.perform(put("/api/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updated)))
                 .andExpect(status().isOk())

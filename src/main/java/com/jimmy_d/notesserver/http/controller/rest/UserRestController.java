@@ -3,8 +3,8 @@ package com.jimmy_d.notesserver.http.controller.rest;
 
 import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
+import com.jimmy_d.notesserver.exceptions.rest.UserNotExistsException;
 import com.jimmy_d.notesserver.exceptions.rest.UserNotFoundException;
-import com.jimmy_d.notesserver.exceptions.rest.UserUpdateException;
 import com.jimmy_d.notesserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -52,14 +52,10 @@ public class UserRestController {
                 .orElseThrow(() -> new UserNotFoundException("id", id));
     }
 
-    @PutMapping("/{id}")
-    public UserReadDto update(@PathVariable Long id, @RequestBody UserReadDto user) {
-        if (!id.equals(user.id())) {
-            throw new UserUpdateException();
-        }
-
+    @PutMapping
+    public UserReadDto update(@RequestBody UserReadDto user) {
         return userService.updateUser(user)
-                .orElseThrow(() -> new UserNotFoundException("id", id));
+                .orElseThrow(() -> new UserNotExistsException("id", user.id()));
     }
 }
 

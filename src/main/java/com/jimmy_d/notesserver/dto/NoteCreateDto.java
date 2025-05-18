@@ -1,7 +1,10 @@
 package com.jimmy_d.notesserver.dto;
 
-public record NoteCreateDto(String title,
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
+public record NoteCreateDto(@NotEmpty String title,
                             String tag,
                             String content,
-                            UserReadDto author) {
+                            @NotNull UserReadDto author) {
 }

@@ -100,12 +100,12 @@ class UserRestControllerExceptionIT extends IntegrationTestBase {
         var user = testFactory.createAndSaveUser();
         var dto = new UserReadDto(user.getId() + 1, user.getUsername(), user.getEmail(), Set.of("USER"));
 
-        mockMvc.perform(put("/api/v1/users/" + user.getId())
+        mockMvc.perform(put("/api/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(dto)))
                 .andExpectAll(
                         status().isConflict(),
-                        jsonPath("$.errors.update").value("ID in path and body must match"),
+                        jsonPath("$.errors.update").value("User with id: [" + dto.id() + "] not exists"),
                         jsonPath("$.status").value(409)
                 );
     }

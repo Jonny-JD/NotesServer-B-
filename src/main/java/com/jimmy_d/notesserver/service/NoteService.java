@@ -4,10 +4,8 @@ import com.jimmy_d.notesserver.database.repository.NoteRepository;
 import com.jimmy_d.notesserver.dto.NoteCreateDto;
 import com.jimmy_d.notesserver.dto.NoteFilter;
 import com.jimmy_d.notesserver.dto.NoteReadDto;
-import com.jimmy_d.notesserver.dto.UserReadDto;
 import com.jimmy_d.notesserver.mapper.NoteCreateMapper;
 import com.jimmy_d.notesserver.mapper.NoteReadMapper;
-import com.jimmy_d.notesserver.mapper.UserReadMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +24,6 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final NoteCreateMapper noteCreateMapper;
     private final NoteReadMapper noteReadMapper;
-    private final UserReadMapper userReadMapper;
 
     @Transactional
     public NoteReadDto save(NoteCreateDto noteCreateDto) {
@@ -42,10 +39,10 @@ public class NoteService {
         return noteRepository.findById(id).map(noteReadMapper::map);
     }
 
-    public List<NoteReadDto> findAllByAuthor(UserReadDto author) {
+    public List<NoteReadDto> findAllByAuthorId(Long authorId) {
 
         return noteRepository
-                .findAllByAuthor(userReadMapper.map(author))
+                .findAllByAuthorId(authorId)
                 .stream()
                 .map(noteReadMapper::map)
                 .collect(Collectors.toList());
@@ -82,4 +79,11 @@ public class NoteService {
                 .toList();
     }
 
+    public boolean deleteAllByTag(String tag) {
+        return noteRepository.deleteAllByTag(tag);
+    }
+
+    public boolean deleteAllByAuthor(Long authorId) {
+        return noteRepository.deleteAllByAuthor_Id(authorId);
+    }
 }

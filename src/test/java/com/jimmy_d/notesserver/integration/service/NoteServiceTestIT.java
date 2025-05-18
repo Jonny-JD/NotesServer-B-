@@ -54,7 +54,7 @@ class NoteServiceTestIT extends IntegrationTestBase {
     void findAllByAuthorShouldReturnNotesList() {
         var user = userService.findByUsername(testFactory.dummyUserCreateDto().username())
                 .orElseThrow(() -> new RuntimeException("Test user Not Found"));
-        var notes = noteService.findAllByAuthor(user);
+        var notes = noteService.findAllByAuthorId(user.id());
 
         assertNotNull(notes);
         assertTrue(notes.size() >= 2);

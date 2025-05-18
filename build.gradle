@@ -66,8 +66,8 @@ dependencies {
     implementation 'org.bouncycastle:bcprov-jdk18on:1.80'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     testImplementation 'org.springframework.security:spring-security-test'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-api:2.8.8'
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8'
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-api:${versions.springdoc}"
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${versions.springdoc}"
     implementation "com.querydsl:querydsl-jpa:${versions.querydsl}:jakarta"
 
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

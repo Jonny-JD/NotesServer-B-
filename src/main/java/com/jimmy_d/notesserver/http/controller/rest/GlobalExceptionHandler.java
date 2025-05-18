@@ -1,9 +1,6 @@
 package com.jimmy_d.notesserver.http.controller.rest;
 
-import com.jimmy_d.notesserver.exceptions.rest.InvalidNoteQueryException;
-import com.jimmy_d.notesserver.exceptions.rest.UserExistsException;
-import com.jimmy_d.notesserver.exceptions.rest.UserNotFoundException;
-import com.jimmy_d.notesserver.exceptions.rest.UserUpdateException;
+import com.jimmy_d.notesserver.exceptions.rest.*;
 import com.jimmy_d.notesserver.validation.ApiExceptionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -57,6 +54,13 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = Map.of("query", exception.getMessage());
         ApiExceptionDto apiError = new ApiExceptionDto(HttpStatus.NOT_FOUND, errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+    }
+
+    @ExceptionHandler(UserNotExistsException.class)
+    public ResponseEntity<ApiExceptionDto> handleInvalidNoteQueryException(UserNotExistsException exception) {
+        Map<String, String> errors = Map.of("update", exception.getMessage());
+        ApiExceptionDto apiError = new ApiExceptionDto(HttpStatus.CONFLICT, errors);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 
     @ExceptionHandler(Exception.class)

@@ -28,9 +28,14 @@ public class UserCreateMapper implements Mapper<UserCreateDto, User> {
         user.setEmail(userCreateDto.email());
         Optional.ofNullable(userCreateDto.RawPassword())
                 .ifPresent(password -> user.setPassword(passwordEncoder.encode(password)));
-        user.setRoles(userCreateDto.roles()
-                .stream()
-                .map(Role::valueOf)
-                .collect(Collectors.toSet()));
+        if (!user.getRoles().isEmpty()) {
+            user.setRoles(userCreateDto.roles()
+                    .stream()
+                    .map(Role::valueOf)
+                    .collect(Collectors.toSet()));
+        } else {
+            user.addRole(Role.USER);
+        }
+
     }
 }

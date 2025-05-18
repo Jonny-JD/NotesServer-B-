@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 public class RoleValidator implements ConstraintValidator<UserRole, Set<String>> {
     @Override
     public boolean isValid(Set<String> value, ConstraintValidatorContext context) {
-        if (value == null) {
-            return true;
+        if (value == null || value.isEmpty()) {
+            return false;
         }
         return new HashSet<>(Arrays.stream(Role.values())
                 .map(Enum::toString)
