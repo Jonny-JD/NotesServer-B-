@@ -1,5 +1,6 @@
 package com.jimmy_d.notesserver.integration.service;
 
+import com.jimmy_d.notesserver.dto.NoteFilter;
 import com.jimmy_d.notesserver.dto.NoteReadDto;
 import com.jimmy_d.notesserver.integration.IntegrationTestBase;
 import com.jimmy_d.notesserver.integration.TestFactory;
@@ -8,10 +9,14 @@ import com.jimmy_d.notesserver.service.NoteService;
 import com.jimmy_d.notesserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -87,4 +92,35 @@ class NoteServiceTestIT extends IntegrationTestBase {
                 () -> assertEquals(10, notes.size(), "Should return 10 notes due to page size")
         );
     }
+
+    static Stream<Arguments> filterCases() {
+        return Stream.of(
+                Arguments.of(new NoteFilter("dummy_title_#1_1", null, null, null), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_#1_1", null, null), 2),
+                Arguments.of(new NoteFilter(null, null, "dummy_content_#1_1", null), 1),
+                Arguments.of(new NoteFilter(null, null, null, 1L), 4),
+
+                Arguments.of(new NoteFilter("dummy_title_#1_1", "dummy_tag_#1_1", null, null), 1),
+                Arguments.of(new NoteFilter("dummy_title_#1_1", null, "dummy_content_#1_1", null), 1),
+                Arguments.of(new NoteFilter("dummy_title_#1_1", null, null, 1L), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_#1_1", "dummy_content_#1_1", null), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_#1_1", null, 1L), 2),
+                Arguments.of(new NoteFilter(null, null, "dummy_content_#1_1", 1L), 1),
+
+                Arguments.of(new NoteFilter("dummy_title_#1_1", "dummy_tag_#1_1", "dummy_content_#1_1", null), 1),
+                Arguments.of(new NoteFilter("dummy_title_#1_1", "dummy_tag_#1_1", null, 1L), 1),
+                Arguments.of(new NoteFilter("dummy_title_#1_1", null, "dummy_content_#1_1", 1L), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_#1_1", "dummy_content_#1_1", 1L), 1),
+                Arguments.of(new NoteFilter("dummy_title_#1_1", "dummy_tag_#1_1", "dummy_content_#1_1", 1L), 1)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("filterCases")
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
+    void testNoteFilter(NoteFilter filter, int expectedCount) {
+        assertEquals(expectedCount, noteService.findAllByFilter(filter).size());
+    }
+
+
 }

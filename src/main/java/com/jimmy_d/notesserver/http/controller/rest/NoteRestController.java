@@ -1,15 +1,15 @@
 package com.jimmy_d.notesserver.http.controller.rest;
 
 import com.jimmy_d.notesserver.dto.NoteCreateDto;
+import com.jimmy_d.notesserver.dto.NoteFilter;
 import com.jimmy_d.notesserver.dto.NoteReadDto;
-import com.jimmy_d.notesserver.dto.UserReadDto;
+import com.jimmy_d.notesserver.exceptions.rest.InvalidNoteQueryException;
 import com.jimmy_d.notesserver.exceptions.rest.NoteNotFoundException;
 import com.jimmy_d.notesserver.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -33,22 +33,15 @@ public class NoteRestController {
 
     @GetMapping
     public List<NoteReadDto> getNotes(
+            @RequestParam(required = false) String title,
             @RequestParam(required = false) String tag,
-            @RequestBody(required = false) UserReadDto author,
-            @RequestParam(required = false) Instant cursor
+            @RequestParam(required = false) String content,
+            @RequestParam(required = false) Long authorId
     ) {
-        if (tag != null) {
-            return noteService.findAllByTag(tag);
+        if (title == null && tag == null && content == null && authorId == null) {
+            throw new InvalidNoteQueryException();
         }
-        if (author != null) {
-            return noteService.findAllByAuthor(author);
-        }
-        if (cursor != null) {
-            return noteService.getNextNotes(cursor);
-        }
-
-        // Можно вернуть все или выбросить исключение
-        return List.of(); // или throw new BadRequestException(...);
+        return noteService.findAllByFilter(new NoteFilter(title, tag, content, authorId));
     }
 
     @DeleteMapping("/{id}")
