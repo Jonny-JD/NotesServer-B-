@@ -5,13 +5,9 @@ import com.jimmy_d.notesserver.database.repository.UserRepository;
 import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
 import com.jimmy_d.notesserver.exceptions.rest.UserExistsException;
-import com.jimmy_d.notesserver.exceptions.rest.UserNotFoundException;
 import com.jimmy_d.notesserver.mapper.UserCreateMapper;
 import com.jimmy_d.notesserver.mapper.UserReadMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserService implements UserDetailsService {
+public class UserService{
     private final UserRepository userRepository;
     private final UserCreateMapper userCreateMapper;
     private final UserReadMapper userReadMapper;
@@ -81,16 +77,4 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(id).map(userReadMapper::map);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        try {
-            return userRepository.findByUsername(username).map(user -> new org.springframework.security.core.userdetails.User(
-                            user.getUsername(),
-                            user.getPassword(),
-                            user.getRoles()))
-                    .orElseThrow(() -> new UsernameNotFoundException(username));
-        } catch (UsernameNotFoundException exception) {
-            throw new UserNotFoundException("username", username);
-        }
-    }
 }

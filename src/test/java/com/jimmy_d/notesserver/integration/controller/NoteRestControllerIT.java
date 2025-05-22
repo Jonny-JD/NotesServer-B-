@@ -10,9 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -110,6 +112,18 @@ class NoteRestControllerIT extends ControllerTestBase {
     }
 
     @Test
+    @WithMockUser(username = "Dummy_user_#2", password = "dummy_#2_pass", authorities = {"USER"})
+    void shouldNotDeleteNoteById() throws Exception {
+        var note = createNote();
+        testFactory.saveUser("Dummy_user_#2", "dummy_#2_pass", "dummy_#2@email.com", Set.of("USER"));
+
+        mockMvc.perform(delete("/api/v1/notes/" + note.id()))
+                .andExpect(jsonPath("$.errors.error").value("Access Denied"));
+
+        assertThat(noteRepository.findById(note.id())).isNotEmpty();
+    }
+
+    @Test
     void shouldDeleteAllByTag() throws Exception {
         var note = createNote();
 
@@ -120,6 +134,18 @@ class NoteRestControllerIT extends ControllerTestBase {
     }
 
     @Test
+    @WithMockUser(username = "Dummy_user_#2", password = "dummy_#2_pass", authorities = {"USER"})
+    void shouldNotDeleteAllByTag() throws Exception {
+        var note = createNote();
+
+        mockMvc.perform(delete("/api/v1/notes/all-by-tag/{tag}", note.tag()))
+                .andExpect(jsonPath("$.errors.error").value("Access Denied"));
+
+        assertThat(noteRepository.findAll()).size().isEqualTo(1);
+    }
+
+
+    @Test
     void shouldDeleteAllByAuthorId() throws Exception {
         var note = createNote();
 
@@ -127,6 +153,17 @@ class NoteRestControllerIT extends ControllerTestBase {
                 .andExpect(status().isNoContent());
 
         assertThat(noteRepository.findAll()).isEmpty();
+    }
+
+    @Test
+    @WithMockUser(username = "Dummy_user_#2", password = "dummy_#2_pass", authorities = {"USER"})
+    void shouldNotDeleteAllByAuthorId() throws Exception {
+        var note = createNote();
+
+        mockMvc.perform(delete("/api/v1/notes/all-by-author/" + note.author().id()))
+                .andExpect(jsonPath("$.errors.error").value("Access Denied"));
+
+        assertThat(noteRepository.findAll()).size().isEqualTo(1);
     }
 
     @Test

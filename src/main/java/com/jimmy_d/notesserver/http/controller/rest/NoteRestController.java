@@ -8,6 +8,7 @@ import com.jimmy_d.notesserver.exceptions.rest.NoteNotFoundException;
 import com.jimmy_d.notesserver.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -56,6 +57,7 @@ public class NoteRestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or @accessChecker.isNoteOwner(#id)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         if (!noteService.deleteById(id)) {
@@ -64,6 +66,7 @@ public class NoteRestController {
     }
 
     @DeleteMapping("/all-by-tag/{tag}")
+    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAllByTag(@PathVariable String tag) {
         if (!noteService.deleteAllByTag(tag)) {
@@ -72,6 +75,7 @@ public class NoteRestController {
     }
 
     @DeleteMapping("/all-by-author/{authorId}")
+    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAllByAuthorId(@PathVariable Long authorId) {
         if (!noteService.deleteAllByAuthor(authorId)) {

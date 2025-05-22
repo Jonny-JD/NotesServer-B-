@@ -16,9 +16,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class TestFactory {
 
-    private final UserService userService;
-    private final UserReadMapper userReadMapper;
-
     // Константы
     private static final String DUMMY_USERNAME = "Dummy_user_#1";
     private static final String DUMMY_PASSWORD = "dummy_#1_pass";
@@ -27,6 +24,8 @@ public class TestFactory {
     private static final String DUMMY_TAG = "dummy_tag_#1_1";
     private static final String DUMMY_CONTENT = "dummy_content_#1_1";
     private static final Set<String> DUMMY_ROLES = Set.of(Role.USER.name());
+    private final UserService userService;
+    private final UserReadMapper userReadMapper;
 
     public UserCreateDto dummyUserCreateDto() {
         return new UserCreateDto(
@@ -43,13 +42,11 @@ public class TestFactory {
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
     }
 
-    public UserReadDto dummyUserReadDto(Long userId) {
-        return new UserReadDto(
-                userId,
-                DUMMY_USERNAME,
-                DUMMY_EMAIL,
-                DUMMY_ROLES
-        );
+    public void saveUser(String username, String password, String email, Set<String> roles) {
+        var userCreateDto = new UserCreateDto(username, password, email, roles);
+        userService.createUser(userCreateDto)
+                .map(userReadMapper::map)
+                .orElseThrow(() -> new RuntimeException("Failed to create user"));
     }
 
     public NoteCreateDto dummyNoteCreateDto(UserReadDto author) {
@@ -58,15 +55,6 @@ public class TestFactory {
                 DUMMY_TAG,
                 DUMMY_CONTENT,
                 author
-        );
-    }
-
-    public NoteCreateDto dummyNoteCreateDto(Long userId, String username, String email) {
-        return new NoteCreateDto(
-                DUMMY_TITLE,
-                DUMMY_TAG,
-                DUMMY_CONTENT,
-                new UserReadDto(userId, username, email, DUMMY_ROLES)
         );
     }
 
