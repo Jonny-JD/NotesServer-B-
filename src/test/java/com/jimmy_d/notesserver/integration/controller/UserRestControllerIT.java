@@ -1,6 +1,7 @@
 package com.jimmy_d.notesserver.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jimmy_d.notesserver.database.entity.Role;
 import com.jimmy_d.notesserver.database.repository.UserRepository;
 import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -29,7 +31,7 @@ class UserRestControllerIT extends ControllerTestBase {
 
     //Create test user
     private UserReadDto createRestUser(String username, String email) throws Exception {
-        var dto = new UserCreateDto(username, "pass", email, Set.of("USER"));
+        var dto = new UserCreateDto(username, "pass", email, Set.of(Arrays.stream(Role.values()).map(Role::name).toArray(String[]::new)));
 
         var response = mockMvc.perform(post("/api/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)

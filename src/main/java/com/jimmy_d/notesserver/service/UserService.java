@@ -9,11 +9,13 @@ import com.jimmy_d.notesserver.exceptions.rest.UserNotFoundException;
 import com.jimmy_d.notesserver.mapper.UserCreateMapper;
 import com.jimmy_d.notesserver.mapper.UserReadMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.jimmy_d.notesserver.security.UserDetailsImpl;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,10 +86,13 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            return userRepository.findByUsername(username).map(user -> new org.springframework.security.core.userdetails.User(
+            return userRepository.findByUsername(username).map(user -> new UserDetailsImpl(
+                    user.getId(),
                             user.getUsername(),
                             user.getPassword(),
-                            user.getRoles()))
+                            user.getRoles().stream()
+                                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
+                                    .collect(Collectors.toList())))
                     .orElseThrow(() -> new UsernameNotFoundException(username));
         } catch (UsernameNotFoundException exception) {
             throw new UserNotFoundException("username", username);

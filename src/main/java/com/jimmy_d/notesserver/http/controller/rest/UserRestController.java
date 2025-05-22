@@ -5,9 +5,11 @@ import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
 import com.jimmy_d.notesserver.exceptions.rest.UserNotExistsException;
 import com.jimmy_d.notesserver.exceptions.rest.UserNotFoundException;
+import com.jimmy_d.notesserver.security.AccessChecker;
 import com.jimmy_d.notesserver.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserRestController {
 
     private final UserService userService;
+    private final AccessChecker accessChecker;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -25,6 +28,7 @@ public class UserRestController {
     }
 
     @DeleteMapping("/by-username/{username}")
+    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteByUsername(@PathVariable String username) {
         if (!userService.deleteByUsername(username)) {
@@ -33,6 +37,7 @@ public class UserRestController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or accessChecker.isAccountOwner(#id)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable long id) {
         if (!userService.deleteById(id)) {
