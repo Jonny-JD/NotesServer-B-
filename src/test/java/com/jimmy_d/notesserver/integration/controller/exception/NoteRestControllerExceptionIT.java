@@ -1,9 +1,8 @@
 package com.jimmy_d.notesserver.integration.controller.exception;
 
-import com.jimmy_d.notesserver.integration.IntegrationTestBase;
+import com.jimmy_d.notesserver.integration.ControllerTestBase;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.net.URLEncoder;
@@ -14,9 +13,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
+
 @RequiredArgsConstructor
-class NoteRestControllerExceptionIT extends IntegrationTestBase {
+class NoteRestControllerExceptionIT extends ControllerTestBase {
 
     private final MockMvc mockMvc;
 

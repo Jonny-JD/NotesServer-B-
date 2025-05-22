@@ -3,22 +3,22 @@ package com.jimmy_d.notesserver.integration.controller.exception;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
-import com.jimmy_d.notesserver.integration.IntegrationTestBase;
+import com.jimmy_d.notesserver.integration.ControllerTestBase;
 import com.jimmy_d.notesserver.integration.TestFactory;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@AutoConfigureMockMvc
+
 @RequiredArgsConstructor
-class UserRestControllerExceptionIT extends IntegrationTestBase {
+class UserRestControllerExceptionIT extends ControllerTestBase {
 
     private final MockMvc mockMvc;
     private final TestFactory testFactory;
@@ -60,13 +60,13 @@ class UserRestControllerExceptionIT extends IntegrationTestBase {
     @Test
     void createUserWithInvalidDataShouldReturnBadRequest() throws Exception {
         mockMvc.perform(post("/api/v1/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content( """
-                        {
-                            "username": "testuser",
-                            "email": "invalid-email"
-                        }
-                        """))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "username": "testuser",
+                                    "email": "invalid-email"
+                                }
+                                """))
                 .andExpectAll(
                         status().isBadRequest(),
                         jsonPath("$.status").value(400),

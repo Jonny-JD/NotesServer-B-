@@ -1,18 +1,16 @@
 package com.jimmy_d.notesserver.integration.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jimmy_d.notesserver.database.repository.UserRepository;
 import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
-import com.jimmy_d.notesserver.integration.IntegrationTestBase;
+import com.jimmy_d.notesserver.integration.ControllerTestBase;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Set;
 
@@ -20,10 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+
 @RequiredArgsConstructor
-class UserRestControllerIT extends IntegrationTestBase {
+class UserRestControllerIT extends ControllerTestBase {
 
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
@@ -112,3 +109,4 @@ class UserRestControllerIT extends IntegrationTestBase {
     }
 
 }
+
