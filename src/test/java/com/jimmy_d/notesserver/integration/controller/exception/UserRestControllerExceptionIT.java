@@ -25,7 +25,7 @@ class UserRestControllerExceptionIT extends ControllerTestBase {
     private final ObjectMapper objectMapper;
 
     @Test
-    void createUserShouldReturnBadRequestWhenUserAlreadyExists() throws Exception {
+    void createUserShouldReturnConflictWhenUserAlreadyExists() throws Exception {
         var wrongUsernameDto = testFactory.dummyUserCreateDto();
         testFactory.createAndSaveUser();
 
@@ -33,10 +33,10 @@ class UserRestControllerExceptionIT extends ControllerTestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(wrongUsernameDto)))
                 .andExpectAll(
-                        status().isBadRequest(),
-                        jsonPath("$.status").value(400),
+                        status().isConflict(),
+                        jsonPath("$.status").value(409),
                         jsonPath("$.errors.user").value(String.format("User with username: [%s] already exists", wrongUsernameDto.username())),
-                        jsonPath("$.error").value("Bad Request")
+                        jsonPath("$.error").value("Conflict")
                 );
 
         var wrongEmailDto = new UserCreateDto(wrongUsernameDto.username() + "dummy", wrongUsernameDto.RawPassword(), wrongUsernameDto.email(), wrongUsernameDto.roles());
@@ -44,10 +44,10 @@ class UserRestControllerExceptionIT extends ControllerTestBase {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(wrongEmailDto)))
                 .andExpectAll(
-                        status().isBadRequest(),
-                        jsonPath("$.status").value(400),
+                        status().isConflict(),
+                        jsonPath("$.status").value(409),
                         jsonPath("$.errors.user").value(String.format("User with email: [%s] already exists", wrongEmailDto.email())),
-                        jsonPath("$.error").value("Bad Request")
+                        jsonPath("$.error").value("Conflict")
                 );
     }
 

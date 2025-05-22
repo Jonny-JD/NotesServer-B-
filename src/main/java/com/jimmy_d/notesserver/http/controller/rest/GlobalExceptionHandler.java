@@ -22,6 +22,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(apiError);
     }
 
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ApiExceptionDto> handleApiException(ApiException exception) {
+        return buildErrorResponse(exception.getStatus(), exception.getKey(), exception.getMessage());
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiExceptionDto> handleValidationExceptions(MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
@@ -34,31 +39,6 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
-    @ExceptionHandler(UserExistsException.class)
-    public ResponseEntity<ApiExceptionDto> handleUserCreateException(UserExistsException exception) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "user", exception.getMessage());
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ApiExceptionDto> handleUserNotFoundException(UserNotFoundException exception) {
-        return buildErrorResponse(HttpStatus.NOT_FOUND, "user", exception.getMessage());
-    }
-
-    @ExceptionHandler(InvalidNoteQueryException.class)
-    public ResponseEntity<ApiExceptionDto> handleInvalidNoteQueryException(InvalidNoteQueryException exception) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "query", exception.getMessage());
-    }
-
-    @ExceptionHandler(UserNotExistsException.class)
-    public ResponseEntity<ApiExceptionDto> handleInvalidNoteQueryException(UserNotExistsException exception) {
-        return buildErrorResponse(HttpStatus.CONFLICT, "update", exception.getMessage());
-
-    }
-
-    @ExceptionHandler(NoteNotFoundException.class)
-    public ResponseEntity<ApiExceptionDto> handleNoteNotFoundException(NoteNotFoundException exception) {
-        return buildErrorResponse(HttpStatus.NOT_FOUND, "note", exception.getMessage());
-    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiExceptionDto> handleAllExceptions(Exception exception) {
