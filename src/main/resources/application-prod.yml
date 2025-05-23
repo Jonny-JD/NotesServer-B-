@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://prod-db-host:5432/prod_db
+    username: prod_user
+    password: prod_password
+
+  sql:
+    init:
+      mode: never
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+logging:
+  file:
+    path: "log/app.log"
+  logback:
+    rollingpolicy:
+      clean-history-on-start: false  # не удалять логи при старте
+      max-file-size: 10MB
+      file-name-pattern: log/app.%d{yyyy-MM-dd}.%i.gz
+      max-history: 7
+      total-size-cap: 100MB

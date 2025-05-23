@@ -24,23 +24,29 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiExceptionDto> handleApiException(ApiException exception) {
+        log.warn("API exception: {} - {}", exception.getKey(), exception.getMessage());
         return buildErrorResponse(exception.getStatus(), exception.getKey(), exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiExceptionDto> handleValidationExceptions(MethodArgumentNotValidException exception) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "validation", exception.getBindingResult().getAllErrors().getFirst().getDefaultMessage());
+        String errorMessage = exception.getBindingResult()
+                .getAllErrors()
+                .getFirst()
+                .getDefaultMessage();
+        log.warn("Validation failed: {}", errorMessage);
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "validation", errorMessage);
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<ApiExceptionDto> handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
+        log.warn("Authorization denied: {}", exception.getMessage());
         return buildErrorResponse(HttpStatus.FORBIDDEN, "access", exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiExceptionDto> handleAllExceptions(Exception exception) {
         log.error("Unhandled exception caught: ", exception);
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "error", exception.getMessage());
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "error", "Internal server error");
     }
-
 }
