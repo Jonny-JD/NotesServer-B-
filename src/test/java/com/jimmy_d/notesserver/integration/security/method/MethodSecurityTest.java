@@ -35,10 +35,10 @@ public class MethodSecurityTest extends ControllerTestBase {
 
 
     @Test
-    @WithMockUser(username = "Dummy_user_#2", password = "dummy_#2_pass", authorities = {"USER"})
+    @WithMockUser(username = "Dummy_user_2", password = "dummy_2_pass", authorities = {"USER"})
     void shouldNotDeleteNoteById() throws Exception {
         var note = restTestUtils.createNote();
-        testFactory.saveUser("Dummy_user_#2", "dummy_#2_pass", "dummy_#2@email.com", Set.of("USER"));
+        testFactory.saveUser("Dummy_user_2", "dummy_2_pass", "dummy_2@email.com", Set.of("USER"));
 
         mockMvc.perform(delete("/api/v1/notes/" + note.id()))
                 .andExpectAll(
@@ -50,7 +50,7 @@ public class MethodSecurityTest extends ControllerTestBase {
     }
 
     @Test
-    @WithMockUser(username = "Dummy_user_#2", password = "dummy_#2_pass", authorities = {"USER"})
+    @WithMockUser(username = "Dummy_user_2", password = "dummy_2_pass", authorities = {"USER"})
     void shouldNotDeleteAllByTag() throws Exception {
         var note = restTestUtils.createNote();
 
@@ -64,7 +64,7 @@ public class MethodSecurityTest extends ControllerTestBase {
     }
 
     @Test
-    @WithMockUser(username = "Dummy_user_#2", password = "dummy_#2_pass", authorities = {"USER"})
+    @WithMockUser(username = "Dummy_user_2", password = "dummy_2_pass", authorities = {"USER"})
     void shouldNotDeleteAllByAuthorId() throws Exception {
         var note = restTestUtils.createNote();
 
@@ -78,9 +78,9 @@ public class MethodSecurityTest extends ControllerTestBase {
     }
 
     @Test
-    @WithMockUser(username = "Dummy_user_#2", authorities = {"USER"})
+    @WithMockUser(username = "Dummy_user_2", authorities = {"USER"})
     void shouldAllowUserToCreateNote() throws Exception {
-        var user = testFactory.saveUser("Dummy_user_#2", "dummy_#2_pass", "dummy_#2@email.com", Set.of("USER"));
+        var user = testFactory.saveUser("Dummy_user_2", "dummy_2_pass", "dummy_2@email.com", Set.of("USER"));
         var dto = testFactory.dummyNoteCreateDto(userReadMapper.map(user));
 
         mockMvc.perform(post("/api/v1/notes")
@@ -91,7 +91,7 @@ public class MethodSecurityTest extends ControllerTestBase {
     }
 
     @Test
-    @WithMockUser(username = "Dummy_user_#2", authorities = {"USER"})
+    @WithMockUser(username = "Dummy_user_2", authorities = {"USER"})
     void shouldAllowUserToGetNoteById() throws Exception {
         var note = restTestUtils.createNote();
 
@@ -102,7 +102,7 @@ public class MethodSecurityTest extends ControllerTestBase {
 
     // Проверка, что USER не может удалить пользователя по username (админ только)
     @Test
-    @WithMockUser(username = "Dummy_user_#2", authorities = {"USER"})
+    @WithMockUser(username = "Dummy_user_2", authorities = {"USER"})
     void shouldNotDeleteUserByUsername() throws Exception {
         var user = testFactory.saveUser("dummyUser", "pass", "email@example.com", Set.of("USER"));
 

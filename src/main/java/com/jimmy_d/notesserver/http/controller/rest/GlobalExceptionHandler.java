@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiExceptionDto> handleValidationExceptions(MethodArgumentNotValidException exception) {
-        return buildErrorResponse(HttpStatus.BAD_REQUEST, "validation", exception.getMessage());
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "validation", exception.getBindingResult().getAllErrors().getFirst().getDefaultMessage());
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)

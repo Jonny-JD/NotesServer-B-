@@ -9,6 +9,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @Import(TestConfig.class)
-@WithMockUser(username = "Dummy_user_#1", password = "dummy_#1_pass", authorities = {"USER", "ADMIN"})
+@WithMockUser(username = "Dummy_user_1", password = "dummy_1_pass", authorities = {"USER", "ADMIN"})
 public class ControllerTestBase extends IntegrationTestBase {
 }

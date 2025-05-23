@@ -17,12 +17,12 @@ import java.util.Set;
 public class TestFactory {
 
     // Константы
-    private static final String DUMMY_USERNAME = "Dummy_user_#1";
-    private static final String DUMMY_PASSWORD = "dummy_#1_pass";
-    private static final String DUMMY_EMAIL = "dummy_#1@email.com";
-    private static final String DUMMY_TITLE = "dummy_title_#1_1";
-    private static final String DUMMY_TAG = "dummy_tag_#1_1";
-    private static final String DUMMY_CONTENT = "dummy_content_#1_1";
+    private static final String DUMMY_USERNAME = "Dummy_user_1";
+    private static final String DUMMY_PASSWORD = "dummy_1_pass";
+    private static final String DUMMY_EMAIL = "dummy_1@email.com";
+    private static final String DUMMY_TITLE = "dummy_title_1_1";
+    private static final String DUMMY_TAG = "dummy_tag_1_1";
+    private static final String DUMMY_CONTENT = "dummy_content_1_1";
     private static final Set<String> DUMMY_ROLES = Set.of(Role.USER.name());
     private final UserService userService;
     private final UserReadMapper userReadMapper;

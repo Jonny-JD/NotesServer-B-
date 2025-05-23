@@ -63,7 +63,7 @@ class NoteServiceTestIT extends IntegrationTestBase {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     void findAllByTagShouldReturnNotesList() {
-        var notes = noteService.findAllByTag("dummy_tag_#1_1");
+        var notes = noteService.findAllByTag("dummy_tag_1_1");
         assertTrue(notes.size() >= 2);
     }
 
@@ -95,23 +95,23 @@ class NoteServiceTestIT extends IntegrationTestBase {
 
     static Stream<Arguments> filterCases() {
         return Stream.of(
-                Arguments.of(new NoteFilter("dummy_title_#1_1", null, null, null), 1),
-                Arguments.of(new NoteFilter(null, "dummy_tag_#1_1", null, null), 2),
-                Arguments.of(new NoteFilter(null, null, "dummy_content_#1_1", null), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", null, null, null), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", null, null), 2),
+                Arguments.of(new NoteFilter(null, null, "dummy_content_1_1", null), 1),
                 Arguments.of(new NoteFilter(null, null, null, 1L), 4),
 
-                Arguments.of(new NoteFilter("dummy_title_#1_1", "dummy_tag_#1_1", null, null), 1),
-                Arguments.of(new NoteFilter("dummy_title_#1_1", null, "dummy_content_#1_1", null), 1),
-                Arguments.of(new NoteFilter("dummy_title_#1_1", null, null, 1L), 1),
-                Arguments.of(new NoteFilter(null, "dummy_tag_#1_1", "dummy_content_#1_1", null), 1),
-                Arguments.of(new NoteFilter(null, "dummy_tag_#1_1", null, 1L), 2),
-                Arguments.of(new NoteFilter(null, null, "dummy_content_#1_1", 1L), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", null, null), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", null, "dummy_content_1_1", null), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", null, null, 1L), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", "dummy_content_1_1", null), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", null, 1L), 2),
+                Arguments.of(new NoteFilter(null, null, "dummy_content_1_1", 1L), 1),
 
-                Arguments.of(new NoteFilter("dummy_title_#1_1", "dummy_tag_#1_1", "dummy_content_#1_1", null), 1),
-                Arguments.of(new NoteFilter("dummy_title_#1_1", "dummy_tag_#1_1", null, 1L), 1),
-                Arguments.of(new NoteFilter("dummy_title_#1_1", null, "dummy_content_#1_1", 1L), 1),
-                Arguments.of(new NoteFilter(null, "dummy_tag_#1_1", "dummy_content_#1_1", 1L), 1),
-                Arguments.of(new NoteFilter("dummy_title_#1_1", "dummy_tag_#1_1", "dummy_content_#1_1", 1L), 1)
+                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", "dummy_content_1_1", null), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", null, 1L), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", null, "dummy_content_1_1", 1L), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", "dummy_content_1_1", 1L), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", "dummy_content_1_1", 1L), 1)
         );
     }
 
