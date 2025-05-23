@@ -1,15 +1,15 @@
 package com.jimmy_d.notesserver.http.controller.rest;
 
-import com.jimmy_d.notesserver.exceptions.rest.*;
 import com.jimmy_d.notesserver.dto.ApiExceptionDto;
+import com.jimmy_d.notesserver.exceptions.rest.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
@@ -29,16 +29,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiExceptionDto> handleValidationExceptions(MethodArgumentNotValidException exception) {
-        Map<String, String> errors = new HashMap<>();
-
-        exception.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
-
-        ApiExceptionDto apiError = new ApiExceptionDto(HttpStatus.BAD_REQUEST, errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "validation", exception.getMessage());
     }
 
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiExceptionDto> handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
+        return buildErrorResponse(HttpStatus.FORBIDDEN, "access", exception.getMessage());
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiExceptionDto> handleAllExceptions(Exception exception) {

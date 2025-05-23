@@ -1,11 +1,11 @@
 package com.jimmy_d.notesserver.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jimmy_d.notesserver.database.entity.Role;
 import com.jimmy_d.notesserver.database.repository.UserRepository;
 import com.jimmy_d.notesserver.dto.UserCreateDto;
 import com.jimmy_d.notesserver.dto.UserReadDto;
 import com.jimmy_d.notesserver.integration.ControllerTestBase;
+import com.jimmy_d.notesserver.integration.RestTestUtils;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.util.Arrays;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,20 +26,7 @@ class UserRestControllerIT extends ControllerTestBase {
     private final MockMvc mockMvc;
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
-
-
-    //Create test user
-    private UserReadDto createRestUser(String username, String email) throws Exception {
-        var dto = new UserCreateDto(username, "pass", email, Set.of(Arrays.stream(Role.values()).map(Role::name).toArray(String[]::new)));
-
-        var response = mockMvc.perform(post("/api/v1/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        return objectMapper.readValue(response.getResponse().getContentAsString(), UserReadDto.class);
-    }
+    private final RestTestUtils restTestUtils;
 
 
     @BeforeEach
@@ -62,7 +48,7 @@ class UserRestControllerIT extends ControllerTestBase {
 
     @Test
     void shouldGetUserById() throws Exception {
-        var user = createRestUser("anna", "anna@example.com");
+        var user = restTestUtils.createRestUser("anna", "anna@example.com");
 
         mockMvc.perform(get("/api/v1/users/" + user.id()))
                 .andExpect(status().isOk())
@@ -71,7 +57,7 @@ class UserRestControllerIT extends ControllerTestBase {
 
     @Test
     void shouldGetUserByUsername() throws Exception {
-        var user = createRestUser("anna", "anna@example.com");
+        var user = restTestUtils.createRestUser("anna", "anna@example.com");
         mockMvc.perform(get("/api/v1/users/by-username/" + user.username()))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("anna"));
@@ -79,7 +65,7 @@ class UserRestControllerIT extends ControllerTestBase {
 
     @Test
     void shouldUpdateUser() throws Exception {
-        var user = createRestUser("kate", "kate@example.com");
+        var user = restTestUtils.createRestUser("anna", "anna@example.com");
         var updated = new UserReadDto(user.id(), "kate", "new@example.com", Set.of("USER", "ADMIN"));
 
         mockMvc.perform(put("/api/v1/users")
@@ -92,7 +78,7 @@ class UserRestControllerIT extends ControllerTestBase {
 
     @Test
     void shouldDeleteUserById() throws Exception {
-        var user = createRestUser("alex", "alex@example.com");
+        var user = restTestUtils.createRestUser("anna", "anna@example.com");
 
         mockMvc.perform(delete("/api/v1/users/" + user.id()))
                 .andExpect(status().isNoContent());
@@ -102,7 +88,7 @@ class UserRestControllerIT extends ControllerTestBase {
 
     @Test
     void shouldDeleteUserByUsername() throws Exception {
-        var user = createRestUser("bob", "bob@example.com");
+        var user = restTestUtils.createRestUser("anna", "anna@example.com");
 
         mockMvc.perform(delete("/api/v1/users/by-username/" + user.username()))
                 .andExpect(status().isNoContent());

@@ -42,9 +42,9 @@ public class TestFactory {
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
     }
 
-    public void saveUser(String username, String password, String email, Set<String> roles) {
+    public User saveUser(String username, String password, String email, Set<String> roles) {
         var userCreateDto = new UserCreateDto(username, password, email, roles);
-        userService.createUser(userCreateDto)
+        return userService.createUser(userCreateDto)
                 .map(userReadMapper::map)
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
     }

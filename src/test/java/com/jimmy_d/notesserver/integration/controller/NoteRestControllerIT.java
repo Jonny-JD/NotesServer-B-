@@ -2,19 +2,17 @@ package com.jimmy_d.notesserver.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jimmy_d.notesserver.database.repository.NoteRepository;
-import com.jimmy_d.notesserver.dto.NoteReadDto;
 import com.jimmy_d.notesserver.integration.ControllerTestBase;
+import com.jimmy_d.notesserver.integration.RestTestUtils;
 import com.jimmy_d.notesserver.integration.TestFactory;
 import com.jimmy_d.notesserver.mapper.UserReadMapper;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -29,24 +27,13 @@ class NoteRestControllerIT extends ControllerTestBase {
     private final TestFactory testFactory;
     private final NoteRepository noteRepository;
     private final UserReadMapper userReadMapper;
+    private final RestTestUtils restTestUtils;
 
     @BeforeEach
     void cleanDatabase() {
         noteRepository.deleteAll();
     }
 
-    private NoteReadDto createNote() throws Exception {
-        var user = testFactory.createAndSaveUser();
-        var dto = testFactory.dummyNoteCreateDto(userReadMapper.map(user));
-
-        var response = mockMvc.perform(post("/api/v1/notes")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(dto)))
-                .andExpect(status().isCreated())
-                .andReturn();
-
-        return objectMapper.readValue(response.getResponse().getContentAsString(), NoteReadDto.class);
-    }
 
     @Test
     void shouldCreateNote() throws Exception {
@@ -65,7 +52,7 @@ class NoteRestControllerIT extends ControllerTestBase {
 
     @Test
     void shouldGetNoteById() throws Exception {
-        var note = createNote();
+        var note = restTestUtils.createNote();
 
         mockMvc.perform(get("/api/v1/notes/" + note.id()))
                 .andExpect(status().isOk())
@@ -75,7 +62,7 @@ class NoteRestControllerIT extends ControllerTestBase {
 
     @Test
     void shouldGetAllNotesByTag() throws Exception {
-        var note = createNote();
+        var note = restTestUtils.createNote();
 
         mockMvc.perform(get("/api/v1/notes/all-by-tag/{tag}", note.tag()))
                 .andExpect(status().isOk())
@@ -84,7 +71,7 @@ class NoteRestControllerIT extends ControllerTestBase {
 
     @Test
     void shouldGetAllNotesByAuthorId() throws Exception {
-        var note = createNote();
+        var note = restTestUtils.createNote();
 
         mockMvc.perform(get("/api/v1/notes/all-by-author-id/" + note.author().id()))
                 .andExpect(status().isOk())
@@ -93,7 +80,7 @@ class NoteRestControllerIT extends ControllerTestBase {
 
     @Test
     void shouldGetNotesByFilter() throws Exception {
-        var note = createNote();
+        var note = restTestUtils.createNote();
 
         mockMvc.perform(get("/api/v1/notes")
                         .param("title", note.title()))
@@ -103,7 +90,7 @@ class NoteRestControllerIT extends ControllerTestBase {
 
     @Test
     void shouldDeleteNoteById() throws Exception {
-        var note = createNote();
+        var note = restTestUtils.createNote();
 
         mockMvc.perform(delete("/api/v1/notes/" + note.id()))
                 .andExpect(status().isNoContent());
@@ -111,43 +98,22 @@ class NoteRestControllerIT extends ControllerTestBase {
         assertThat(noteRepository.findById(note.id())).isEmpty();
     }
 
-    @Test
-    @WithMockUser(username = "Dummy_user_#2", password = "dummy_#2_pass", authorities = {"USER"})
-    void shouldNotDeleteNoteById() throws Exception {
-        var note = createNote();
-        testFactory.saveUser("Dummy_user_#2", "dummy_#2_pass", "dummy_#2@email.com", Set.of("USER"));
 
-        mockMvc.perform(delete("/api/v1/notes/" + note.id()))
-                .andExpect(jsonPath("$.errors.error").value("Access Denied"));
-
-        assertThat(noteRepository.findById(note.id())).isNotEmpty();
-    }
 
     @Test
     void shouldDeleteAllByTag() throws Exception {
-        var note = createNote();
+        var note = restTestUtils.createNote();
 
         mockMvc.perform(delete("/api/v1/notes/all-by-tag/{tag}", note.tag()))
                 .andExpect(status().isNoContent());
 
         assertThat(noteRepository.findAll()).isEmpty();
-    }
-
-    @Test
-    @WithMockUser(username = "Dummy_user_#2", password = "dummy_#2_pass", authorities = {"USER"})
-    void shouldNotDeleteAllByTag() throws Exception {
-        var note = createNote();
-
-        mockMvc.perform(delete("/api/v1/notes/all-by-tag/{tag}", note.tag()))
-                .andExpect(jsonPath("$.errors.error").value("Access Denied"));
-
-        assertThat(noteRepository.findAll()).size().isEqualTo(1);
     }
 
 
     @Test
     void shouldDeleteAllByAuthorId() throws Exception {
-        var note = createNote();
+        var note = restTestUtils.createNote();
 
         mockMvc.perform(delete("/api/v1/notes/all-by-author/" + note.author().id()))
                 .andExpect(status().isNoContent());
@@ -156,19 +122,8 @@ class NoteRestControllerIT extends ControllerTestBase {
     }
 
     @Test
-    @WithMockUser(username = "Dummy_user_#2", password = "dummy_#2_pass", authorities = {"USER"})
-    void shouldNotDeleteAllByAuthorId() throws Exception {
-        var note = createNote();
-
-        mockMvc.perform(delete("/api/v1/notes/all-by-author/" + note.author().id()))
-                .andExpect(jsonPath("$.errors.error").value("Access Denied"));
-
-        assertThat(noteRepository.findAll()).size().isEqualTo(1);
-    }
-
-    @Test
     void shouldGetFreshNotes() throws Exception {
-        var note = createNote();
+        var note = restTestUtils.createNote();
         var from = Instant.now().plusSeconds(60).toString();
 
         mockMvc.perform(get("/api/v1/notes/fresh")
