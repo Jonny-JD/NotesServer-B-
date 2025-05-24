@@ -16,13 +16,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
+
     private final UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Loading user by username: {}", username);
+        
         try {
-            UserDetails userDetails = userRepository.findByUsername(username)
+            return userRepository.findByUsername(username)
                     .map(user -> new org.springframework.security.core.userdetails.User(
                             user.getUsername(),
                             user.getPassword(),
@@ -30,11 +31,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role.name()))
                                     .collect(Collectors.toList())))
                     .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-
-            log.info("User found: {}", username);
-            return userDetails;
         } catch (UsernameNotFoundException exception) {
-            log.warn("User not found exception for username: {}", username);
+            
             throw new UserNotFoundException("username", username);
         }
     }

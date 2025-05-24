@@ -1,7 +1,6 @@
-package com.jimmy_d.notesserver.http.controller.rest;
+package com.jimmy_d.notesserver.exceptions.rest;
 
 import com.jimmy_d.notesserver.dto.ApiExceptionDto;
-import com.jimmy_d.notesserver.exceptions.rest.ApiException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

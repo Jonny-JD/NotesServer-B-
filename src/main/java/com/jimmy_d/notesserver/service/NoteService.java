@@ -29,19 +29,16 @@ public class NoteService {
 
     @Transactional
     public NoteReadDto save(NoteCreateDto dto) {
-        log.info("Saving new note by authorId: {}", dto.author().id());
         var savedNote = noteRepository.save(noteCreateMapper.map(dto));
-        log.info("Note saved with id: {}", savedNote.getId());
         return noteReadMapper.map(savedNote);
     }
 
     public Optional<NoteReadDto> findById(Long id) {
-        log.debug("Finding note by id: {}", id);
         return noteRepository.findById(id).map(noteReadMapper::map);
     }
 
     public List<NoteReadDto> findAllByAuthorId(Long authorId) {
-        log.debug("Finding all notes by authorId: {}", authorId);
+
         return noteRepository.findAllByAuthorId(authorId)
                 .stream()
                 .map(noteReadMapper::map)
@@ -49,7 +46,6 @@ public class NoteService {
     }
 
     public List<NoteReadDto> findAllByTag(String tag) {
-        log.debug("Finding all notes by tag: {}", tag);
         return noteRepository.findAllByTag(tag)
                 .stream()
                 .map(noteReadMapper::map)
@@ -57,7 +53,6 @@ public class NoteService {
     }
 
     public List<NoteReadDto> findAllByFilter(NoteFilter filter) {
-        log.debug("Finding notes by filter: {}", filter);
         return noteRepository.findAllByFilter(filter)
                 .stream()
                 .map(noteReadMapper::map)
@@ -66,20 +61,14 @@ public class NoteService {
 
     @Transactional
     public boolean deleteById(Long id) {
-        log.info("Deleting note by id: {}", id);
         return noteRepository.findById(id)
                 .map(note -> {
                     noteRepository.delete(note);
-                    log.info("Deleted note with id: {}", id);
                     return true;
-                }).orElseGet(() -> {
-                    log.warn("Note to delete not found by id: {}", id);
-                    return false;
-                });
+                }).orElse(false);
     }
 
     public List<NoteReadDto> getNextNotes(Instant cursor) {
-        log.debug("Getting next notes after timestamp: {}", cursor);
         Pageable pageable = PageRequest.of(0, 10);
         var notes = noteRepository.findNextNotes(cursor, pageable);
         return notes.stream()
@@ -89,29 +78,19 @@ public class NoteService {
 
     @Transactional
     public boolean deleteAllByTag(String tag) {
-        log.info("Deleting all notes by tag: {}", tag);
         return noteRepository.findFirstByTag(tag)
                 .map(note -> {
                     noteRepository.deleteAllByTag(tag);
-                    log.info("Deleted all notes with tag: {}", tag);
                     return true;
-                }).orElseGet(() -> {
-                    log.warn("No notes found with tag: {}", tag);
-                    return false;
-                });
+                }).orElse(false);
     }
 
     @Transactional
     public boolean deleteAllByAuthor(Long authorId) {
-        log.info("Deleting all notes by authorId: {}", authorId);
         return noteRepository.findFirstByAuthor_Id(authorId)
                 .map(note -> {
                     noteRepository.deleteAllByAuthor_Id(authorId);
-                    log.info("Deleted all notes for authorId: {}", authorId);
                     return true;
-                }).orElseGet(() -> {
-                    log.warn("No notes found for authorId: {}", authorId);
-                    return false;
-                });
+                }).orElse(false);
     }
 }
