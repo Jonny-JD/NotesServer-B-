@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authorization.AuthorizationDeniedException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,10 +30,16 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiExceptionDto> handleValidationExceptions(MethodArgumentNotValidException exception) {
-        String errorMessage = exception.getBindingResult()
-                .getAllErrors()
-                .getFirst()
-                .getDefaultMessage();
+        FieldError fieldError = exception.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        String errorMessage = fieldError != null
+                ? String.format("Field '%s': %s", fieldError.getField(), fieldError.getDefaultMessage())
+                : "Validation error";
+
         log.warn("Validation failed: {}", errorMessage);
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "validation", errorMessage);
     }

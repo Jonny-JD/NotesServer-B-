@@ -1,8 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://prod-db-host:5432/prod_db
-    username: prod_user
-    password: prod_password
+    url: jdbc:postgresql://db:5432/db
 
   sql:
     init:
@@ -10,14 +8,14 @@ spring:
 
   liquibase:
     enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.xml
+    change-log: classpath:db/changelog/db.changelog-master.yaml
 
 logging:
   file:
     path: "log/app.log"
   logback:
     rollingpolicy:
-      clean-history-on-start: false  # не удалять логи при старте
+      clean-history-on-start: false
       max-file-size: 10MB
       file-name-pattern: log/app.%d{yyyy-MM-dd}.%i.gz
       max-history: 7
