@@ -47,12 +47,14 @@ public class UserRestController {
     }
 
     @GetMapping("/by-username/{username}")
+    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#username)")
     public UserReadDto getByUsername(@PathVariable String username) {
         return userService.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("username", username));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#id)")
     public UserReadDto getById(@PathVariable Long id) {
         return userService.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("id", id));

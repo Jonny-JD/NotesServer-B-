@@ -19,6 +19,12 @@ public class AccessChecker {
                 .orElse(false);
     }
 
+    public boolean isAccountOwner(String username) {
+        return userService.findByUsername(username).map(user -> user.username()
+                        .equals(getCurrentUserUsername()))
+                .orElse(false);
+    }
+
     public boolean isNoteOwner(Long noteId) {
         return noteService.findById(noteId).map(note -> note.author().username()
                 .equals(getCurrentUserUsername()))
