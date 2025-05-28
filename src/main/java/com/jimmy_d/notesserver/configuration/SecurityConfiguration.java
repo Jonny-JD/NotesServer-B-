@@ -48,6 +48,18 @@ public class SecurityConfiguration {
                         .permitAll()
                         .anyRequest().authenticated()
                 )
+                .formLogin(login -> login
+                        .loginProcessingUrl("/api/v1/auth/login")
+                        .successHandler((request, response, authentication) -> response.setStatus(200))
+                        .failureHandler((request, response, exception) -> response.setStatus(401))
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/api/v1/auth/logout")
+                        .logoutSuccessHandler((req, res, auth) -> res.setStatus(200))
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                )
                 .build();
     }
 }
