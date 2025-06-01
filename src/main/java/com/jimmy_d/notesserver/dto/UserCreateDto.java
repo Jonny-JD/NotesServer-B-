@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.util.Set;
 
 public record UserCreateDto(@Username String username,
-                            @NotBlank String RawPassword,
+                            @NotBlank String rawPassword,
                             @Email @NotBlank String email,
                             @UserRole Set<String> roles) {
 }
