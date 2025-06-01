@@ -3,15 +3,17 @@ package com.jimmy_d.notesserver.unit;
 import com.jimmy_d.notesserver.database.entity.Note;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class NoteTest {
 
     @Test
     void equalsTests() {
-        Note note1 = Note.builder().id(1L).build();
-        Note note2 = Note.builder().id(1L).build();
-        Note note3 = Note.builder().id(2L).build();
+        Note note1 = Note.builder().id(UUID.fromString("11111111-1111-1111-1111-111111111111")).build();
+        Note note2 = Note.builder().id(UUID.fromString("11111111-1111-1111-1111-111111111111")).build();
+        Note note3 = Note.builder().id(UUID.fromString("22222222-2222-2222-2222-222222222222")).build();
         Note noteNull1 = Note.builder().build();
         Note noteNull2 = Note.builder().build();
 
@@ -27,7 +29,7 @@ class NoteTest {
 
     @Test
     void hashCodeTests() {
-        Note noteWithId = Note.builder().id(1L).build();
+        Note noteWithId = Note.builder().id(UUID.fromString("11111111-1111-1111-1111-111111111111")).build();
         Note noteWithoutId = Note.builder().build();
         int initialHash = noteWithId.hashCode();
 

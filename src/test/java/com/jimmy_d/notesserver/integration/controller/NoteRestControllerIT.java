@@ -56,7 +56,7 @@ class NoteRestControllerIT extends ControllerTestBase {
 
         mockMvc.perform(get("/api/v1/notes/" + note.id()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(note.id()))
+                .andExpect(jsonPath("$.id").value(note.id().toString()))
                 .andExpect(jsonPath("$.title").value(note.title()));
     }
 
@@ -129,6 +129,6 @@ class NoteRestControllerIT extends ControllerTestBase {
         mockMvc.perform(get("/api/v1/notes/fresh")
                         .param("from", from))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(note.id()));
+                .andExpect(jsonPath("$[0].id").value(note.id().toString()));
     }
 }

@@ -1,7 +1,7 @@
 package com.jimmy_d.notesserver.integration.service;
 
 import com.jimmy_d.notesserver.dto.NoteFilter;
-import com.jimmy_d.notesserver.dto.NoteReadDto;
+import com.jimmy_d.notesserver.dto.NotePreviewDto;
 import com.jimmy_d.notesserver.integration.IntegrationTestBase;
 import com.jimmy_d.notesserver.integration.TestFactory;
 import com.jimmy_d.notesserver.mapper.UserReadMapper;
@@ -16,6 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +28,28 @@ class NoteServiceTestIT extends IntegrationTestBase {
     private final TestFactory testFactory;
     private final UserReadMapper userReadMapper;
     private final UserService userService;
+
+    static Stream<Arguments> filterCases() {
+        return Stream.of(
+                Arguments.of(new NoteFilter("dummy_title_1_1", null, null, null), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", null, null), 2),
+                Arguments.of(new NoteFilter(null, null, "dummy_content_1_1", null), 1),
+                Arguments.of(new NoteFilter(null, null, null, 1L), 4),
+
+                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", null, null), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", null, "dummy_content_1_1", null), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", null, null, 1L), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", "dummy_content_1_1", null), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", null, 1L), 2),
+                Arguments.of(new NoteFilter(null, null, "dummy_content_1_1", 1L), 1),
+
+                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", "dummy_content_1_1", null), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", null, 1L), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", null, "dummy_content_1_1", 1L), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", "dummy_content_1_1", 1L), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", "dummy_content_1_1", 1L), 1)
+        );
+    }
 
     @Test
     void saveShouldSaveNoteSuccessfully() {
@@ -42,8 +65,8 @@ class NoteServiceTestIT extends IntegrationTestBase {
     @Test
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     void findByIdShouldReturnNoteIfExists() {
-        var foundNote = noteService.findById(1L);
-        var notFoundNote = noteService.findById(-1L);
+        var foundNote = noteService.findById(UUID.fromString("11111111-1111-1111-1111-111111111111"));
+        var notFoundNote = noteService.findById(UUID.fromString("11111111-1111-0000-1111-111111111111"));
 
         assertTrue(foundNote.isPresent());
         assertFalse(notFoundNote.isPresent());
@@ -85,33 +108,11 @@ class NoteServiceTestIT extends IntegrationTestBase {
     void getNextNotesShouldReturnNextPageOfNotes() {
         Instant cursor = Instant.parse("2025-01-02T00:00:02Z").plusSeconds(1);
 
-        List<NoteReadDto> notes = noteService.getNextNotes(cursor);
+        List<NotePreviewDto> notes = noteService.getNextNotePreview(cursor);
 
         assertAll("Verify retrieved notes",
                 () -> assertNotNull(notes, "Notes should not be null"),
                 () -> assertEquals(10, notes.size(), "Should return 10 notes due to page size")
-        );
-    }
-
-    static Stream<Arguments> filterCases() {
-        return Stream.of(
-                Arguments.of(new NoteFilter("dummy_title_1_1", null, null, null), 1),
-                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", null, null), 2),
-                Arguments.of(new NoteFilter(null, null, "dummy_content_1_1", null), 1),
-                Arguments.of(new NoteFilter(null, null, null, 1L), 4),
-
-                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", null, null), 1),
-                Arguments.of(new NoteFilter("dummy_title_1_1", null, "dummy_content_1_1", null), 1),
-                Arguments.of(new NoteFilter("dummy_title_1_1", null, null, 1L), 1),
-                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", "dummy_content_1_1", null), 1),
-                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", null, 1L), 2),
-                Arguments.of(new NoteFilter(null, null, "dummy_content_1_1", 1L), 1),
-
-                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", "dummy_content_1_1", null), 1),
-                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", null, 1L), 1),
-                Arguments.of(new NoteFilter("dummy_title_1_1", null, "dummy_content_1_1", 1L), 1),
-                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", "dummy_content_1_1", 1L), 1),
-                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", "dummy_content_1_1", 1L), 1)
         );
     }
 

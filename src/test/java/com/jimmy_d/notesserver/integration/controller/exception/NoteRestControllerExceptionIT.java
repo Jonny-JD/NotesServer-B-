@@ -21,10 +21,10 @@ class NoteRestControllerExceptionIT extends ControllerTestBase {
 
     @Test
     void getByIdShouldReturnNotFoundWhenNoteDoesNotExist() throws Exception {
-        mockMvc.perform(get("/api/v1/notes/9999"))
+        mockMvc.perform(get("/api/v1/notes/11111111-1111-1111-0000-111111111111"))
                 .andExpectAll(
                         status().isNotFound(),
-                        jsonPath("$.errors.note").value("Note not found by id: [9999]"),
+                        jsonPath("$.errors.note").value("Note not found by id: [11111111-1111-1111-0000-111111111111]"),
                         jsonPath("$.status").value(404),
                         jsonPath("$.error").value("Not Found")
                 );
@@ -32,10 +32,10 @@ class NoteRestControllerExceptionIT extends ControllerTestBase {
 
     @Test
     void deleteByIdShouldReturnNotFoundWhenNoteDoesNotExist() throws Exception {
-        mockMvc.perform(delete("/api/v1/notes/9999"))
+        mockMvc.perform(delete("/api/v1/notes/11111111-1111-1111-0000-111111111111"))
                 .andExpectAll(
                         status().isNotFound(),
-                        jsonPath("$.errors.note").value("Note not found by id: [9999]"),
+                        jsonPath("$.errors.note").value("Note not found by id: [11111111-1111-1111-0000-111111111111]"),
                         jsonPath("$.status").value(404),
                         jsonPath("$.error").value("Not Found")
                 );

@@ -1,6 +1,8 @@
 package com.jimmy_d.notesserver.dto;
 
-public record NoteReadDto(Long id,
+import java.util.UUID;
+
+public record NoteReadDto(UUID id,
                           String title,
                           String tag,
                           String content,

@@ -2,6 +2,7 @@ package com.jimmy_d.notesserver.http.controller.rest;
 
 import com.jimmy_d.notesserver.dto.NoteCreateDto;
 import com.jimmy_d.notesserver.dto.NoteFilter;
+import com.jimmy_d.notesserver.dto.NotePreviewDto;
 import com.jimmy_d.notesserver.dto.NoteReadDto;
 import com.jimmy_d.notesserver.exceptions.rest.InvalidNoteQueryException;
 import com.jimmy_d.notesserver.exceptions.rest.NoteNotFoundException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Slf4j  // Ломбок добавит поле log
 @RestController
@@ -30,7 +32,7 @@ public class NoteRestController {
     }
 
     @GetMapping("/{id}")
-    public NoteReadDto getById(@PathVariable Long id) {
+    public NoteReadDto getById(@PathVariable UUID id) {
         return noteService.findById(id)
                 .orElseThrow(() -> new NoteNotFoundException("id", id));
     }
@@ -61,7 +63,7 @@ public class NoteRestController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or @accessChecker.isNoteOwner(#id)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable UUID id) {
         if (!noteService.deleteById(id)) {
             throw new NoteNotFoundException("id", id);
         }
@@ -89,7 +91,7 @@ public class NoteRestController {
     }
 
     @GetMapping("/fresh")
-    public List<NoteReadDto> getFreshNotes(@RequestParam Instant from) {
-        return noteService.getNextNotes(from);
+    public List<NotePreviewDto> getFreshNotes(@RequestParam Instant from) {
+        return noteService.getNextNotePreview(from);
     }
 }

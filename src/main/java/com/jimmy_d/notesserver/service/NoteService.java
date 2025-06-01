@@ -3,6 +3,7 @@ package com.jimmy_d.notesserver.service;
 import com.jimmy_d.notesserver.database.repository.NoteRepository;
 import com.jimmy_d.notesserver.dto.NoteCreateDto;
 import com.jimmy_d.notesserver.dto.NoteFilter;
+import com.jimmy_d.notesserver.dto.NotePreviewDto;
 import com.jimmy_d.notesserver.dto.NoteReadDto;
 import com.jimmy_d.notesserver.mapper.NoteCreateMapper;
 import com.jimmy_d.notesserver.mapper.NoteReadMapper;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,7 +35,7 @@ public class NoteService {
         return noteReadMapper.map(savedNote);
     }
 
-    public Optional<NoteReadDto> findById(Long id) {
+    public Optional<NoteReadDto> findById(UUID id) {
         return noteRepository.findById(id).map(noteReadMapper::map);
     }
 
@@ -60,7 +62,7 @@ public class NoteService {
     }
 
     @Transactional
-    public boolean deleteById(Long id) {
+    public boolean deleteById(UUID id) {
         return noteRepository.findById(id)
                 .map(note -> {
                     noteRepository.delete(note);
@@ -68,12 +70,10 @@ public class NoteService {
                 }).orElse(false);
     }
 
-    public List<NoteReadDto> getNextNotes(Instant cursor) {
+    public List<NotePreviewDto> getNextNotePreview(Instant cursor) {
         Pageable pageable = PageRequest.of(0, 10);
-        var notes = noteRepository.findNextNotes(cursor, pageable);
-        return notes.stream()
-                .map(noteReadMapper::map)
-                .toList();
+        var notes = noteRepository.findNextNotePreview(cursor, pageable);
+        return notes.stream().toList();
     }
 
     @Transactional

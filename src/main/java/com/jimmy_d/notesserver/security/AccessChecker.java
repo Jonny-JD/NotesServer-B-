@@ -7,6 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component("accessChecker")
 @RequiredArgsConstructor
 public class AccessChecker {
@@ -25,7 +27,7 @@ public class AccessChecker {
                 .orElse(false);
     }
 
-    public boolean isNoteOwner(Long noteId) {
+    public boolean isNoteOwner(UUID noteId) {
         return noteService.findById(noteId).map(note -> note.author().username()
                 .equals(getCurrentUserUsername()))
                 .orElse(false);

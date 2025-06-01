@@ -97,7 +97,7 @@ public class MethodSecurityTest extends ControllerTestBase {
 
         mockMvc.perform(get("/api/v1/notes/" + note.id()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(note.id()));
+                .andExpect(jsonPath("$.id").value(note.id().toString()));
     }
 
     // Проверка, что USER не может удалить пользователя по username (админ только)

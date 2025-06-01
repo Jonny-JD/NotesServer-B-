@@ -2,6 +2,9 @@
 
 
 --changeset jimmyD:1
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+--changeset jimmyD:2
 CREATE TABLE IF NOT EXISTS users
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -15,10 +18,10 @@ CREATE TABLE IF NOT EXISTS users
     modified_by VARCHAR(64)
 );
 
---changeset jimmyD:2
+--changeset jimmyD:4
 CREATE TABLE IF NOT EXISTS notes
 (
-    id          BIGSERIAL PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title       VARCHAR(128),
     tag         VARCHAR(64),
     content     TEXT   NOT NULL,

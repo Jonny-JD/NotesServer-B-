@@ -1,10 +1,12 @@
 package com.jimmy_d.notesserver.database.entity;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -14,11 +16,12 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 @Table(name = "notes")
-public class Note extends AuditingEntity<Long> {
+public class Note extends AuditingEntity<UUID> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(name = "id", columnDefinition = "uuid DEFAULT gen_random_uuid()", updatable = false, insertable = false)
+    private UUID id;
 
     private String title;
 
