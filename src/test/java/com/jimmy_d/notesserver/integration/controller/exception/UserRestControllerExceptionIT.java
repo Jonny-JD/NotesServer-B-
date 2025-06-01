@@ -39,7 +39,7 @@ class UserRestControllerExceptionIT extends ControllerTestBase {
                         jsonPath("$.error").value("Conflict")
                 );
 
-        var wrongEmailDto = new UserCreateDto(wrongUsernameDto.username() + "dummy", wrongUsernameDto.RawPassword(), wrongUsernameDto.email(), wrongUsernameDto.roles());
+        var wrongEmailDto = new UserCreateDto(wrongUsernameDto.username() + "dummy", wrongUsernameDto.rawPassword(), wrongUsernameDto.email(), wrongUsernameDto.roles());
         mockMvc.perform(post("/api/v1/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(wrongEmailDto)))

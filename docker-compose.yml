@@ -5,34 +5,9 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: prod
-    secrets:
-      - db_username
-      - db_password
     volumes:
       - app_logs:/app/log
 
-  db:
-    build:
-      context: .
-      dockerfile: postgres.Dockerfile
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: db
-      POSTGRES_USER_FILE: /run/secrets/db_username
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-    secrets:
-      - db_username
-      - db_password
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
-secrets:
-  db_username:
-    file: ./db_username.txt
-  db_password:
-    file: ./db_password.txt
 
 volumes:
   app_logs:
-  postgres_data:

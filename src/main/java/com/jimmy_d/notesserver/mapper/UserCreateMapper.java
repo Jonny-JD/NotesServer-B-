@@ -26,7 +26,7 @@ public class UserCreateMapper implements Mapper<UserCreateDto, User> {
     private void copy(UserCreateDto userCreateDto, User user) {
         user.setUsername(userCreateDto.username());
         user.setEmail(userCreateDto.email());
-        Optional.ofNullable(userCreateDto.RawPassword())
+        Optional.ofNullable(userCreateDto.rawPassword())
                 .ifPresent(password -> user.setPassword(passwordEncoder.encode(password)));
         if (!user.getRoles().isEmpty()) {
             user.setRoles(userCreateDto.roles()
