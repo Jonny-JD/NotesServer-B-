@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users
     modified_by VARCHAR(64)
 );
 
---changeset jimmyD:4
+--changeset jimmyD:3
 CREATE TABLE IF NOT EXISTS notes
 (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -39,4 +39,4 @@ CREATE TABLE IF NOT EXISTS user_roles
     role    VARCHAR(10),
     PRIMARY KEY (user_id, role)
 
-)
+);

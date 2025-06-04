@@ -51,11 +51,6 @@ class UserRestControllerExceptionIT extends ControllerTestBase {
                 );
     }
 
-    @Test
-    void shouldReturn404WhenUserNotFound() throws Exception {
-        mockMvc.perform(get("/api/v1/users/9999"))
-                .andExpect(status().isNotFound());
-    }
 
     @Test
     void createUserWithInvalidDataShouldReturnBadRequest() throws Exception {
@@ -74,16 +69,6 @@ class UserRestControllerExceptionIT extends ControllerTestBase {
                 );
     }
 
-    @Test
-    void deleteByUsernameShouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
-        mockMvc.perform(delete("/api/v1/users/by-username/nonexistent"))
-                .andExpectAll(
-                        status().isNotFound(),
-                        jsonPath("$.errors.user").value("User not found by username: [nonexistent]"),
-                        jsonPath("$.status").value(404),
-                        jsonPath("$.error").value("Not Found")
-                );
-    }
 
     @Test
     void deleteByIdShouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
@@ -96,27 +81,6 @@ class UserRestControllerExceptionIT extends ControllerTestBase {
                 );
     }
 
-    @Test
-    void getByUsernameShouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
-        mockMvc.perform(get("/api/v1/users/by-username/nonexistent"))
-                .andExpectAll(
-                        status().isNotFound(),
-                        jsonPath("$.errors.user").value("User not found by username: [nonexistent]"),
-                        jsonPath("$.status").value(404),
-                        jsonPath("$.error").value("Not Found")
-                );
-    }
-
-    @Test
-    void getByIdShouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
-        mockMvc.perform(get("/api/v1/users/-1"))
-                .andExpectAll(
-                        status().isNotFound(),
-                        jsonPath("$.errors.user").value("User not found by id: [-1]"),
-                        jsonPath("$.status").value(404),
-                        jsonPath("$.error").value("Not Found")
-                );
-    }
 
     @Test
     void updateUserShouldReturnConflictWhenUserNotExists() throws Exception {

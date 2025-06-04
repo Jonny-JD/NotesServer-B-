@@ -4,6 +4,7 @@ import com.jimmy_d.notesserver.dto.ApiExceptionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -42,6 +43,11 @@ public class GlobalExceptionHandler {
 
         log.warn("Validation failed: {}", errorMessage);
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "validation", errorMessage);
+    }
+
+    @ExceptionHandler(InternalAuthenticationServiceException.class)
+    public ResponseEntity<ApiExceptionDto> handleInternalAuthenticationServiceException(InternalAuthenticationServiceException exception) {
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "validation", exception.getMessage());
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)

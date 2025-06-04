@@ -35,6 +35,10 @@ public class Note extends AuditingEntity<UUID> {
     @ToString.Exclude
     private User author;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Boolean isPrivate = false;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;

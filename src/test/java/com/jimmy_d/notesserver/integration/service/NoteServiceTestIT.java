@@ -56,7 +56,7 @@ class NoteServiceTestIT extends IntegrationTestBase {
         return Stream.of(
                 Arguments.of(new NotePreviewFilter("dummy_title_1_1", null, null), 1),
                 Arguments.of(new NotePreviewFilter(null, "dummy_tag_1_1", null), 2),
-                Arguments.of(new NotePreviewFilter(null, null, "Dummy_user_1"), 4)
+                Arguments.of(new NotePreviewFilter(null, null, 1L), 4)
         );
     }
 
@@ -117,7 +117,8 @@ class NoteServiceTestIT extends IntegrationTestBase {
     void getNextNotesShouldReturnNextPageOfNotes() {
         Instant cursor = Instant.parse("2025-01-02T00:00:02Z").plusSeconds(1);
 
-        List<NotePreviewDto> notes = noteService.getNextNotePreview(cursor);
+        List<NotePreviewDto> notes = noteService.getNextNotePreview(new NotePreviewFilter(null, null, null)
+                ,cursor);
 
         assertAll("Verify retrieved notes",
                 () -> assertNotNull(notes, "Notes should not be null"),

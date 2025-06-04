@@ -25,6 +25,7 @@ public class NoteCreateMapper implements Mapper<NoteCreateDto, Note> {
         note.setTitle(noteCreateDto.title());
         note.setContent(noteCreateDto.content());
         note.setAuthor(getAuthor(noteCreateDto.author()));
+        note.setIsPrivate(noteCreateDto.isPrivate());
     }
 
     private User getAuthor(com.jimmy_d.notesserver.dto.UserReadDto author) {
