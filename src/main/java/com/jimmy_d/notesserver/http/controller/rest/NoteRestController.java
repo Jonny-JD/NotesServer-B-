@@ -36,49 +36,22 @@ public class NoteRestController {
                 .orElseThrow(() -> new NoteNotFoundException("id", id));
     }
 
-    @GetMapping("/all-by-tag/{tag}")
-    public List<NoteReadDto> getAllByTag(@PathVariable String tag) {
-        return noteService.findAllByTag(tag);
-    }
-
-    @GetMapping("/all-by-author-id/{authorId}")
-    public List<NoteReadDto> getAllByAuthor(@PathVariable Long authorId) {
-        return noteService.findAllByAuthorId(authorId);
-    }
-
     @GetMapping("/user-notes")
     public List<NotePreviewDto> getUserNotes(@AuthenticationPrincipal CustomUserDetails user, @RequestParam Instant from) {
-        return noteService.findAllByAuthorId(user.getId(), from);
+        return noteService.findAllPreviewByFilter(new NotePreviewFilter(null, null, user.getId()), from);
     }
 
-    @GetMapping
-    public List<NoteReadDto> getNotes(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String tag,
-            @RequestParam(required = false) String content,
-            @RequestParam(required = false) Long authorId
-    ) {
-        if (title == null && tag == null && content == null && authorId == null) {
-            throw new InvalidNoteQueryException();
-        }
-        return noteService.findAllByFilter(new NoteFilter(title, tag, content, authorId));
-    }
-
-    @GetMapping("/fresh")
-    public List<NotePreviewDto> getFreshNotes(@RequestParam Instant from) {
-        return noteService.getNextNotePreview(from);
-    }
 
     @GetMapping("/search")
     public List<NotePreviewDto> getByFilter(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String tag,
-            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Long authorId,
             @RequestParam Instant from) {
-        if (title == null && tag == null && author == null) {
+        if (title == null && tag == null && authorId == null && from == null) {
             throw new InvalidNoteQueryException();
         }
-        return noteService.findAllPreviewByFilter(new NotePreviewFilter(title, tag, author), from);
+        return noteService.findAllPreviewByFilter(new NotePreviewFilter(title, tag, authorId), from);
     }
 
     @DeleteMapping("/{id}")
@@ -88,26 +61,5 @@ public class NoteRestController {
         if (!noteService.deleteById(id)) {
             throw new NoteNotFoundException("id", id);
         }
-
-    }
-
-    @DeleteMapping("/all-by-tag/{tag}")
-    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN)")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAllByTag(@PathVariable String tag) {
-        if (!noteService.deleteAllByTag(tag)) {
-            throw new NoteNotFoundException("tag", tag);
-        }
-
-    }
-
-    @DeleteMapping("/all-by-author/{authorId}")
-    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN)")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAllByAuthorId(@PathVariable Long authorId) {
-        if (!noteService.deleteAllByAuthor(authorId)) {
-            throw new NoteNotFoundException("author id", authorId);
-        }
-
     }
 }

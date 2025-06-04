@@ -54,7 +54,7 @@ public class MethodSecurityTest extends ControllerTestBase {
     void shouldNotDeleteAllByTag() throws Exception {
         var note = restTestUtils.createNote();
 
-        mockMvc.perform(delete("/api/v1/notes/all-by-tag/{tag}", note.tag()))
+        mockMvc.perform(delete("/api/admin/notes/all-by-tag/{tag}", note.tag()))
                 .andExpectAll(
                         status().isForbidden(),
                         jsonPath("$.status").value(403),
@@ -68,7 +68,7 @@ public class MethodSecurityTest extends ControllerTestBase {
     void shouldNotDeleteAllByAuthorId() throws Exception {
         var note = restTestUtils.createNote();
 
-        mockMvc.perform(delete("/api/v1/notes/all-by-author/" + note.author().id()))
+        mockMvc.perform(delete("/api/admin/notes/all-by-author/" + note.author().id()))
                 .andExpectAll(
                         status().isForbidden(),
                         jsonPath("$.status").value(403),
@@ -106,7 +106,7 @@ public class MethodSecurityTest extends ControllerTestBase {
     void shouldNotDeleteUserByUsername() throws Exception {
         var user = testFactory.saveUser("dummyUser", "pass", "email@example.com", Set.of("USER"));
 
-        mockMvc.perform(delete("/api/v1/users/by-username/" + user.getUsername()))
+        mockMvc.perform(delete("/api/admin/users/by-username/" + user.getUsername()))
                 .andExpectAll(
                         status().isForbidden(),
                         jsonPath("$.status").value(403),
@@ -119,11 +119,11 @@ public class MethodSecurityTest extends ControllerTestBase {
     void shouldAllowAdminToDeleteUserByUsername() throws Exception {
         var user = testFactory.saveUser("dummyUser", "pass", "email@example.com", Set.of("USER"));
 
-        mockMvc.perform(delete("/api/v1/users/by-username/" + user.getUsername()))
+        mockMvc.perform(delete("/api/admin/users/by-username/" + user.getUsername()))
                 .andExpect(status().isNoContent());
     }
 
-    // Проверка, что USER может удалить свой аккаунт (isAccountOwner)
+
     @Test
     @WithMockUser(username = "ownerUser", authorities = {"USER"})
     void shouldAllowUserToDeleteOwnAccount() throws Exception {
@@ -133,7 +133,7 @@ public class MethodSecurityTest extends ControllerTestBase {
                 .andExpect(status().isNoContent());
     }
 
-    // Проверка, что USER не может удалить чужой аккаунт
+
     @Test
     @WithMockUser(username = "anotherUser", authorities = {"USER"})
     void shouldNotAllowUserToDeleteOtherAccount() throws Exception {

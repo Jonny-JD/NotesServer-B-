@@ -54,7 +54,8 @@ public class TestFactory {
                 DUMMY_TITLE,
                 DUMMY_TAG,
                 DUMMY_CONTENT,
-                author
+                author,
+                Boolean.FALSE
         );
     }
 

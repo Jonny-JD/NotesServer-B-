@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -41,9 +40,6 @@ public class NoteService {
         return noteRepository.findById(id).map(noteReadMapper::map);
     }
 
-    public List<NotePreviewDto> findAllByAuthorId(Long userId, Instant cursor) {
-        return new ArrayList<>(noteRepository.findNextNotePreviewByUserId(userId, cursor, pageable));
-    }
 
     public List<NoteReadDto> findAllByAuthorId(Long authorId) {
 
@@ -83,10 +79,11 @@ public class NoteService {
                 }).orElse(false);
     }
 
-    public List<NotePreviewDto> getNextNotePreview(Instant cursor) {
-        Pageable pageable = PageRequest.of(0, 10);
-        var notes = noteRepository.findNextNotePreview(cursor, pageable);
-        return notes.stream().toList();
+    public List<NotePreviewDto> getNextNotePreview(NotePreviewFilter filter, Instant cursor) {
+        return noteRepository.findAllPreviewByFilter(filter, cursor, pageable)
+                .stream()
+                .map(notePreviewMapper::map)
+                .collect(Collectors.toList());
     }
 
     @Transactional

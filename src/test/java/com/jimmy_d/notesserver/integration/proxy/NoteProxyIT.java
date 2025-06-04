@@ -27,6 +27,7 @@ public class NoteProxyIT extends IntegrationTestBase {
         note.setTitle("Test Note");
         note.setContent("Some content");
         note.setAuthor(user);
+        note.setIsPrivate(false);
         em.persist(note);
 
         em.flush();
@@ -60,6 +61,7 @@ public class NoteProxyIT extends IntegrationTestBase {
         note.setTitle("Another Note");
         note.setContent("More content");
         note.setAuthor(user);
+        note.setIsPrivate(false);
         em.persist(note);
 
         em.flush();

@@ -47,23 +47,6 @@ class UserRestControllerIT extends ControllerTestBase {
     }
 
     @Test
-    void shouldGetUserById() throws Exception {
-        var user = restTestUtils.createRestUser("anna", "anna@example.com");
-
-        mockMvc.perform(get("/api/v1/users/" + user.id()))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("anna@example.com"));
-    }
-
-    @Test
-    void shouldGetUserByUsername() throws Exception {
-        var user = restTestUtils.createRestUser("anna", "anna@example.com");
-        mockMvc.perform(get("/api/v1/users/by-username/" + user.username()))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("anna"));
-    }
-
-    @Test
     void shouldUpdateUser() throws Exception {
         var user = restTestUtils.createRestUser("anna", "anna@example.com");
         var updated = new UserReadDto(user.id(), "kate", "new@example.com", Set.of("USER", "ADMIN"));
@@ -84,16 +67,6 @@ class UserRestControllerIT extends ControllerTestBase {
                 .andExpect(status().isNoContent());
 
         assertTrue(userRepository.findById(user.id()).isEmpty());
-    }
-
-    @Test
-    void shouldDeleteUserByUsername() throws Exception {
-        var user = restTestUtils.createRestUser("anna", "anna@example.com");
-
-        mockMvc.perform(delete("/api/v1/users/by-username/" + user.username()))
-                .andExpect(status().isNoContent());
-
-        assertTrue(userRepository.findByUsername("bob").isEmpty());
     }
 
 }

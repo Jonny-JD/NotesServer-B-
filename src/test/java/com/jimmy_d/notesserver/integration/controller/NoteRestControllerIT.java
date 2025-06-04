@@ -60,33 +60,6 @@ class NoteRestControllerIT extends ControllerTestBase {
                 .andExpect(jsonPath("$.title").value(note.title()));
     }
 
-    @Test
-    void shouldGetAllNotesByTag() throws Exception {
-        var note = restTestUtils.createNote();
-
-        mockMvc.perform(get("/api/v1/notes/all-by-tag/{tag}", note.tag()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].tag").value(note.tag()));
-    }
-
-    @Test
-    void shouldGetAllNotesByAuthorId() throws Exception {
-        var note = restTestUtils.createNote();
-
-        mockMvc.perform(get("/api/v1/notes/all-by-author-id/" + note.author().id()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].author.id").value(note.author().id()));
-    }
-
-    @Test
-    void shouldGetNotesByFilter() throws Exception {
-        var note = restTestUtils.createNote();
-
-        mockMvc.perform(get("/api/v1/notes")
-                        .param("title", note.title()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value(note.title()));
-    }
 
     @Test
     void shouldGetNotePreviewsByFilter() throws Exception {
@@ -107,7 +80,7 @@ class NoteRestControllerIT extends ControllerTestBase {
                 .andExpect(jsonPath("$[0].title").value(note.title()));
 
         mockMvc.perform(get("/api/v1/notes/search")
-                        .param("author", note.author().username())
+                        .param("authorId", String.valueOf(note.author().id()))
                         .param("from", Instant.now().toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].author").value(note.author().username()));
@@ -123,36 +96,4 @@ class NoteRestControllerIT extends ControllerTestBase {
         assertThat(noteRepository.findById(note.id())).isEmpty();
     }
 
-
-    @Test
-    void shouldDeleteAllByTag() throws Exception {
-        var note = restTestUtils.createNote();
-
-        mockMvc.perform(delete("/api/v1/notes/all-by-tag/{tag}", note.tag()))
-                .andExpect(status().isNoContent());
-
-        assertThat(noteRepository.findAll()).isEmpty();
-    }
-
-
-    @Test
-    void shouldDeleteAllByAuthorId() throws Exception {
-        var note = restTestUtils.createNote();
-
-        mockMvc.perform(delete("/api/v1/notes/all-by-author/" + note.author().id()))
-                .andExpect(status().isNoContent());
-
-        assertThat(noteRepository.findAll()).isEmpty();
-    }
-
-    @Test
-    void shouldGetFreshNotes() throws Exception {
-        var note = restTestUtils.createNote();
-        var from = Instant.now().plusSeconds(60).toString();
-
-        mockMvc.perform(get("/api/v1/notes/fresh")
-                        .param("from", from))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(note.id().toString()));
-    }
 }

@@ -26,44 +26,20 @@ public class UserRestController {
         return userService.createUser(user).orElseThrow();
     }
 
-    @DeleteMapping("/by-username/{username}")
-    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN)")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteByUsername(@PathVariable String username) {
-        if (!userService.deleteByUsername(username)) {
-            throw new UserNotFoundException("username", username);
-        }
-        
-    }
-
-    @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#id)")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable long id) {
-        if (!userService.deleteById(id)) {
-            throw new UserNotFoundException("id", id);
-        }
-        
-    }
-
-    @GetMapping("/by-username/{username}")
-    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#username)")
-    public UserReadDto getByUsername(@PathVariable String username) {
-        return userService.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("username", username));
-    }
-
-    @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#id)")
-    public UserReadDto getById(@PathVariable Long id) {
-        return userService.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("id", id));
-    }
 
     @PutMapping
     @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#user.id())")
     public UserReadDto update(@RequestBody UserReadDto user) {
         return userService.updateUser(user)
                 .orElseThrow(() -> new UserNotExistsException("id", user.id()));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#id)")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteById(@PathVariable Long id) {
+        if (!userService.deleteById(id)) {
+            throw new UserNotFoundException("id", id);
+        }
     }
 }
