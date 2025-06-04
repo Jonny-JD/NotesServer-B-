@@ -2,6 +2,7 @@ package com.jimmy_d.notesserver.integration.service;
 
 import com.jimmy_d.notesserver.dto.NoteFilter;
 import com.jimmy_d.notesserver.dto.NotePreviewDto;
+import com.jimmy_d.notesserver.dto.NotePreviewFilter;
 import com.jimmy_d.notesserver.integration.IntegrationTestBase;
 import com.jimmy_d.notesserver.integration.TestFactory;
 import com.jimmy_d.notesserver.mapper.UserReadMapper;
@@ -29,7 +30,7 @@ class NoteServiceTestIT extends IntegrationTestBase {
     private final UserReadMapper userReadMapper;
     private final UserService userService;
 
-    static Stream<Arguments> filterCases() {
+    static Stream<Arguments> noteFilterCases() {
         return Stream.of(
                 Arguments.of(new NoteFilter("dummy_title_1_1", null, null, null), 1),
                 Arguments.of(new NoteFilter(null, "dummy_tag_1_1", null, null), 2),
@@ -48,6 +49,14 @@ class NoteServiceTestIT extends IntegrationTestBase {
                 Arguments.of(new NoteFilter("dummy_title_1_1", null, "dummy_content_1_1", 1L), 1),
                 Arguments.of(new NoteFilter(null, "dummy_tag_1_1", "dummy_content_1_1", 1L), 1),
                 Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", "dummy_content_1_1", 1L), 1)
+        );
+    }
+
+    static Stream<Arguments> notePreviewFilterCases() {
+        return Stream.of(
+                Arguments.of(new NotePreviewFilter("dummy_title_1_1", null, null), 1),
+                Arguments.of(new NotePreviewFilter(null, "dummy_tag_1_1", null), 2),
+                Arguments.of(new NotePreviewFilter(null, null, "Dummy_user_1"), 4)
         );
     }
 
@@ -117,11 +126,17 @@ class NoteServiceTestIT extends IntegrationTestBase {
     }
 
     @ParameterizedTest
-    @MethodSource("filterCases")
+    @MethodSource("noteFilterCases")
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     void testNoteFilter(NoteFilter filter, int expectedCount) {
         assertEquals(expectedCount, noteService.findAllByFilter(filter).size());
     }
 
+    @ParameterizedTest
+    @MethodSource("notePreviewFilterCases")
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
+    void testNotePreviewFilter(NotePreviewFilter filter, int expectedCount) {
+        assertEquals(expectedCount, noteService.findAllPreviewByFilter(filter, Instant.now()).size());
+    }
 
 }

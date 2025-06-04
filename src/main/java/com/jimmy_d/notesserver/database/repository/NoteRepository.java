@@ -42,4 +42,20 @@ public interface NoteRepository extends JpaRepository<Note, UUID>, FilterNoteRep
     Optional<Note> findFirstByTag(String tag);
 
     Optional<Note> findFirstByAuthor_Id(Long authorId);
+
+    @Query("""
+                SELECT new com.jimmy_d.notesserver.dto.NotePreviewDto(
+                    n.id,
+                    n.title,
+                    n.tag,
+                    a.username,
+                    n.createdAt
+                )
+                FROM Note n
+                JOIN n.author a
+                WHERE n.author.id = :userId
+                AND n.createdAt < :cursor
+                ORDER BY n.createdAt DESC
+            """)
+    List<NotePreviewDto> findNextNotePreviewByUserId(@Param("userId") Long userId, @Param("cursor") Instant cursor, Pageable pageable);
 }

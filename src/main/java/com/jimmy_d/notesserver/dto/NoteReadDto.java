@@ -6,5 +6,5 @@ public record NoteReadDto(UUID id,
                           String title,
                           String tag,
                           String content,
-                          UserReadDto author) {
+                          NoteAuthorDto author) {
 }

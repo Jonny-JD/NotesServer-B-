@@ -1,7 +1,7 @@
 package com.jimmy_d.notesserver.http.controller.rest;
 
 import com.jimmy_d.notesserver.dto.LoginRequest;
-import com.jimmy_d.notesserver.security.CustomUserPrincipal;
+import com.jimmy_d.notesserver.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +33,7 @@ public class AuthController {
             httpRequest.getSession().setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
 
 
-            return ResponseEntity.ok(Map.of("id", ((CustomUserPrincipal) (authentication.getPrincipal())).getId(), "username", ((CustomUserPrincipal) (authentication.getPrincipal())).getUsername()));
+            return ResponseEntity.ok(Map.of("id", ((CustomUserDetails) (authentication.getPrincipal())).getId(), "username", ((CustomUserDetails) (authentication.getPrincipal())).getUsername()));
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(401).body(Map.of("message", "Invalid credentials"));
         }
@@ -49,7 +49,7 @@ public class AuthController {
             return ResponseEntity.status(401).body(Map.of("message", "Unauthorized"));
         }
 
-        CustomUserPrincipal userDetails = (CustomUserPrincipal) authentication.getPrincipal();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return ResponseEntity.ok(Map.of("id", userDetails.getId(), "username", userDetails.getUsername()));
     }
 }

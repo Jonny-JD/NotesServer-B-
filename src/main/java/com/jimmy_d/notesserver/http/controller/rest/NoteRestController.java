@@ -1,23 +1,22 @@
 package com.jimmy_d.notesserver.http.controller.rest;
 
-import com.jimmy_d.notesserver.dto.NoteCreateDto;
-import com.jimmy_d.notesserver.dto.NoteFilter;
-import com.jimmy_d.notesserver.dto.NotePreviewDto;
-import com.jimmy_d.notesserver.dto.NoteReadDto;
+import com.jimmy_d.notesserver.dto.*;
 import com.jimmy_d.notesserver.exceptions.rest.InvalidNoteQueryException;
 import com.jimmy_d.notesserver.exceptions.rest.NoteNotFoundException;
+import com.jimmy_d.notesserver.security.CustomUserDetails;
 import com.jimmy_d.notesserver.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-@Slf4j  // Ломбок добавит поле log
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/notes")
 @RequiredArgsConstructor
@@ -47,6 +46,11 @@ public class NoteRestController {
         return noteService.findAllByAuthorId(authorId);
     }
 
+    @GetMapping("/user-notes")
+    public List<NotePreviewDto> getUserNotes(@AuthenticationPrincipal CustomUserDetails user, @RequestParam Instant from) {
+        return noteService.findAllByAuthorId(user.getId(), from);
+    }
+
     @GetMapping
     public List<NoteReadDto> getNotes(
             @RequestParam(required = false) String title,
@@ -60,6 +64,23 @@ public class NoteRestController {
         return noteService.findAllByFilter(new NoteFilter(title, tag, content, authorId));
     }
 
+    @GetMapping("/fresh")
+    public List<NotePreviewDto> getFreshNotes(@RequestParam Instant from) {
+        return noteService.getNextNotePreview(from);
+    }
+
+    @GetMapping("/search")
+    public List<NotePreviewDto> getByFilter(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String tag,
+            @RequestParam(required = false) String author,
+            @RequestParam Instant from) {
+        if (title == null && tag == null && author == null) {
+            throw new InvalidNoteQueryException();
+        }
+        return noteService.findAllPreviewByFilter(new NotePreviewFilter(title, tag, author), from);
+    }
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(T(com.jimmy_d.notesserver.database.entity.Role).ADMIN) or @accessChecker.isNoteOwner(#id)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -67,7 +88,7 @@ public class NoteRestController {
         if (!noteService.deleteById(id)) {
             throw new NoteNotFoundException("id", id);
         }
-        
+
     }
 
     @DeleteMapping("/all-by-tag/{tag}")
@@ -77,7 +98,7 @@ public class NoteRestController {
         if (!noteService.deleteAllByTag(tag)) {
             throw new NoteNotFoundException("tag", tag);
         }
-        
+
     }
 
     @DeleteMapping("/all-by-author/{authorId}")
@@ -87,11 +108,6 @@ public class NoteRestController {
         if (!noteService.deleteAllByAuthor(authorId)) {
             throw new NoteNotFoundException("author id", authorId);
         }
-        
-    }
 
-    @GetMapping("/fresh")
-    public List<NotePreviewDto> getFreshNotes(@RequestParam Instant from) {
-        return noteService.getNextNotePreview(from);
     }
 }

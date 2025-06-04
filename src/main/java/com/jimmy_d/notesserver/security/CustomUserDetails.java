@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Getter
 @RequiredArgsConstructor
-public class CustomUserPrincipal implements UserDetails {
+public class CustomUserDetails implements UserDetails {
     private final Long id;
     private final String username;
     private final String password;

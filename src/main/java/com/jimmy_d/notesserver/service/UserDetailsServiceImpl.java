@@ -2,7 +2,7 @@ package com.jimmy_d.notesserver.service;
 
 import com.jimmy_d.notesserver.database.repository.UserRepository;
 import com.jimmy_d.notesserver.exceptions.rest.UserNotFoundException;
-import com.jimmy_d.notesserver.security.CustomUserPrincipal;
+import com.jimmy_d.notesserver.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         try {
             return userRepository.findByUsername(username)
-                    .map(user -> new CustomUserPrincipal(
+                    .map(user -> new CustomUserDetails(
                             user.getId(),
                             user.getUsername(),
                             user.getPassword(),

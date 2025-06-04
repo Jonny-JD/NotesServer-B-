@@ -34,7 +34,7 @@ class UserDetailsServiceImplIT extends IntegrationTestBase {
         assertThat(userDetails.getUsername()).isEqualTo(username);
         assertThat(userDetails.getAuthorities())
                 .extracting(GrantedAuthority::getAuthority)
-                .containsExactly("ROLE_USER");
+                .containsExactly("USER");
     }
 
     @Test

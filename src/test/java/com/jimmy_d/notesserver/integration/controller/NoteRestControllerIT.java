@@ -89,6 +89,31 @@ class NoteRestControllerIT extends ControllerTestBase {
     }
 
     @Test
+    void shouldGetNotePreviewsByFilter() throws Exception {
+        var note = restTestUtils.createNote();
+
+        mockMvc.perform(get("/api/v1/notes/search")
+                        .param("tag", note.tag())
+                        .param("from", Instant.now().toString())
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].tag").value(note.tag()));
+
+        mockMvc.perform(get("/api/v1/notes/search")
+                        .param("title", note.title())
+                        .param("from", Instant.now().toString())
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].title").value(note.title()));
+
+        mockMvc.perform(get("/api/v1/notes/search")
+                        .param("author", note.author().username())
+                        .param("from", Instant.now().toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].author").value(note.author().username()));
+    }
+
+    @Test
     void shouldDeleteNoteById() throws Exception {
         var note = restTestUtils.createNote();
 
@@ -97,7 +122,6 @@ class NoteRestControllerIT extends ControllerTestBase {
 
         assertThat(noteRepository.findById(note.id())).isEmpty();
     }
-
 
 
     @Test

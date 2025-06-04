@@ -1,11 +1,9 @@
 package com.jimmy_d.notesserver.service;
 
 import com.jimmy_d.notesserver.database.repository.NoteRepository;
-import com.jimmy_d.notesserver.dto.NoteCreateDto;
-import com.jimmy_d.notesserver.dto.NoteFilter;
-import com.jimmy_d.notesserver.dto.NotePreviewDto;
-import com.jimmy_d.notesserver.dto.NoteReadDto;
+import com.jimmy_d.notesserver.dto.*;
 import com.jimmy_d.notesserver.mapper.NoteCreateMapper;
+import com.jimmy_d.notesserver.mapper.NotePreviewMapper;
 import com.jimmy_d.notesserver.mapper.NoteReadMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +27,9 @@ public class NoteService {
     private final NoteRepository noteRepository;
     private final NoteCreateMapper noteCreateMapper;
     private final NoteReadMapper noteReadMapper;
+    private final NotePreviewMapper notePreviewMapper;
+    private final Pageable pageable = PageRequest.of(0, 10);
+
 
     @Transactional
     public NoteReadDto save(NoteCreateDto dto) {
@@ -37,6 +39,10 @@ public class NoteService {
 
     public Optional<NoteReadDto> findById(UUID id) {
         return noteRepository.findById(id).map(noteReadMapper::map);
+    }
+
+    public List<NotePreviewDto> findAllByAuthorId(Long userId, Instant cursor) {
+        return new ArrayList<>(noteRepository.findNextNotePreviewByUserId(userId, cursor, pageable));
     }
 
     public List<NoteReadDto> findAllByAuthorId(Long authorId) {
@@ -58,6 +64,13 @@ public class NoteService {
         return noteRepository.findAllByFilter(filter)
                 .stream()
                 .map(noteReadMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    public List<NotePreviewDto> findAllPreviewByFilter(NotePreviewFilter filter, Instant cursor) {
+        return noteRepository.findAllPreviewByFilter(filter, cursor, pageable)
+                .stream()
+                .map(notePreviewMapper::map)
                 .collect(Collectors.toList());
     }
 
