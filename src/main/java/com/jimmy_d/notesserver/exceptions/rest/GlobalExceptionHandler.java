@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
                 .orElse(null);
 
         String errorMessage = fieldError != null
-                ? String.format("Field '%s': %s", fieldError.getField(), fieldError.getDefaultMessage())
+                ? String.format("%s", fieldError.getDefaultMessage())
                 : "Validation error";
 
         log.warn("Validation failed: {}", errorMessage);

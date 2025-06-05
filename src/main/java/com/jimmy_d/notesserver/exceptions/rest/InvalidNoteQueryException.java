@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class InvalidNoteQueryException extends ApiException{
     public InvalidNoteQueryException(){
-        super("At least one of the next parameters: tag, title, content, or author_id must be provided");
+        super("You cannot create an empty note.");
     }
 
     @Override
