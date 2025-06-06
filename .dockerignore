@@ -1,0 +1,11 @@
+*.log
+*.log*
+target/
+bin/
+.git/
+*.iml
+.idea/
+*.class
+node_modules/
+*.env
+Dockerfile
