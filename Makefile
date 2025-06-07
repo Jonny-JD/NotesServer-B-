@@ -26,8 +26,5 @@ clean:
 	docker rmi -f $(IMAGE_NAME) || true
 	${GRADLEW} clean
 
-login:
-	docker login -u "$$DOCKERHUB_USERNAME" --password "$$DOCKERHUB_TOKEN"
-
-push: login
+push:
 	docker push $(IMAGE_NAME)
