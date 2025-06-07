@@ -1,6 +1,7 @@
 APP_NAME=notes-backend
 export DOCKERHUB_USERNAME
 export DOCKERHUB_TOKEN
+IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(APP_NAME):latest
 JAR_FILE := $(firstword $(filter-out %-plain.jar, $(wildcard build/libs/*.jar)))
 
 .PHONY: build jar docker-run clean login push
@@ -15,18 +16,18 @@ jar:
 	${GRADLEW} clean build
 
 build: jar
-		docker build -t "$$DOCKERHUB_USERNAME"/$(APP_NAME):latest --build-arg JAR_FILE=$(JAR_FILE) .
+		docker build -t $(IMAGE_NAME) --build-arg JAR_FILE=$(JAR_FILE) .
 
 docker-run:
-	docker run -p 8080:8080 --name $(APP_NAME)-container "$$DOCKERHUB_USERNAME"/$(APP_NAME):latest
+	docker run -p 8080:8080 --name $(APP_NAME)-container $(IMAGE_NAME)
 
 clean:
 	docker rm -f $(APP_NAME)-container || true
-	docker rmi -f "$$DOCKERHUB_USERNAME"/$(APP_NAME):latest || true
+	docker rmi -f $(IMAGE_NAME) || true
 	${GRADLEW} clean
 
 login:
 	docker login -u "$$DOCKERHUB_USERNAME" --password "$$DOCKERHUB_TOKEN"
 
 push: login
-	docker push "$$DOCKERHUB_USERNAME"/$(APP_NAME):latest
+	docker push $(IMAGE_NAME)
