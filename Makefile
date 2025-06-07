@@ -12,6 +12,10 @@ else
   GRADLEW = ./gradlew
 endif
 
+print-env:
+	@echo DOCKERHUB_USERNAME=$(DOCKERHUB_USERNAME)
+	@echo IMAGE_NAME=$(IMAGE_NAME)
+
 jar:
 	${GRADLEW} clean build
 
