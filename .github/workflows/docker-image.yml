@@ -11,14 +11,9 @@ jobs:
       steps:
         - name: Checkout code
           uses: actions/checkout@v3
-  
-        - name: Login to DockerHub
-          run: make login
         
         - name: Make gradlew executable
           run: chmod +x ./gradlew
-        - name: print env
-          run: make print-env
   
         - name: Run make build
           run: make build
