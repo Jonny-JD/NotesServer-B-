@@ -16,7 +16,12 @@ jar:
 	${GRADLEW} clean build
 
 build: jar
-		docker build -t $(IMAGE_NAME) --build-arg JAR_FILE=$(JAR_FILE) .
+	docker build -t $(IMAGE_NAME) \
+	  --build-arg JAR_FILE=$(JAR_FILE) \
+	  --build-arg DB_URL=$(DB_URL) \
+	  --build-arg DB_USERNAME=$(DB_USERNAME) \
+	  --build-arg DB_PASSWORD=$(DB_PASSWORD) \
+	  .
 
 docker-run:
 	docker run -p 8080:8080 --name $(APP_NAME)-container $(IMAGE_NAME)
