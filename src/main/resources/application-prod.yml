@@ -13,8 +13,8 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
 logging:
-  file:
-    path: "log/app.log"
+  level:
+    org.springframework.security: DEBUG
   logback:
     rollingpolicy:
       clean-history-on-start: false
