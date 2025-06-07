@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  build:
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
+  
+        - name: Login to DockerHub
+          run: make login
+        
+        - name: Make gradlew executable
+          run: chmod +x ./gradlew
+  
+        - name: Run make build
+          run: make build
+      
+        - name: Run make push
+          run: make build
