@@ -25,7 +25,7 @@ clean:
 	${GRADLEW} clean
 
 login:
-	echo docker login -u "$$DOCKERHUB_USERNAME" --password "$$DOCKERHUB_TOKEN"
+	docker login -u "$$DOCKERHUB_USERNAME" --password "$$DOCKERHUB_TOKEN"
 
 push: login
 	docker push $(IMAGE_NAME)
