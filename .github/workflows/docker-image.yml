@@ -16,7 +16,13 @@ jobs:
           run: chmod +x ./gradlew
   
         - name: Run make build
+          env: 
+            DOCKERHUB_USERNAME: ${{ secrets. DOCKERHUB_USERNAME }}
+            DOCKERHUB_TOKEN: ${{ secrets. DOCKERHUB_TOKEN }}
           run: make build
       
         - name: Run make push
+          env: 
+              DOCKERHUB_USERNAME: ${{ secrets. DOCKERHUB_USERNAME }}
+              DOCKERHUB_TOKEN: ${{ secrets. DOCKERHUB_TOKEN }}
           run: make build
