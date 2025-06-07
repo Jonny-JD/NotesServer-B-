@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: ${{ secrets.DB_URL }}
-    username: ${{ secrets.DB_USERNAME:postgres }}
-    password: ${{ secrets.DB_PASSWORD }}
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   sql:
     init:
