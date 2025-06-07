@@ -25,7 +25,7 @@ jobs:
           env: 
             DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
             DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-            DB_URL: ${{ secrets.DOCKERHUB_USERNAME }}
+            DB_URL: ${{ secrets.DB_URL }}
             DB_USERNAME: ${{ secrets.DB_USERNAME }}
             DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
           run: make build
