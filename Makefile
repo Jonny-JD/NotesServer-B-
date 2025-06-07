@@ -1,5 +1,5 @@
 APP_NAME=notes-backend
-IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(APP_NAME):latest
+IMAGE_NAME="$$DOCKERHUB_USERNAME"/"$$DOCKERHUB_TOKEN":latest
 JAR_FILE := $(firstword $(filter-out %-plain.jar, $(wildcard build/libs/*.jar)))
 
 .PHONY: build jar docker-run clean login push
