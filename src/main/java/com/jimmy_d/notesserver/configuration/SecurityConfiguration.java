@@ -1,7 +1,6 @@
 package com.jimmy_d.notesserver.configuration;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,9 +30,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    @Value("${app.cors.allowed-origins}")
-    private final String allowedOrigin;
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         String defaultEncoderId = "argon2";
@@ -52,12 +48,12 @@ public class SecurityConfiguration {
 
 
     @Configuration
-    public class SecurityCorsConfig {
+    public static class SecurityCorsConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
-            corsConfiguration.setAllowedOrigins(List.of(allowedOrigin, "http://localhost:5173", "http://cyber-notes.com"));
+            corsConfiguration.setAllowedOrigins(List.of("http://localhost:5173", "https://21a3-198-244-189-79.ngrok-free.app"));
             corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
             corsConfiguration.setAllowedHeaders(List.of("*"));
             corsConfiguration.setAllowCredentials(true);
