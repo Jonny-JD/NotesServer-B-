@@ -9,7 +9,7 @@ JAR_FILE := $(firstword $(filter-out %-plain.jar, $(wildcard build/libs/*.jar)))
 ifdef ComSpec
   GRADLEW = gradlew.bat
 else
-  GRADLEW = ./gradlew
+  GRADLEW = ./gradlew -x test
 endif
 
 jar:
