@@ -17,6 +17,10 @@ spring:
     init:
       mode: never
 
+app:
+  cors:
+    allowed-origins: "http://localhost:5173"
+
 logging:
   level:
     root: info
