@@ -4,7 +4,6 @@ import com.jimmy_d.notes_backend.service.NoteService;
 import com.jimmy_d.notes_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -17,7 +16,7 @@ public class AccessChecker {
 
     public boolean isAccountOwner(Long userId) {
         return userService.findById(userId).map(user -> user.username()
-                .equals(getCurrentUserUsername()))
+                        .equals(getCurrentUserUsername()))
                 .orElse(false);
     }
 
@@ -29,7 +28,7 @@ public class AccessChecker {
 
     public boolean isNoteOwner(UUID noteId) {
         return noteService.findById(noteId).map(note -> note.author().username()
-                .equals(getCurrentUserUsername()))
+                        .equals(getCurrentUserUsername()))
                 .orElse(false);
     }
 
