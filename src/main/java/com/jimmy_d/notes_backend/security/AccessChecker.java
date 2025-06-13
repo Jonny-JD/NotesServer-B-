@@ -34,7 +34,7 @@ public class AccessChecker {
     }
 
     private String getCurrentUserUsername() {
-        return ((User) SecurityContextHolder.getContext()
+        return ((CustomUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal())
                 .getUsername();
