@@ -2,9 +2,7 @@ package com.jimmy_d.notes_backend.integration;
 
 import com.jimmy_d.notes_backend.database.entity.Role;
 import com.jimmy_d.notes_backend.database.entity.User;
-import com.jimmy_d.notes_backend.dto.NoteCreateDto;
-import com.jimmy_d.notes_backend.dto.UserCreateDto;
-import com.jimmy_d.notes_backend.dto.UserReadDto;
+import com.jimmy_d.notes_backend.dto.*;
 import com.jimmy_d.notes_backend.mapper.UserReadMapper;
 import com.jimmy_d.notes_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +55,14 @@ public class TestFactory {
                 author,
                 Boolean.FALSE
         );
+    }
+
+    public NoteUpdateDto dummyNoteUpdateDto(NoteReadDto note) {
+        return new NoteUpdateDto(
+                note.title() + "new",
+                note.tag() + "new",
+                note.content() + "new",
+                !note.isPrivate());
     }
 
 }

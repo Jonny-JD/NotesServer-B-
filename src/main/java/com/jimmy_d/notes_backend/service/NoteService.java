@@ -48,6 +48,7 @@ public class NoteService {
         note.setTag(dto.tag());
         note.setTitle(dto.title());
         note.setContent(dto.content());
+        note.setIsPrivate(dto.isPrivate());
 
         return noteReadMapper.map(noteRepository.save(note));
     }

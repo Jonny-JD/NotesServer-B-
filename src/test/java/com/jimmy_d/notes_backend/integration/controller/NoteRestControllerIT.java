@@ -1,20 +1,26 @@
 package com.jimmy_d.notes_backend.integration.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jimmy_d.notes_backend.database.entity.Role;
 import com.jimmy_d.notes_backend.database.repository.NoteRepository;
 import com.jimmy_d.notes_backend.integration.ControllerTestBase;
 import com.jimmy_d.notes_backend.integration.RestTestUtils;
 import com.jimmy_d.notes_backend.integration.TestFactory;
 import com.jimmy_d.notes_backend.mapper.UserReadMapper;
+import com.jimmy_d.notes_backend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -28,6 +34,7 @@ class NoteRestControllerIT extends ControllerTestBase {
     private final NoteRepository noteRepository;
     private final UserReadMapper userReadMapper;
     private final RestTestUtils restTestUtils;
+
 
     @BeforeEach
     void cleanDatabase() {
@@ -84,6 +91,30 @@ class NoteRestControllerIT extends ControllerTestBase {
                         .param("from", Instant.now().toString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].author").value(note.author().username()));
+    }
+
+    @Test
+    void shouldUpdateNote() throws Exception {
+
+        var note = restTestUtils.createNote();
+
+        var userDetails = new CustomUserDetails(note.author().id(), note.author().username(), "dummy_1_pass", Set.of(Role.USER));
+        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        var dto = testFactory.dummyNoteUpdateDto(note);
+
+        mockMvc.perform(put("/api/v1/notes/" + note.id())
+                        .with(authentication(auth))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(note.id().toString()))
+                .andExpect(jsonPath("$.title").value(dto.title()))
+                .andExpect(jsonPath("$.tag").value(dto.tag()))
+                .andExpect(jsonPath("$.content").value(dto.content()))
+                .andExpect(jsonPath("$.author.username").value(note.author().username()))
+                .andExpect(jsonPath("$.isPrivate").value(true));
     }
 
     @Test
