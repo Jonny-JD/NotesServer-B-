@@ -6,9 +6,12 @@ import com.jimmy_d.notes_backend.integration.ControllerTestBase;
 import com.jimmy_d.notes_backend.integration.RestTestUtils;
 import com.jimmy_d.notes_backend.integration.TestFactory;
 import com.jimmy_d.notes_backend.mapper.UserReadMapper;
+import com.jimmy_d.notes_backend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -35,10 +38,20 @@ public class MethodSecurityTest extends ControllerTestBase {
 
 
     @Test
-    @WithMockUser(username = "Dummy_user_2", password = "dummy_2_pass", authorities = {"USER"})
     void shouldNotDeleteNoteById() throws Exception {
+        var user = testFactory.saveUser(
+                "Dummy_user_2",
+                "dummy_2_pass",
+                "dummy_2@email.com",
+                Set.of("USER")
+        );
+
+
+        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getRoles());
+        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         var note = restTestUtils.createNote();
-        testFactory.saveUser("Dummy_user_2", "dummy_2_pass", "dummy_2@email.com", Set.of("USER"));
 
         mockMvc.perform(delete("/api/v1/notes/" + note.id()))
                 .andExpectAll(
@@ -100,7 +113,7 @@ public class MethodSecurityTest extends ControllerTestBase {
                 .andExpect(jsonPath("$.id").value(note.id().toString()));
     }
 
-    // Проверка, что USER не может удалить пользователя по username (админ только)
+
     @Test
     @WithMockUser(username = "Dummy_user_2", authorities = {"USER"})
     void shouldNotDeleteUserByUsername() throws Exception {
@@ -113,7 +126,7 @@ public class MethodSecurityTest extends ControllerTestBase {
                         jsonPath("$.errors.access").value("Access Denied"));
     }
 
-    // Проверка, что ADMIN может удалить пользователя по username
+
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void shouldAllowAdminToDeleteUserByUsername() throws Exception {
@@ -125,9 +138,12 @@ public class MethodSecurityTest extends ControllerTestBase {
 
 
     @Test
-    @WithMockUser(username = "ownerUser", authorities = {"USER"})
     void shouldAllowUserToDeleteOwnAccount() throws Exception {
         var user = testFactory.saveUser("ownerUser", "pass", "email@example.com", Set.of("USER"));
+
+        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getRoles());
+        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
         mockMvc.perform(delete("/api/v1/users/" + user.getId()))
                 .andExpect(status().isNoContent());
@@ -135,9 +151,14 @@ public class MethodSecurityTest extends ControllerTestBase {
 
 
     @Test
-    @WithMockUser(username = "anotherUser", authorities = {"USER"})
     void shouldNotAllowUserToDeleteOtherAccount() throws Exception {
         var user = testFactory.saveUser("ownerUser", "pass", "email@example.com", Set.of("USER"));
+
+        var otherUser = testFactory.saveUser("otherUser", "pass", "email-other@example.com", Set.of("USER"));
+
+        var userDetails = new CustomUserDetails(otherUser.getId(), otherUser.getUsername(), otherUser.getPassword(), otherUser.getRoles());
+        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
         mockMvc.perform(delete("/api/v1/users/" + user.getId()))
                 .andExpectAll(
@@ -146,7 +167,7 @@ public class MethodSecurityTest extends ControllerTestBase {
                         jsonPath("$.errors.access").value("Access Denied"));
     }
 
-    // Проверка, что ADMIN может удалить любого пользователя по ID
+
     @Test
     @WithMockUser(username = "admin", authorities = {"ADMIN"})
     void shouldAllowAdminToDeleteAnyUserById() throws Exception {
@@ -156,11 +177,14 @@ public class MethodSecurityTest extends ControllerTestBase {
                 .andExpect(status().isNoContent());
     }
 
-    // Проверка, что USER может обновить свой профиль (isAccountOwner)
+
     @Test
-    @WithMockUser(username = "userToUpdate", authorities = {"USER"})
     void shouldAllowUserToUpdateOwnProfile() throws Exception {
         var user = testFactory.saveUser("userToUpdate", "pass", "email@example.com", Set.of("USER"));
+
+        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getRoles());
+        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
         var userReadDto = userReadMapper.map(user);
 
         mockMvc.perform(put("/api/v1/users")
@@ -170,11 +194,17 @@ public class MethodSecurityTest extends ControllerTestBase {
                 .andExpect(jsonPath("$.id").value(user.getId()));
     }
 
-    // Проверка, что USER не может обновить профиль другого пользователя
+
     @Test
-    @WithMockUser(username = "otherUser", authorities = {"USER"})
     void shouldNotAllowUserToUpdateOtherProfile() throws Exception {
         var user = testFactory.saveUser("userToUpdate", "pass", "email@example.com", Set.of("USER"));
+
+        var otherUser = testFactory.saveUser("otherUser", "pass", "email-other@example.com", Set.of("USER"));
+
+        var userDetails = new CustomUserDetails(otherUser.getId(), otherUser.getUsername(), otherUser.getPassword(), otherUser.getRoles());
+        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
         var userReadDto = userReadMapper.map(user);
 
         mockMvc.perform(put("/api/v1/users")
