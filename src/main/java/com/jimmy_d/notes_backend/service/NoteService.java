@@ -1,6 +1,5 @@
 package com.jimmy_d.notes_backend.service;
 
-import com.jimmy_d.notes_backend.database.entity.Note;
 import com.jimmy_d.notes_backend.database.repository.NoteRepository;
 import com.jimmy_d.notes_backend.dto.*;
 import com.jimmy_d.notes_backend.exceptions.rest.NoteNotFoundException;
