@@ -1,7 +1,6 @@
 package com.jimmy_d.notes_backend.database.repository;
 
 import com.jimmy_d.notes_backend.database.entity.Note;
-import com.jimmy_d.notes_backend.dto.NoteReadDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
