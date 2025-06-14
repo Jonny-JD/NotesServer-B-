@@ -8,6 +8,7 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -54,6 +55,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiExceptionDto> handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
         log.warn("Authorization denied: {}", exception.getMessage());
         return buildErrorResponse(HttpStatus.FORBIDDEN, "access", exception.getMessage());
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ApiExceptionDto> handleMissingParam(MissingServletRequestParameterException exception) {
+        log.warn("Missing request parameter: {}", exception.getMessage());
+        return buildErrorResponse(HttpStatus.BAD_REQUEST, "parameter", exception.getMessage());
+
     }
 
     @ExceptionHandler(Exception.class)

@@ -38,4 +38,15 @@ class NoteRestControllerExceptionIT extends ControllerTestBase {
                 );
     }
 
+    @Test
+    void searchShouldReturnBadRequestWhenAllParamsAreMissing() throws Exception {
+        mockMvc.perform(get("/api/v1/notes/search"))
+                .andExpectAll(
+                        status().isBadRequest(),
+                        jsonPath("$.errors.parameter").value("Required request parameter 'from' for method parameter type Instant is not present"),
+                        jsonPath("$.status").value(400),
+                        jsonPath("$.error").value("Bad Request")
+                );
+    }
+
 }

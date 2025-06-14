@@ -9,11 +9,12 @@ import com.jimmy_d.notes_backend.integration.TestFactory;
 import com.jimmy_d.notes_backend.mapper.UserReadMapper;
 import com.jimmy_d.notes_backend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.Instant;
@@ -36,7 +37,7 @@ class NoteRestControllerIT extends ControllerTestBase {
     private final RestTestUtils restTestUtils;
 
 
-    @BeforeEach
+    @AfterEach
     void cleanDatabase() {
         noteRepository.deleteAll();
     }
@@ -92,6 +93,23 @@ class NoteRestControllerIT extends ControllerTestBase {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].author").value(note.author().username()));
     }
+
+    @Test
+    @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
+    void shouldGetUserNotes() throws Exception {
+
+        var userDetails = new CustomUserDetails(1L, "Dummy_user_1", "dummy_1_pass", Set.of(Role.USER));
+        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        mockMvc.perform(get("/api/v1/notes/user-notes")
+                        .with(authentication(auth))
+                        .param("from", Instant.now().toString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(4));
+
+    }
+
 
     @Test
     void shouldUpdateNote() throws Exception {

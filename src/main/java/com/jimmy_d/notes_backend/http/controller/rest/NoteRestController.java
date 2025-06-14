@@ -1,7 +1,6 @@
 package com.jimmy_d.notes_backend.http.controller.rest;
 
 import com.jimmy_d.notes_backend.dto.*;
-import com.jimmy_d.notes_backend.exceptions.rest.InvalidNoteQueryException;
 import com.jimmy_d.notes_backend.exceptions.rest.NoteNotFoundException;
 import com.jimmy_d.notes_backend.security.CustomUserDetails;
 import com.jimmy_d.notes_backend.service.NoteService;
@@ -56,9 +55,6 @@ public class NoteRestController {
             @RequestParam(required = false) String tag,
             @RequestParam(required = false) Long authorId,
             @RequestParam Instant from) {
-        if (title == null && tag == null && authorId == null && from == null) {
-            throw new InvalidNoteQueryException();
-        }
         return noteService.findAllPreviewByFilter(new NotePreviewFilter(title, tag, authorId), from);
     }
 
