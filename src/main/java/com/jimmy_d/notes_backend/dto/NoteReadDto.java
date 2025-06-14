@@ -6,5 +6,6 @@ public record NoteReadDto(UUID id,
                           String title,
                           String tag,
                           String content,
-                          NoteAuthorDto author) {
+                          NoteAuthorDto author,
+                          Boolean isPrivate) {
 }

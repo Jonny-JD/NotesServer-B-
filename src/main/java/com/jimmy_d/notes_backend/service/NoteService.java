@@ -1,7 +1,9 @@
 package com.jimmy_d.notes_backend.service;
 
+import com.jimmy_d.notes_backend.database.entity.Note;
 import com.jimmy_d.notes_backend.database.repository.NoteRepository;
 import com.jimmy_d.notes_backend.dto.*;
+import com.jimmy_d.notes_backend.exceptions.rest.NoteNotFoundException;
 import com.jimmy_d.notes_backend.mapper.NoteCreateMapper;
 import com.jimmy_d.notes_backend.mapper.NotePreviewMapper;
 import com.jimmy_d.notes_backend.mapper.NoteReadMapper;
@@ -38,6 +40,17 @@ public class NoteService {
 
     public Optional<NoteReadDto> findById(UUID id) {
         return noteRepository.findById(id).map(noteReadMapper::map);
+    }
+
+    @Transactional
+    public NoteReadDto updateNote(UUID id, NoteUpdateDto dto) {
+        var note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException("id", id));
+        note.setId(id);
+        note.setTag(dto.tag());
+        note.setTitle(dto.title());
+        note.setContent(dto.content());
+
+        return noteReadMapper.map(noteRepository.save(note));
     }
 
 

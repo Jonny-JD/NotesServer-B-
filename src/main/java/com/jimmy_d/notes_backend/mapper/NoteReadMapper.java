@@ -19,7 +19,7 @@ public class NoteReadMapper implements Mapper<Note, NoteReadDto> {
         NoteAuthorDto author = Optional.ofNullable(note.getAuthor())
                 .map(noteAuthorMapper::map)
                 .orElse(null);
-        return new NoteReadDto(note.getId(), note.getTitle(), note.getTag(), note.getContent(), author);
+        return new NoteReadDto(note.getId(), note.getTitle(), note.getTag(), note.getContent(), author, note.getIsPrivate());
     }
 
 }

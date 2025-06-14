@@ -37,6 +37,13 @@ public class NoteRestController {
                 .orElseThrow(() -> new NoteNotFoundException("id", id));
     }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("@accessChecker.isNoteOwner(#id)")
+    @ResponseStatus(HttpStatus.OK)
+    public NoteReadDto updateNote(@PathVariable UUID id, @RequestBody @Validated NoteUpdateDto note) {
+        return noteService.updateNote(id, note);
+    }
+
     @GetMapping("/user-notes")
     public List<NotePreviewDto> getUserNotes(@AuthenticationPrincipal CustomUserDetails user, @RequestParam Instant from) {
         return noteService.findAllPreviewByFilter(new NotePreviewFilter(null, null, user.getId()), from);
