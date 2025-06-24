@@ -54,7 +54,7 @@ cd cybernotes-frontend
 npm install
 npm run dev
 ```
-##🧪 Tests
+## 🧪 Tests
 - Unit tests (JUnit + Mockito)
 - Integration tests (Testcontainers + PostgreSQL)
 
@@ -62,7 +62,7 @@ npm run dev
 ./gradlew test
 ```
 
-##👤 Author
+## 👤 Author
 Sergey Izotov
 📧 jonny.cbrigante@gmail.com
 🔗 [LinkedIn](https://www.linkedin.com/in/sergei-izotov-0740a3a5/)
