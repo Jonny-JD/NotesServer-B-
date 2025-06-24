@@ -64,5 +64,5 @@ npm run dev
 
 ## 👤 Author
 Sergey Izotov
-📧 jonny.cbrigante@gmail.com
-🔗 [LinkedIn](https://www.linkedin.com/in/sergei-izotov-0740a3a5/)
+- 📧 jonny.cbrigante@gmail.com
+- 🔗 [LinkedIn](https://www.linkedin.com/in/sergei-izotov-0740a3a5/)
