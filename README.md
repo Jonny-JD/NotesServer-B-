@@ -1,96 +1,58 @@
-# Notes Backend
+# 🧠 CyberNotes — Fullstack Note-Taking Web Application
 
-This is a backend service for my personal note-taking web application project. It provides a REST API to create, read, update, and delete notes, with support for public and private visibility, and session-based authentication.
+## 📌 About the Project
+CyberNotes is a pet project developed from scratch by me. It is a fully functional application for creating, storing, and searching both public and private notes. Modern technologies are used both on the backend and frontend.
 
----
+## 🛠️ Technology Stack
 
-## Technologies
+### Backend:
+- Java 21, Spring Boot (Web, Security, Data JPA)
+- Liquibase, PostgreSQL
+- Docker
+- JUnit, Mockito, Testcontainers
 
-- Java 21  
-- Spring Boot (Web, Security, Data JPA, Liquibase)  
-- PostgreSQL (external database)  
-- Docker (for backend container)  
-- Testcontainers (integration tests)  
-- JUnit, Mockito (unit tests)
+### Frontend:
+- React + Vite
+- TypeScript
+- React Router
+- LESS
+- Nginx (production)
 
----
+### DevOps:
+- Docker Compose
+- GitHub Actions (CI/CD)
+- Deployment on VPS
 
-## About
+## 🚀 Features
+- User registration and login with session-based authentication
+- CRUD operations for notes (private and public)
+- Viewing other users’ public notes
+- REST API with filtering and pagination
+- Clear separation between backend and frontend
+- CI/CD pipeline and deployment (nginx + Docker)
 
-This is a pet project I built by myself to deepen my backend development skills using Java and Spring. The backend handles user registration, login with session cookies, and managing notes. Notes can be either private or public, and users can browse notes shared publicly by others.
+## 🌐 Demo
+⚠️ Currently running via ngrok, so the link might be unstable:
 
-Database migrations are handled via Liquibase. The backend is designed to be stateless except for sessions managed by Spring Security.
+▶️ https://goat-trusting-amazingly.ngrok-free.app
 
----
+## 🧩 Repositories
+- Backend: [github.com/Jonny-JD/cybernotes-backend](https://github.com/Jonny-JD/cybernotes-backend)
+- Frontend: [github.com/Jonny-JD/cybernotes-frontend](https://github.com/Jonny-JD/cybernotes-frontend)
 
-## Setup
+## 📸 Screenshots (optional)
+(You can insert them here)
 
-### Configuration
+## ⚙️ Quick Start
 
-The app requires a PostgreSQL database running separately. Database connection details and other configs are provided via environment variables:
+```bash
+# Backend
+git clone https://github.com/Jonny-JD/NotesServer-B-.git
+cd cybernotes-backend
+docker-compose up --build
 
-- `DB_URL` — JDBC URL to PostgreSQL  
-- `DB_USERNAME` — DB username  
-- `DB_PASSWORD` — DB password  
-- `ALLOWED_ORIGINS` — for CORS (e.g., frontend URL)
-
-Example `application.yml` snippet:
-
-spring:
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.yaml
-
-app:
-  cors:
-    allowed-origins: ${ALLOWED_ORIGINS}
-
-### Running locally
-
-1. Start PostgreSQL (outside of Docker).  
-2. Set environment variables for DB connection and CORS.  
-3. Run via Gradle:
-
-./gradlew bootRun
-
-### Running with Docker
-
-The backend container expects external DB connection:
-
-docker build -t notes-backend .
-
-docker run -p 8080:8080 \
-  -e DB_URL=jdbc:postgresql://host:5432/notesdb \
-  -e DB_USERNAME=notesuser \
-  -e DB_PASSWORD=notespassword \
-  -e ALLOWED_ORIGINS=http://localhost:3000 \
-  notes-backend
-
----
-
-## API Overview
-
-- Register, login, logout users with session cookies  
-- CRUD notes with private/public flag  
-- List, search, and filter notes  
-
----
-
-## Testing
-
-Unit tests with JUnit/Mockito, integration tests use Testcontainers with PostgreSQL.
-
-Run tests:
-
-./gradlew test
-
----
-
-## Notes
-
-This project helped me learn how to build RESTful APIs with Spring, handle session-based auth, database migrations, and write tests. It’s part of my portfolio showcasing backend skills.
+# Frontend (in another terminal)
+git clone https://github.com/Jonny-JDNotesServer-F-.git
+cd cybernotes-frontend
+npm install
+npm run dev
