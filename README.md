@@ -37,11 +37,8 @@ CyberNotes is a pet project developed from scratch by me. It is a fully function
 ▶️ https://goat-trusting-amazingly.ngrok-free.app
 
 ## 🧩 Repositories
-- Backend: [github.com/Jonny-JD/cybernotes-backend](https://github.com/Jonny-JD/NotesServer-B-)
-- Frontend: [github.com/Jonny-JD/cybernotes-frontend](https://github.com/Jonny-JD/NotesServer-F-)
-
-## 📸 Screenshots (optional)
-(You can insert them here)
+- Backend: [github.com/Jonny-JD/NotesServer-B-](https://github.com/Jonny-JD/NotesServer-B-)
+- Frontend: [github.com/Jonny-JD/NotesServer-F-](https://github.com/Jonny-JD/NotesServer-F-)
 
 ## ⚙️ Quick Start
 
@@ -56,3 +53,16 @@ git clone https://github.com/Jonny-JDNotesServer-F-.git
 cd cybernotes-frontend
 npm install
 npm run dev
+```
+##🧪 Tests
+- Unit tests (JUnit + Mockito)
+- Integration tests (Testcontainers + PostgreSQL)
+
+```bash
+./gradlew test
+```
+
+##👤 Author
+Sergey Izotov
+📧 jonny.cbrigante@gmail.com
+🔗 [LinkedIn](https://www.linkedin.com/in/sergei-izotov-0740a3a5/)
