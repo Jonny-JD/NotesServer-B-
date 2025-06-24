@@ -37,8 +37,8 @@ CyberNotes is a pet project developed from scratch by me. It is a fully function
 ▶️ https://goat-trusting-amazingly.ngrok-free.app
 
 ## 🧩 Repositories
-- Backend: [github.com/Jonny-JD/cybernotes-backend](https://github.com/Jonny-JD/cybernotes-backend)
-- Frontend: [github.com/Jonny-JD/cybernotes-frontend](https://github.com/Jonny-JD/cybernotes-frontend)
+- Backend: [github.com/Jonny-JD/cybernotes-backend](https://github.com/Jonny-JD/NotesServer-B-)
+- Frontend: [github.com/Jonny-JD/cybernotes-frontend](https://github.com/Jonny-JD/NotesServer-F-)
 
 ## 📸 Screenshots (optional)
 (You can insert them here)
