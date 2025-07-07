@@ -28,7 +28,6 @@ public class LoggingAspect {
                     if (arg == null) return "null";
 
                     String str = arg.toString();
-                    // простая эвристика — можно заменить на анализ полей
                     if (str.toLowerCase().contains("password")) {
                         return "password: *******";
                     }
