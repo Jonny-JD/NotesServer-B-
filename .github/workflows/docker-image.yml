@@ -33,3 +33,13 @@ jobs:
               DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
               DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           run: make push
+          
+        - name: Run make kube config
+          run: make kube-config
+
+        - name: Run make kube update
+          run: make kube-update
+        
+        - name: Run make rollout waiting
+          run: make wait-for-rollout
+        
