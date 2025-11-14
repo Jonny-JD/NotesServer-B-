@@ -7,8 +7,6 @@ on:
 jobs:
   build:
       runs-on: self-hosted
-      env:
-        GITHUB_SHA: ${{ github.sha }}
   
       steps:
         - name: Checkout code
@@ -29,6 +27,7 @@ jobs:
           env: 
             DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
             DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+            GITHUB_SHA: ${{ github.sha }}
           run: make build
       
         - name: Run make push
@@ -43,6 +42,10 @@ jobs:
             echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
         - name: Run kube update deployment
+          env: 
+            DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+            DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+            GITHUB_SHA: ${{ github.sha }}
           run: make kube-update-deployment
         
         - name: Rollout waiting
