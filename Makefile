@@ -18,9 +18,6 @@ jar:
 build: jar
 	docker build -t $(IMAGE_NAME) \
 	  --build-arg JAR_FILE=$(JAR_FILE) \
-	  --build-arg DB_URL=$(DB_URL) \
-	  --build-arg DB_USERNAME=$(DB_USERNAME) \
-	  --build-arg DB_PASSWORD=$(DB_PASSWORD) \
 	  .
 
 docker-run:
