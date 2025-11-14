@@ -33,7 +33,7 @@ push:
 	docker push $(IMAGE_NAME)
 
 kube-config:
-    mkdir -p ~/.kube
+    mkdir -p ~/.kube \
     echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
 kube-update:
