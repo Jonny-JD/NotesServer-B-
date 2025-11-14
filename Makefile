@@ -32,3 +32,6 @@ clean:
 
 push:
 	docker push $(IMAGE_NAME)
+
+kube-update-deployment:
+	kubectl set image deployment/backend backend=${IMAGE_NAME} -n prod
