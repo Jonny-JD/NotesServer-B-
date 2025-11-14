@@ -39,5 +39,5 @@ kube-config:
 kube-update:
     kubectl set image deployment/backend backend=$(IMAGE_NAME) -n prod
 
-wait-for-rollout
+wait-for-rollout:
 	kubectl rollout status deployment/backend -n prod
