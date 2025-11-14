@@ -34,12 +34,14 @@ jobs:
               DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           run: make push
           
-        - name: Run make kube config
-          run: make kube-config
+        - name: Kube config
+          run: |
+            mkdir -p ~/.kube
+            echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
 
-        - name: Run make kube update
-          run: make kube-update
+        - name: Run kube update deployment
+          run: make kube-update-deployment
         
-        - name: Run make rollout waiting
-          run: make wait-for-rollout
+        - name: Rollout waiting
+          run: kubectl rollout status deployment/backend -n prod
         
