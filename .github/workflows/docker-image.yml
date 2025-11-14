@@ -10,6 +10,8 @@ jobs:
   
       steps:
         - name: Checkout code
+          env:
+            PATH: /usr/local/bin:$PATH
           uses: actions/checkout@v3
           
         - name: Login to Hub
