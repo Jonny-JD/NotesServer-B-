@@ -25,6 +25,7 @@ jobs:
           env: 
             DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
             DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+            GITHUB_SHA: ${{ github.sha }}
           run: make build
       
         - name: Run make push
