@@ -2,6 +2,7 @@ APP_NAME=notes-backend
 export DOCKERHUB_USERNAME
 export DOCKERHUB_TOKEN
 export GITHUB_SHA
+export
 IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)
 JAR_FILE := $(firstword $(filter-out %-plain.jar, $(wildcard build/libs/*.jar)))
 
@@ -31,13 +32,3 @@ clean:
 
 push:
 	docker push $(IMAGE_NAME)
-
-kube-config:
-    mkdir -p ~/.kube \
-    echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
-
-kube-update:
-    kubectl set image deployment/backend backend=$(IMAGE_NAME) -n prod
-
-wait-for-rollout:
-	kubectl rollout status deployment/backend -n prod
