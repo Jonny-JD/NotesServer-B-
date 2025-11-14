@@ -1,7 +1,8 @@
 APP_NAME=notes-backend
 export DOCKERHUB_USERNAME
 export DOCKERHUB_TOKEN
-IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(APP_NAME):latest
+export GITHUB_SHA
+IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)
 JAR_FILE := $(firstword $(filter-out %-plain.jar, $(wildcard build/libs/*.jar)))
 
 .PHONY: build jar docker-run clean login push
