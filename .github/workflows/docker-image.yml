@@ -19,7 +19,6 @@ jobs:
           with:
             username: ${{ secrets.DOCKERHUB_USERNAME }}
             password: ${{ secrets.DOCKERHUB_TOKEN }}
-            use-pass: true
           
         - name: Make gradlew executable
           run: chmod +x ./gradlew
