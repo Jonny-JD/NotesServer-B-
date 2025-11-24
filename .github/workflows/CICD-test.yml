@@ -1,0 +1,59 @@
+on:
+  push:
+    branches: [ "test" ]
+
+jobs:
+  build:
+      runs-on: self-hosted
+  
+      steps:
+        - name: Checkout code
+          env:
+            PATH: /usr/local/bin:/usr/bin:/bin:$PATH
+          uses: actions/checkout@v3
+          
+        - name: Login to Hub
+          uses: docker/login-action@v3.0.0
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+        - name: Make gradlew executable
+          run: chmod +x ./gradlew
+  
+        - name: Run make build
+          env: 
+            DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+            DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+            GITHUB_SHA: ${{ github.sha }}
+          run: make build
+      
+        - name: Run make push
+          env: 
+              DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+              DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          run: make push
+          
+        - name: Kube config
+          run: |
+            mkdir -p ~/.kube
+            echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+
+        - name: Create test namespace
+          run: kubectl create namespace test --dry-run=client -o yaml | kubectl apply -f -
+        
+        - name: Deploy test backend
+          run: kubectl apply -n test -f infra/k8s/test/backend.yaml
+        
+        - name: Deploy test frontend
+          run: kubectl apply -n test -f infra/k8s/test/frontend.yaml
+        
+        - name: Wait for pods
+          run: kubectl wait --for=condition=ready pod -n test --all --timeout=120s
+        
+        - name: Run tests
+          run: ./gradlew test
+        
+        - name: Delete test namespace
+          if: always()
+          run: kubectl delete namespace test
