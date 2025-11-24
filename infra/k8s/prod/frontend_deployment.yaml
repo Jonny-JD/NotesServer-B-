@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      cybernotes: frontend
+  template:
+    metadata:
+      labels:
+        cybernotes: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: jimmy7/notes-frontend:${GITHUB_SHA}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: prod
+spec:
+  selector:
+    cybernotes: frontend
+  ports:
+  - port: 80
+    targetPort: 80
+  type: ClusterIP
