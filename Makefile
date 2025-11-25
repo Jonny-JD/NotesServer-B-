@@ -3,7 +3,7 @@ export GITHUB_SHA
 IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)
 JAR_FILE := $(firstword $(filter-out %-plain.jar, $(wildcard build/libs/*.jar)))
 
-.PHONY: build jar docker-run clean push kube-update-deployment
+.PHONY: build jar docker-run clean push kube-update-deployment kube-deploy
 
 ifdef ComSpec
   GRADLEW = gradlew.bat
@@ -29,6 +29,11 @@ clean:
 
 push:
 	docker push $(IMAGE_NAME)
+
+kube-deploy:
+	IMAGE_NAME=$(IMAGE_NAME) \
+	envsubst < infra/k8s/backend-deployment.yaml \
+	| kubectl apply -f -
 
 kube-update-deployment:
 	kubectl set image deployment/backend backend=${IMAGE_NAME} -n prod
