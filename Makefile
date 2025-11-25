@@ -32,4 +32,4 @@ push:
 	docker push $(IMAGE_NAME)
 
 print-image:
-	@echo $(IMAGE_NAME)
+	@echo $(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)
