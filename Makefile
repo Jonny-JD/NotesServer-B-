@@ -1,10 +1,10 @@
 APP_NAME=notes-backend
 export GITHUB_SHA
 IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)
-export IMAGE_NAME
 JAR_FILE := $(firstword $(filter-out %-plain.jar, $(wildcard build/libs/*.jar)))
 
-.PHONY: build jar docker-run clean push
+.PHONY: build jar docker-run clean push print-image
+
 
 ifdef ComSpec
   GRADLEW = gradlew.bat
@@ -30,3 +30,6 @@ clean:
 
 push:
 	docker push $(IMAGE_NAME)
+
+print-image:
+	@echo $(IMAGE_NAME)
