@@ -32,7 +32,7 @@ push:
 
 kube-deploy:
 	IMAGE_NAME=$(IMAGE_NAME) \
-	envsubst < infra/k8s/backend-deployment.yaml \
+	envsubst < infra/k8s/prod/backend-deployment.yaml \
 	| kubectl apply -f -
 
 kube-update-deployment:
