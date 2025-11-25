@@ -43,10 +43,11 @@ jobs:
         
         - name: Notify infra repo to deploy
           run: |
+            IMAGE_NAME="${{ secrets.DOCKERHUB_USERNAME }}/notes-backend:${{ github.sha }}"
             curl -X POST \
               -H "Authorization: token ${{ secrets.PAT_CICD }}" \
               -H "Accept: application/vnd.github+json" \
               https://api.github.com/repos/Jonny-JD/NotesServer-Infrastructure/dispatches \
-              -d '{"event_type": "deploy-backend-prod", "client_payload": {"image": "'"${{ env.IMAGE_NAME }}"'"}}'
+              -d '{"event_type": "deploy-backend-prod", "client_payload": {"image": "'"$IMAGE_NAME"'"}}'
 
         
