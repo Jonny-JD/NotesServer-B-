@@ -37,10 +37,6 @@ jobs:
               DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
           run: make push
           
-        - name: Get IMAGE_NAME
-          id: get_image
-          run: echo "IMAGE_NAME=$(make print-image)" >> $GITHUB_ENV
-        
         - name: Notify infra repo to deploy
           run: |
             IMAGE_NAME="${{ secrets.DOCKERHUB_USERNAME }}/notes-backend:${{ github.sha }}"
