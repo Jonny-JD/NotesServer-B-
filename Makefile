@@ -3,7 +3,7 @@ export GITHUB_SHA
 IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)
 JAR_FILE := $(firstword $(filter-out %-plain.jar, $(wildcard build/libs/*.jar)))
 
-.PHONY: build jar docker-run clean push
+.PHONY: build jar docker-run clean push test
 
 
 ifdef ComSpec
