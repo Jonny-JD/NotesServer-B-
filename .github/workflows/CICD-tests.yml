@@ -1,5 +1,5 @@
 
-name: CICD-prod
+name: CICD-tests
 
 on:
   push:
