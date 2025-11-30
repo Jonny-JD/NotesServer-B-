@@ -19,6 +19,10 @@ build: jar
 	docker build -t $(IMAGE_NAME) \
 	  --build-arg JAR_FILE=$(JAR_FILE) \
 	  .
+build-test: jar
+	docker build -t $(IMAGE_NAME)-test \
+	  --build-arg JAR_FILE=$(JAR_FILE) \
+	  .
 
 docker-run:
 	docker run -p 8080:8080 --name $(APP_NAME)-container $(IMAGE_NAME)
@@ -30,3 +34,6 @@ clean:
 
 push:
 	docker push $(IMAGE_NAME)
+
+push-test:
+	docker push $(IMAGE_NAME)-test
