@@ -40,11 +40,12 @@ jobs:
         - name: Notify tests repo to deploy
           run: |
             IMAGE_REPO="${{ secrets.DOCKERHUB_USERNAME }}/notes-backend"
-            IMAGE_TAG="${{ github.sha }}"
+            IMAGE_TAG="${{ github.sha }}-test"
             curl -X POST \
               -H "Authorization: token ${{ secrets.PAT_CICD }}" \
               -H "Accept: application/vnd.github+json" \
+              -H "Content-Type: application/json" \
               https://api.github.com/repos/Jonny-JD/NotestServer-Test-/dispatches \
-              -d '{"event_type": "deploy-backend-tests", "client_payload": {"repository": "'"$IMAGE_REPO"'", "tag": "'"$IMAGE_TAG"-test"'"}}'
+              -d "{\"event_type\": \"deploy-backend-tests\", \"client_payload\": {\"repository\": \"$IMAGE_REPO\", \"tag\": \"$IMAGE_TAG\"}}"
 
         
