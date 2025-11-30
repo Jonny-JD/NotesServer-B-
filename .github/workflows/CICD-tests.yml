@@ -24,18 +24,18 @@ jobs:
         - name: Make gradlew executable
           run: chmod +x ./gradlew
   
-        - name: Run make build
+        - name: Run make build test
           env: 
             DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
             DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
             GITHUB_SHA: ${{ github.sha }}
-          run: make build
+          run: make build-test
       
-        - name: Run make push
+        - name: Run make push test
           env: 
               DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
               DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-          run: make push
+          run: make push-test
           
         - name: Notify tests repo to deploy
           run: |
@@ -45,6 +45,6 @@ jobs:
               -H "Authorization: token ${{ secrets.PAT_CICD }}" \
               -H "Accept: application/vnd.github+json" \
               https://api.github.com/repos/Jonny-JD/NotestServer-Test-/dispatches \
-              -d '{"event_type": "deploy-backend-tests", "client_payload": {"repository": "'"$IMAGE_REPO"'", "tag": "'"$IMAGE_TAG"'"}}'
+              -d '{"event_type": "deploy-backend-tests", "client_payload": {"repository": "'"$IMAGE_REPO"'", "tag": "'"$IMAGE_TAG"-test'"}}'
 
         
