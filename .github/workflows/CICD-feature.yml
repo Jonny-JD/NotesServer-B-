@@ -1,0 +1,51 @@
+
+name: CICD-feature
+
+on:
+  push:
+    branches: [ "feature" ]
+
+jobs:
+  build:
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Checkout code
+          env:
+            PATH: /usr/local/bin:/usr/bin:/bin:$PATH
+          uses: actions/checkout@v3
+          
+        - name: Login to Hub
+          uses: docker/login-action@v3.0.0
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+        - name: Make gradlew executable
+          run: chmod +x ./gradlew
+  
+        - name: Run make build feature
+          env: 
+            DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+            DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+            GITHUB_SHA: ${{ github.sha }}
+          run: make build-feature
+      
+        - name: Run make push feature
+          env: 
+              DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+              DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          run: make push-feature
+          
+        - name: Notify tests repo to deploy
+          run: |
+            IMAGE_REPO="${{ secrets.DOCKERHUB_USERNAME }}/notes-backend"
+            IMAGE_TAG="${{ github.sha }}-feature"
+            curl -X POST \
+              -H "Authorization: token ${{ secrets.PAT_CICD }}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "Content-Type: application/json" \
+              https://api.github.com/repos/Jonny-JD/NotesServer-Infrastructure/dispatches \
+              -d "{\"event_type\": \"deploy-backend-feature\", \"client_payload\": {\"repository\": \"$IMAGE_REPO\", \"tag\": \"$IMAGE_TAG\"}}"
+
+        
