@@ -2,9 +2,10 @@ APP_NAME=notes-backend
 export GITHUB_SHA
 IMAGE_NAME=$(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)
 IMAGE_NAME_TEST=$(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)-test
+IMAGE_NAME_FEATURE=$(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)-feature
 JAR_FILE := $(firstword $(filter-out %-plain.jar, $(wildcard build/libs/*.jar)))
 
-.PHONY: build jar docker-run clean push push-test build-test
+.PHONY: build jar docker-run clean push push-test push-feature build-test build-feature
 
 
 ifdef ComSpec
@@ -25,6 +26,11 @@ build-test: jar
 	  --build-arg JAR_FILE=$(JAR_FILE) \
 	  .
 
+build-feature: jar
+	docker build -t $(IMAGE_NAME_FEATURE) \
+	  --build-arg JAR_FILE=$(JAR_FILE) \
+	  .
+
 docker-run:
 	docker run -p 8080:8080 --name $(APP_NAME)-container $(IMAGE_NAME)
 
@@ -38,3 +44,6 @@ push:
 
 push-test:
 	docker push $(IMAGE_NAME_TEST)
+
+push-feature:
+	docker push $(IMAGE_NAME_FEATURE)
