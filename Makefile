@@ -5,7 +5,7 @@ IMAGE_NAME_TEST=$(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)-test
 IMAGE_NAME_FEATURE=$(DOCKERHUB_USERNAME)/$(APP_NAME):$(GITHUB_SHA)-feature
 JAR_FILE := $(firstword $(filter-out %-plain.jar, $(wildcard build/libs/*.jar)))
 
-.PHONY: build jar docker-run clean push push-test push-feature build-test build-feature
+.PHONY: build jar docker-run clean push push-test push-feature build-test build-feature test-c
 
 
 ifdef ComSpec
