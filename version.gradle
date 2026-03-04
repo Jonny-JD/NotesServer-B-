@@ -1,6 +1,6 @@
 ext {
     versions = [
-        'querydsl': '5.1.0',
+        'querydsl': '5.6.1',
         'springdoc': '2.8.8'
     ]
 }

@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
@@ -44,7 +45,6 @@ class AuthControllerIT extends ControllerTestBase {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNotEmpty())
                 .andExpect(jsonPath("$.username").value("test"));
-        mockMvc.perform(post("/api/v1/auth/logout"));
     }
 
     @Test
@@ -61,7 +61,6 @@ class AuthControllerIT extends ControllerTestBase {
                         .content(body))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errors.validation").value("User not found by username: [Dummy_user_1]"));
-        mockMvc.perform(post("/api/v1/auth/logout"));
     }
 
     @Test
@@ -83,8 +82,8 @@ class AuthControllerIT extends ControllerTestBase {
     }
 
     @Test
+    @WithAnonymousUser
     void shouldReturnUnauthorizedOnMeWithoutAuth() throws Exception {
-        mockMvc.perform(get("/api/v1/auth/logout"));
         mockMvc.perform(get("/api/v1/auth/me"))
                 .andExpect(status().isForbidden())
                 .andExpect(result ->

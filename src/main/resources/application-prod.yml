@@ -27,3 +27,6 @@ logging:
       file-name-pattern: log/app.%d{yyyy-MM-dd}.%i.gz
       max-history: 7
       total-size-cap: 100MB
+
+jwt:
+  secret: ${JWT_SECRET}
