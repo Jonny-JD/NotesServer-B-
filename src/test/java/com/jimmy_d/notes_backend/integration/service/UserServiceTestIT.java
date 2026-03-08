@@ -3,7 +3,7 @@ package com.jimmy_d.notes_backend.integration.service;
 import com.jimmy_d.notes_backend.database.entity.Role;
 import com.jimmy_d.notes_backend.integration.IntegrationTestBase;
 import com.jimmy_d.notes_backend.integration.TestFactory;
-import com.jimmy_d.notes_backend.mapper.UserReadMapper;
+import com.jimmy_d.notes_backend.mapper.UserUpdateMapper;
 import com.jimmy_d.notes_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserServiceTestIT extends IntegrationTestBase {
 
     private final UserService userService;
-    private final UserReadMapper userReadMapper;
+    private final UserUpdateMapper userUpdateMapper;
     private final TestFactory testFactory;
 
     @Test
@@ -83,10 +83,10 @@ class UserServiceTestIT extends IntegrationTestBase {
     void updateUserShouldAddRoleSuccessfully() {
         var savedUser = userService.createUser(testFactory.dummyUserCreateDto())
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
-        var userToUpdate = userReadMapper.map(savedUser);
+        var userToUpdate = userUpdateMapper.map(savedUser);
         userToUpdate.addRole(Role.ADMIN);
 
-        var updatedUser = userService.updateUser(userReadMapper.map(userToUpdate))
+        var updatedUser = userService.updateUser(userUpdateMapper.map(userToUpdate))
                 .orElseThrow(() -> new RuntimeException("Failed to create user"));
 
         assertTrue(updatedUser.roles().contains(Role.ADMIN.name()));

@@ -2,6 +2,7 @@ package com.jimmy_d.notes_backend.http.controller.rest;
 
 import com.jimmy_d.notes_backend.dto.UserCreateDto;
 import com.jimmy_d.notes_backend.dto.UserReadDto;
+import com.jimmy_d.notes_backend.dto.UserUpdateDto;
 import com.jimmy_d.notes_backend.exceptions.rest.UserNotExistsException;
 import com.jimmy_d.notes_backend.exceptions.rest.UserNotFoundException;
 import com.jimmy_d.notes_backend.service.UserService;
@@ -29,7 +30,7 @@ public class UserRestController {
 
     @PutMapping
     @PreAuthorize("hasAuthority(T(com.jimmy_d.notes_backend.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#user.id())")
-    public UserReadDto update(@RequestBody UserReadDto user) {
+    public UserReadDto update(@RequestBody UserUpdateDto user) {
         return userService.updateUser(user)
                 .orElseThrow(() -> new UserNotExistsException("id", user.id()));
     }

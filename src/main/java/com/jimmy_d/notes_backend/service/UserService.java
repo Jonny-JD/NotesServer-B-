@@ -4,11 +4,13 @@ import com.jimmy_d.notes_backend.database.entity.Role;
 import com.jimmy_d.notes_backend.database.repository.UserRepository;
 import com.jimmy_d.notes_backend.dto.UserCreateDto;
 import com.jimmy_d.notes_backend.dto.UserReadDto;
+import com.jimmy_d.notes_backend.dto.UserUpdateDto;
 import com.jimmy_d.notes_backend.exceptions.rest.UserExistsException;
 import com.jimmy_d.notes_backend.mapper.UserCreateMapper;
 import com.jimmy_d.notes_backend.mapper.UserReadMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +25,11 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserCreateMapper userCreateMapper;
     private final UserReadMapper userReadMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional
     public Optional<UserReadDto> createUser(UserCreateDto user) {
-        
+
         var foundedUser = userRepository.findOneByEmailOrUsername(user.email(), user.username());
         if (foundedUser.isPresent()) {
             var type = user.username().equals(foundedUser.get().getUsername()) ? "username" : "email";
@@ -43,22 +46,34 @@ public class UserService {
                 .map(userReadMapper::map);
     }
 
-    public Optional<UserReadDto> updateUser(UserReadDto user) {
-        
-        return userRepository.findById(user.id())
-                .map(userForUpdate -> {
-                    userForUpdate.setUsername(user.username());
-                    userForUpdate.setEmail(user.email());
-                    userForUpdate.setRoles(user.roles().stream()
-                            .map(Role::valueOf)
-                            .collect(Collectors.toSet()));
-                    return userReadMapper.map(userRepository.save(userForUpdate));
+    @Transactional
+    public Optional<UserReadDto> updateUser(UserUpdateDto dto) {
+        return userRepository.findById(dto.id())
+                .map(user -> {
+                    if (dto.username() != null) {
+                        user.setUsername(dto.username());
+                    }
+                    if (dto.email() != null) {
+                        user.setEmail(dto.email());
+                    }
+                    if (dto.newPassword() != null) {
+                        if (!passwordEncoder.matches(dto.currentPassword(), user.getPassword())) {
+                            throw new IllegalArgumentException("Wrong current password");
+                        }
+                        user.setPassword(passwordEncoder.encode(dto.newPassword()));
+                    }
+                    if (dto.roles() != null) {
+                        user.setRoles(dto.roles().stream()
+                                .map(Role::valueOf)
+                                .collect(Collectors.toSet()));
+                    }
+                    return userReadMapper.map(userRepository.save(user));
                 });
     }
 
     @Transactional
     public boolean deleteByUsername(String username) {
-        
+
         return userRepository.findByUsername(username)
                 .map(user -> {
                     userRepository.delete(user);
