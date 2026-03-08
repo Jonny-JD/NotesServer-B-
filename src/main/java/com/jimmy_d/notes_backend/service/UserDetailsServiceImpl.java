@@ -28,6 +28,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             user.getId(),
                             user.getUsername(),
                             user.getPassword(),
+                            user.getEmail(),
                             new HashSet<>(user.getRoles())))
                     .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         } catch (UsernameNotFoundException exception) {

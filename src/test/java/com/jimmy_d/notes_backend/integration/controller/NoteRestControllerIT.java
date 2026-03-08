@@ -98,7 +98,7 @@ class NoteRestControllerIT extends ControllerTestBase {
     @Sql(executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD, scripts = "classpath:sql/test_data.sql")
     void shouldGetUserNotes() throws Exception {
 
-        var userDetails = new CustomUserDetails(1L, "Dummy_user_1", "dummy_1_pass", Set.of(Role.USER));
+        var userDetails = new CustomUserDetails(1L, "Dummy_user_1", "dummy_1_pass", "dummy_1_email@mail.com", Set.of(Role.USER));
         var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -116,7 +116,7 @@ class NoteRestControllerIT extends ControllerTestBase {
 
         var note = restTestUtils.createNote();
 
-        var userDetails = new CustomUserDetails(note.author().id(), note.author().username(), "dummy_1_pass", Set.of(Role.USER));
+        var userDetails = new CustomUserDetails(note.author().id(), note.author().username(), "dummy_1_pass", "dummy_1_email@mail.com", Set.of(Role.USER));
         var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 

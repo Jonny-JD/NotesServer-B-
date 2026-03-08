@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RequiredArgsConstructor
-public class MethodSecurityTest extends ControllerTestBase {
+class MethodSecurityTest extends ControllerTestBase {
     private final MockMvc mockMvc;
     private final TestFactory testFactory;
     private final NoteRepository noteRepository;
@@ -32,7 +32,7 @@ public class MethodSecurityTest extends ControllerTestBase {
     private final ObjectMapper objectMapper;
 
     @BeforeEach
-    public void cleanDatabase() {
+    void cleanDatabase() {
         noteRepository.deleteAll();
     }
 
@@ -47,7 +47,7 @@ public class MethodSecurityTest extends ControllerTestBase {
         );
 
 
-        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getRoles());
+        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRoles());
         var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -141,7 +141,7 @@ public class MethodSecurityTest extends ControllerTestBase {
     void shouldAllowUserToDeleteOwnAccount() throws Exception {
         var user = testFactory.saveUser("ownerUser", "pass", "email@example.com", Set.of("USER"));
 
-        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getRoles());
+        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRoles());
         var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -156,7 +156,7 @@ public class MethodSecurityTest extends ControllerTestBase {
 
         var otherUser = testFactory.saveUser("otherUser", "pass", "email-other@example.com", Set.of("USER"));
 
-        var userDetails = new CustomUserDetails(otherUser.getId(), otherUser.getUsername(), otherUser.getPassword(), otherUser.getRoles());
+        var userDetails = new CustomUserDetails(otherUser.getId(), otherUser.getUsername(), otherUser.getPassword(), otherUser.getEmail(), otherUser.getRoles());
         var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
@@ -182,7 +182,7 @@ public class MethodSecurityTest extends ControllerTestBase {
     void shouldAllowUserToUpdateOwnProfile() throws Exception {
         var user = testFactory.saveUser("userToUpdate", "pass", "email@example.com", Set.of("USER"));
 
-        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getRoles());
+        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRoles());
         var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
         var userReadDto = userReadMapper.map(user);
@@ -201,7 +201,7 @@ public class MethodSecurityTest extends ControllerTestBase {
 
         var otherUser = testFactory.saveUser("otherUser", "pass", "email-other@example.com", Set.of("USER"));
 
-        var userDetails = new CustomUserDetails(otherUser.getId(), otherUser.getUsername(), otherUser.getPassword(), otherUser.getRoles());
+        var userDetails = new CustomUserDetails(otherUser.getId(), otherUser.getUsername(), otherUser.getPassword(), otherUser.getEmail(), otherUser.getRoles());
         var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 

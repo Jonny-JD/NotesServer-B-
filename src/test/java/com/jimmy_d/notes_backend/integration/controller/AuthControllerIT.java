@@ -92,7 +92,7 @@ class AuthControllerIT extends ControllerTestBase {
 
     @Test
     void shouldReturnUserInfoWhenAuthenticated() throws Exception {
-        var userDetails = new CustomUserDetails(1L, "Dummy_user_1", "dummy_1_pass", Set.of(Role.USER));
+        var userDetails = new CustomUserDetails(1L, "Dummy_user_1", "dummy_1_pass", "dummy_1_email@mail.com", Set.of(Role.USER));
         var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(auth);
 
