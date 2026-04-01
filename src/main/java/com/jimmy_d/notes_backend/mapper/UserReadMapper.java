@@ -13,6 +13,7 @@ public class UserReadMapper implements Mapper<User, UserReadDto> {
     @Override
     public UserReadDto map(User user) {
         return new UserReadDto(user.getId(),
+                user.isGuest(),
                 user.getUsername(),
                 user.getEmail(),
                 user.getRoles()
@@ -24,6 +25,7 @@ public class UserReadMapper implements Mapper<User, UserReadDto> {
     public User map(UserReadDto userReadDto) {
         return User.builder()
                 .id(userReadDto.id())
+                .isGuest(userReadDto.id() == null)
                 .username(userReadDto.username())
                 .email(userReadDto.email())
                 .roles(userReadDto.roles()

@@ -8,6 +8,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE IF NOT EXISTS users
 (
     id          BIGSERIAL PRIMARY KEY,
+    is_guest    BOOLEAN NOT NULL,
     username    VARCHAR(20)  NOT NULL UNIQUE,
     password    VARCHAR(128) NOT NULL,
     email       VARCHAR(64)  NOT NULL UNIQUE,
@@ -21,11 +22,12 @@ CREATE TABLE IF NOT EXISTS users
 --changeset jimmyD:3
 CREATE TABLE IF NOT EXISTS notes
 (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title       VARCHAR(128),
     tag         VARCHAR(64),
-    content     TEXT   NOT NULL,
-    author      BIGINT NOT NULL REFERENCES users (id) ON DELETE CASCADE,
+    content     TEXT    NOT NULL,
+    author      BIGINT REFERENCES users (id) ON DELETE CASCADE,
+    is_private  BOOLEAN NOT NULL DEFAULT FALSE,
 
     created_at  TIMESTAMP,
     modified_at TIMESTAMP,

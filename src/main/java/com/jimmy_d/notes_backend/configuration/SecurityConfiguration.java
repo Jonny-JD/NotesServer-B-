@@ -56,6 +56,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/notes/search").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/notes").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/notes/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/auth/me").authenticated()
                         .anyRequest().authenticated()

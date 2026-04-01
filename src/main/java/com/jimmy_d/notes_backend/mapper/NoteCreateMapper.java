@@ -7,11 +7,14 @@ import com.jimmy_d.notes_backend.dto.NoteCreateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RequiredArgsConstructor
 public class NoteCreateMapper implements Mapper<NoteCreateDto, Note> {
 
     private final UserRepository userRepository;
+    private final UserReadMapper userReadMapper;
 
     @Override
     public Note map(NoteCreateDto noteCreateDto) {
@@ -24,7 +27,11 @@ public class NoteCreateMapper implements Mapper<NoteCreateDto, Note> {
         note.setTag(noteCreateDto.tag());
         note.setTitle(noteCreateDto.title());
         note.setContent(noteCreateDto.content());
-        note.setAuthor(getAuthor(noteCreateDto.author()));
+        note.setAuthor(Optional.of(
+                getAuthor(noteCreateDto.author()))
+                .orElse(
+                userReadMapper.map(noteCreateDto.author())
+        ));
         note.setIsPrivate(noteCreateDto.isPrivate());
     }
 
