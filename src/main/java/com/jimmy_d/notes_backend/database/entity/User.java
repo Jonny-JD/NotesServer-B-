@@ -22,10 +22,6 @@ public class User extends AuditingEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Boolean isGuest = false;
-
     @Column(unique = true, nullable = false)
     private String username;
 
@@ -42,10 +38,6 @@ public class User extends AuditingEntity<Long> {
     @Column(name = "role")
     private Set<Role> roles = new HashSet<>();
 
-
-    public Boolean isGuest() {
-        return isGuest;
-    }
 
     @Override
     public final boolean equals(Object o) {

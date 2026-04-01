@@ -8,7 +8,6 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 CREATE TABLE IF NOT EXISTS users
 (
     id          BIGSERIAL PRIMARY KEY,
-    is_guest    BOOLEAN NOT NULL,
     username    VARCHAR(20)  NOT NULL UNIQUE,
     password    VARCHAR(128) NOT NULL,
     email       VARCHAR(64)  NOT NULL UNIQUE,
@@ -40,5 +39,4 @@ CREATE TABLE IF NOT EXISTS user_roles
     user_id BIGINT REFERENCES users (id) ON DELETE CASCADE,
     role    VARCHAR(10),
     PRIMARY KEY (user_id, role)
-
 );
