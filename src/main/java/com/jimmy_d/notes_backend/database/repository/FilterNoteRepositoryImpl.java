@@ -25,8 +25,8 @@ public class FilterNoteRepositoryImpl implements FilterNoteRepository {
         if (auth == null || !auth.isAuthenticated()) return null;
 
         Object principal = auth.getPrincipal();
-        if (principal instanceof CustomUserDetails) {
-            return ((CustomUserDetails) principal).getId();
+        if (principal instanceof CustomUserDetails p) {
+            return p.getId();
         }
         return null;
     }

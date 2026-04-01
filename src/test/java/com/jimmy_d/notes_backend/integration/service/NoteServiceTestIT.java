@@ -117,7 +117,7 @@ class NoteServiceTestIT extends IntegrationTestBase {
     void getNextNotesShouldReturnNextPageOfNotes() {
         Instant cursor = Instant.parse("2025-01-02T00:00:02Z").plusSeconds(1);
 
-        List<NotePreviewDto> notes = noteService.getNextNotePreview(new NotePreviewFilter(null, null, null)
+        List<NotePreviewDto> notes = noteService.findAllPreviewByFilter(new NotePreviewFilter(null, null, null)
                 ,cursor);
 
         assertAll("Verify retrieved notes",

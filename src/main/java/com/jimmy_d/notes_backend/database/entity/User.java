@@ -22,10 +22,6 @@ public class User extends AuditingEntity<Long> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Boolean isGuest = false;
-
     @Column(unique = true, nullable = false)
     private String username;
 
@@ -43,16 +39,12 @@ public class User extends AuditingEntity<Long> {
     private Set<Role> roles = new HashSet<>();
 
 
-    public Boolean isGuest() {
-        return isGuest;
-    }
-
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        Class<?> oEffectiveClass = o instanceof HibernateProxy obj? obj.getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy th? th.getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         User user = (User) o;
         return getId() != null && Objects.equals(getId(), user.getId());
@@ -60,7 +52,7 @@ public class User extends AuditingEntity<Long> {
 
     @Override
     public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this)
+        return this instanceof HibernateProxy th? th
                 .getHibernateLazyInitializer()
                 .getPersistentClass()
                 .hashCode() :

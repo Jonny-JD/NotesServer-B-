@@ -9,7 +9,6 @@ import com.jimmy_d.notes_backend.mapper.NoteReadMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +16,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +26,6 @@ public class NoteService {
     private final NoteCreateMapper noteCreateMapper;
     private final NoteReadMapper noteReadMapper;
     private final NotePreviewMapper notePreviewMapper;
-    private final Pageable pageable = PageRequest.of(0, 10);
 
 
     @Transactional
@@ -59,28 +56,28 @@ public class NoteService {
         return noteRepository.findAllByAuthorId(authorId)
                 .stream()
                 .map(noteReadMapper::map)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<NoteReadDto> findAllByTag(String tag) {
         return noteRepository.findAllByTag(tag)
                 .stream()
                 .map(noteReadMapper::map)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<NoteReadDto> findAllByFilter(NoteFilter filter) {
         return noteRepository.findAllByFilter(filter)
                 .stream()
                 .map(noteReadMapper::map)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<NotePreviewDto> findAllPreviewByFilter(NotePreviewFilter filter, Instant cursor) {
-        return noteRepository.findAllPreviewByFilter(filter, cursor, pageable)
+        return noteRepository.findAllPreviewByFilter(filter, cursor, PageRequest.of(0, 10))
                 .stream()
                 .map(notePreviewMapper::map)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
@@ -92,12 +89,6 @@ public class NoteService {
                 }).orElse(false);
     }
 
-    public List<NotePreviewDto> getNextNotePreview(NotePreviewFilter filter, Instant cursor) {
-        return noteRepository.findAllPreviewByFilter(filter, cursor, pageable)
-                .stream()
-                .map(notePreviewMapper::map)
-                .collect(Collectors.toList());
-    }
 
     @Transactional
     public boolean deleteAllByTag(String tag) {
