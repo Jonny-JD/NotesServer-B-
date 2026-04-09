@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 public class NoteCreateMapper implements Mapper<NoteCreateDto, Note> {
 
     private final UserRepository userRepository;
-    private final UserReadMapper userReadMapper;
 
     @Override
     public Note map(NoteCreateDto noteCreateDto) {
@@ -22,8 +21,8 @@ public class NoteCreateMapper implements Mapper<NoteCreateDto, Note> {
     }
 
     private void copy(NoteCreateDto noteCreateDto, Note note) {
-        note.setTag(noteCreateDto.tag());
-        note.setTitle(noteCreateDto.title());
+        note.setTag(noteCreateDto.tag().isEmpty() ? null : noteCreateDto.tag());
+        note.setTitle(noteCreateDto.title().isEmpty() ? "Untitled" : noteCreateDto.title());
         note.setContent(noteCreateDto.content());
         note.setAuthor(getAuthor(noteCreateDto.author()));
         note.setIsPrivate(noteCreateDto.isPrivate());

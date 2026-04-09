@@ -19,7 +19,7 @@ public class NotePreviewMapper implements Mapper<Note, NotePreviewDto> {
         var author = Optional.ofNullable(note.getAuthor())
                 .map(noteAuthorMapper::map)
                 .map(NoteAuthorDto::username)
-                .orElse(null);
+                .orElse("guest");
         return new NotePreviewDto(note.getId(), note.getTitle(), note.getTag(), author, note.getCreatedAt());
     }
 

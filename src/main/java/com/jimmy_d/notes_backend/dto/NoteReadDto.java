@@ -1,5 +1,6 @@
 package com.jimmy_d.notes_backend.dto;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public record NoteReadDto(UUID id,
@@ -7,5 +8,6 @@ public record NoteReadDto(UUID id,
                           String tag,
                           String content,
                           NoteAuthorDto author,
-                          Boolean isPrivate) {
+                          Boolean isPrivate,
+                          Instant createdAt) {
 }

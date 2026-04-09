@@ -16,10 +16,10 @@ public class NoteReadMapper implements Mapper<Note, NoteReadDto> {
 
     @Override
     public NoteReadDto map(Note note) {
-        NoteAuthorDto author = Optional.ofNullable(note.getAuthor())
+        var author = Optional.ofNullable(note.getAuthor())
                 .map(noteAuthorMapper::map)
-                .orElse(null);
-        return new NoteReadDto(note.getId(), note.getTitle(), note.getTag(), note.getContent(), author, note.getIsPrivate());
+                .orElse(new NoteAuthorDto(null, "guest"));
+        return new NoteReadDto(note.getId(), note.getTitle(), note.getTag(), note.getContent(), author, note.getIsPrivate(), note.getCreatedAt());
     }
 
 }
