@@ -42,8 +42,8 @@ public class NoteService {
     public NoteReadDto updateNote(UUID id, NoteUpdateDto dto) {
         var note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException("id", id));
         note.setId(id);
-        note.setTag(dto.tag());
-        note.setTitle(dto.title());
+        note.setTag(dto.tag().isEmpty() ? null : dto.tag());
+        note.setTitle(dto.title().isEmpty() ? null : dto.title());
         note.setContent(dto.content());
         note.setIsPrivate(dto.isPrivate());
 
