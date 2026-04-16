@@ -37,7 +37,7 @@ public class FilterNoteRepositoryImpl implements FilterNoteRepository {
                 .add(filter.title(), title -> note.title.lower().like(title.toLowerCase()))
                 .add(filter.tag(), tag -> note.tag.lower().eq(tag.toLowerCase()))
                 .add(filter.content(), (content -> note.content.lower().like(content.toLowerCase())))
-                .add(filter.authorId(), note.author.id::eq)
+                .add(filter.author(), note.author.username::eq)
                 .buildAnd();
 
         return new JPAQuery<Note>(entityManager)
@@ -57,7 +57,7 @@ public class FilterNoteRepositoryImpl implements FilterNoteRepository {
         var predicate = QPredicates.builder()
                 .add(filter.title(), title -> note.title.lower().like(title.toLowerCase()))
                 .add(filter.tag(), tag -> note.tag.lower().eq(tag.toLowerCase()))
-                .add(filter.authorId(), note.author.id::eq)
+                .add(filter.author(), note.author.username::eq)
                 .add(privatePredicate)
                 .add(cursor, note.createdAt::lt)
                 .buildAnd();

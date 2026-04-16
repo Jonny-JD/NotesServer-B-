@@ -35,20 +35,20 @@ class NoteServiceTestIT extends IntegrationTestBase {
                 Arguments.of(new NoteFilter("dummy_title_1_1", null, null, null), 1),
                 Arguments.of(new NoteFilter(null, "dummy_tag_1_1", null, null), 2),
                 Arguments.of(new NoteFilter(null, null, "dummy_content_1_1", null), 1),
-                Arguments.of(new NoteFilter(null, null, null, 1L), 4),
+                Arguments.of(new NoteFilter(null, null, null, "Dummy_user_1"), 4),
 
                 Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", null, null), 1),
                 Arguments.of(new NoteFilter("dummy_title_1_1", null, "dummy_content_1_1", null), 1),
-                Arguments.of(new NoteFilter("dummy_title_1_1", null, null, 1L), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", null, null, "Dummy_user_1"), 1),
                 Arguments.of(new NoteFilter(null, "dummy_tag_1_1", "dummy_content_1_1", null), 1),
-                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", null, 1L), 2),
-                Arguments.of(new NoteFilter(null, null, "dummy_content_1_1", 1L), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", null, "Dummy_user_1"), 2),
+                Arguments.of(new NoteFilter(null, null, "dummy_content_1_1", "Dummy_user_1"), 1),
 
                 Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", "dummy_content_1_1", null), 1),
-                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", null, 1L), 1),
-                Arguments.of(new NoteFilter("dummy_title_1_1", null, "dummy_content_1_1", 1L), 1),
-                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", "dummy_content_1_1", 1L), 1),
-                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", "dummy_content_1_1", 1L), 1)
+                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", null, "Dummy_user_1"), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", null, "dummy_content_1_1", "Dummy_user_1"), 1),
+                Arguments.of(new NoteFilter(null, "dummy_tag_1_1", "dummy_content_1_1", "Dummy_user_1"), 1),
+                Arguments.of(new NoteFilter("dummy_title_1_1", "dummy_tag_1_1", "dummy_content_1_1", "Dummy_user_1"), 1)
         );
     }
 
@@ -56,7 +56,7 @@ class NoteServiceTestIT extends IntegrationTestBase {
         return Stream.of(
                 Arguments.of(new NotePreviewFilter("dummy_title_1_1", null, null), 1),
                 Arguments.of(new NotePreviewFilter(null, "dummy_tag_1_1", null), 2),
-                Arguments.of(new NotePreviewFilter(null, null, 1L), 4)
+                Arguments.of(new NotePreviewFilter(null, null, "Dummy_user_1"), 4)
         );
     }
 

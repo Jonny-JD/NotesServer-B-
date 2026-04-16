@@ -45,7 +45,7 @@ public class NoteRestController {
 
     @GetMapping("/user-notes")
     public List<NotePreviewDto> getUserNotes(@AuthenticationPrincipal CustomUserDetails user, @RequestParam Instant from) {
-        return noteService.findAllPreviewByFilter(new NotePreviewFilter(null, null, user.getId()), from);
+        return noteService.findAllPreviewByFilter(new NotePreviewFilter(null, null, user.getUsername()), from);
     }
 
 
@@ -53,9 +53,9 @@ public class NoteRestController {
     public List<NotePreviewDto> getByFilter(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String tag,
-            @RequestParam(required = false) Long authorId,
+            @RequestParam(required = false) String author,
             @RequestParam Instant from) {
-        return noteService.findAllPreviewByFilter(new NotePreviewFilter(title, tag, authorId), from);
+        return noteService.findAllPreviewByFilter(new NotePreviewFilter(title, tag, author), from);
     }
 
     @DeleteMapping("/{id}")
