@@ -66,7 +66,8 @@ public class AuthController {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return ResponseEntity.ok(Map.of(
                 "id", userDetails.getId(),
-                "username", userDetails.getUsername()
+                "username", userDetails.getUsername(),
+                "email", userDetails.getEmail()
         ));
     }
 }
