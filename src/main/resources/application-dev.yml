@@ -26,5 +26,3 @@ logging:
 
 jwt:
   secret: "yrdyQEzosYX1Xedv//K9iHERBWHTv+Q9GBnJ7AoxInY="
-#
-#  //test
