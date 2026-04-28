@@ -9,6 +9,7 @@ import java.util.Set;
 
 public record UserCreateDto(@Username String username,
                             @NotBlank String rawPassword,
-                            @Email @NotBlank String email,
+                            @Email(regexp = "^[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$",
+                                    message = "Invalid email format") @NotBlank String email,
                             @UserRole Set<String> roles) {
 }
