@@ -1,6 +1,8 @@
 ext {
     versions = [
-        'querydsl': '5.6.1',
-        'springdoc': '2.8.8'
+            'querydsl'    : '5.6.1',
+            'springdoc'   : '2.8.8',
+            'jsonwebtoken': '0.12.6',
+            'bouncycastle': '1.80'
     ]
 }
