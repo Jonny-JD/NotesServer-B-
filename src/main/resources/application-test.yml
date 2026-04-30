@@ -1,30 +1,27 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/postgres
-    username: postgres
-    password: pass
-
-  jpa:
-    properties:
-      hibernate:
-        show_sql: true
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
 
   sql:
     init:
-      mode: always
+      mode: never
 
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
 logging:
-  level:
-    root: INFO
-    org.springframework.web: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.springframework.security: DEBUG
+  file:
+    path: "log/app.log"
+  logback:
+    rollingpolicy:
+      clean-history-on-start: false
+      max-file-size: 10MB
+      file-name-pattern: log/app.%d{yyyy-MM-dd}.%i.gz
+      max-history: 7
+      total-size-cap: 100MB
 
 jwt:
   secret: "yrdyQEzosYX1Xedv//K9iHERBWHTv+Q9GBnJ7AoxInY="
-#
-#  //test
