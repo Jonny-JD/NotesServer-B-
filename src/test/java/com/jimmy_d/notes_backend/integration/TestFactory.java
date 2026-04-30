@@ -14,7 +14,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class TestFactory {
 
-    // Константы
     private static final String DUMMY_USERNAME = "Dummy_user_1";
     private static final String DUMMY_PASSWORD = "dummy_1_pass";
     private static final String DUMMY_EMAIL = "dummy_1@email.com";
