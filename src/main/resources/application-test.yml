@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: pass
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+
+  sql:
+    init:
+      mode: always
+
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.springframework.security: DEBUG
+
+jwt:
+  secret: "yrdyQEzosYX1Xedv//K9iHERBWHTv+Q9GBnJ7AoxInY="
+#
+#  //test
