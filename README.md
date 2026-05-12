@@ -64,6 +64,12 @@ docker run -p 8080:8080 notes-backend
 ./gradlew test
 ```
 
+## Related Repositories
+
+- [NotesServer Autotests](https://github.com/Jonny-JD/NotestServer-Test-) — Selenide, JUnit 5, Allure, Kubernetes, Selenium Grid
+- [NotesServer Frontend](https://github.com/Jonny-JD/NotesServer-F-) — React, TypeScript, Vite
+- [NotesServer Infrastructure](https://github.com/Jonny-JD/NotesServer-Infrastructure) — Kubernetes (K3s), Helm, Traefik, Let's Encrypt, GitHub Actions
+
 ## About
 
 This project was built for my portfolio. It demonstrates:
