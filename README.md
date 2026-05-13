@@ -1,68 +1,82 @@
-# 🧠 CyberNotes — Fullstack Note-Taking Web Application
+# Notes — Backend
 
-## 📌 About the Project
-CyberNotes is a pet project developed from scratch by me. It is a fully functional application for creating, storing, and searching both public and private notes. Modern technologies are used both on the backend and frontend.
+Backend part of the **Notes** full-stack pet project — a web application for creating and browsing public and private notes.
 
-## 🛠️ Technology Stack
+## Tech Stack
 
-### Backend:
-- Java 21, Spring Boot (Web, Security, Data JPA)
-- Liquibase, PostgreSQL
-- Docker
-- JUnit, Mockito, Testcontainers
+- **Java 21** + **Spring Boot** (Web, Security, Data JPA)
+- **PostgreSQL** + **Liquibase** (migrations) + **Hibernate**
+- **JUnit** + **Mockito** + **Testcontainers** (testing)
+- **Gradle** (build tool)
+- **Docker**
 
-### Frontend:
-- React + Vite
-- TypeScript
-- React Router
-- LESS
-- Nginx (production)
+## Features
 
-### DevOps:
-- Docker Compose
-- GitHub Actions (CI/CD)
-- Deployment on VPS
-
-## 🚀 Features
 - User registration and login with session-based authentication
 - CRUD operations for notes (private and public)
-- Viewing other users’ public notes
+- Viewing other users' public notes
 - REST API with filtering and pagination
-- Clear separation between backend and frontend
-- CI/CD pipeline and deployment (nginx + Docker)
 
-## 🌐 Demo
-⚠️ Currently running via ngrok, so the link might be unstable:
+## CI/CD Architecture
 
-▶️ https://goat-trusting-amazingly.ngrok-free.app
+The project follows a **GitOps approach**: this repository is responsible only for building and publishing the Docker image. Deployment is handled by a separate infrastructure repository.
 
-## 🧩 Repositories
-- Backend: [github.com/Jonny-JD/NotesServer-B-](https://github.com/Jonny-JD/NotesServer-B-)
-- Frontend: [github.com/Jonny-JD/NotesServer-F-](https://github.com/Jonny-JD/NotesServer-F-)
+```
+Push to branch
+      │
+      ▼
+GitHub Actions
+  ├── ./gradlew clean build         (produces JAR)
+  ├── docker build --build-arg JAR_FILE=...
+  ├── docker push → Docker Hub
+  └── repository_dispatch → NotesServer-Infrastructure
+                                     │
+                                     ▼
+                             Deploy to Kubernetes
+                             (bare metal cluster)
+```
 
-## ⚙️ Quick Start
+### Environments
+
+| Branch   | Image tag       | Environment |
+|----------|-----------------|-------------|
+| `master` | `{sha}`         | Production  |
+| `feature`| `{sha}-feature` | Feature     |
+
+Images are always tagged by commit SHA — no `latest` tag, every deployment is reproducible.
+
+## Local Setup
+
+Make sure PostgreSQL is running, then:
 
 ```bash
-# Backend
-git clone https://github.com/Jonny-JD/NotesServer-B-.git
-cd cybernotes-backend
-docker-compose up --build
-
-# Frontend (in another terminal)
-git clone https://github.com/Jonny-JDNotesServer-F-.git
-cd cybernotes-frontend
-npm install
-npm run dev
+./gradlew clean build
+docker build -t notes-backend --build-arg JAR_FILE=$(ls build/libs/*.jar | grep -v plain) .
+docker run -p 8080:8080 notes-backend
 ```
-## 🧪 Tests
-- Unit tests (JUnit + Mockito)
-- Integration tests (Testcontainers + PostgreSQL)
+
+## Tests
+
+- **Unit tests** — JUnit + Mockito
+- **Integration tests** — Testcontainers + PostgreSQL (no external DB required)
 
 ```bash
 ./gradlew test
 ```
 
-## 👤 Author
-Sergey Izotov
-- 📧 jonny.cbrigante@gmail.com
-- 🔗 [LinkedIn](https://www.linkedin.com/in/sergei-izotov-0740a3a5/)
+## Related Repositories
+
+- [NotesServer Autotests](https://github.com/Jonny-JD/NotestServer-Test-) — Selenide, JUnit 5, Allure, Kubernetes, Selenium Grid
+- [NotesServer Frontend](https://github.com/Jonny-JD/NotesServer-F-) — React, TypeScript, Vite
+- [NotesServer Infrastructure](https://github.com/Jonny-JD/NotesServer-Infrastructure) — Kubernetes (K3s), Helm, Traefik, Let's Encrypt, GitHub Actions
+
+## About
+
+This project was built for my portfolio. It demonstrates:
+- Building a REST API with Spring Boot and Spring Security from scratch
+- Session-based authentication and role-based access control
+- Database migrations with Liquibase
+- Integration testing with Testcontainers
+- Containerization with a multi-stage-friendly Gradle + Docker build
+- CI/CD pipeline with separated build and deploy stages
+- Integration with a Kubernetes-based infrastructure
