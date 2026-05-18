@@ -1,6 +1,5 @@
-package com.jimmy_d.notes_backend.configuration;
+package com.jimmy_d.notes_backend.security;
 
-import com.jimmy_d.notes_backend.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

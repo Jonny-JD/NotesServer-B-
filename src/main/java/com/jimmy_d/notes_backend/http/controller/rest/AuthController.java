@@ -2,8 +2,7 @@ package com.jimmy_d.notes_backend.http.controller.rest;
 
 import com.jimmy_d.notes_backend.dto.LoginRequest;
 import com.jimmy_d.notes_backend.security.CustomUserDetails;
-import com.jimmy_d.notes_backend.security.JwtUtil;
-import jakarta.servlet.http.Cookie;
+import com.jimmy_d.notes_backend.security.JwtService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,27 +20,20 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
+    private final JwtService jwtService;
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(
-            @RequestBody LoginRequest request,
-            HttpServletResponse response) {
+            @RequestBody LoginRequest request) {
         try {
             Authentication authentication = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-            String token = jwtUtil.generateToken(userDetails.getUsername());
+            String token = jwtService.generateToken(userDetails);
 
-
-            Cookie cookie = new Cookie("token", token);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(false);
-            cookie.setPath("/");
-            cookie.setMaxAge(86400);
-            response.addCookie(cookie);
 
             return ResponseEntity.ok(Map.of(
+                    "token", token,
                     "id", userDetails.getId(),
                     "username", userDetails.getUsername(),
                     "email", userDetails.getEmail()
@@ -53,11 +45,6 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
-        Cookie cookie = new Cookie("token", null);
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0); // удаляем куку
-        response.addCookie(cookie);
         return ResponseEntity.ok().build();
     }
 

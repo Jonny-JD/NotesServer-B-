@@ -8,9 +8,6 @@ spring:
     init:
       mode: never
 
-  liquibase:
-    enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.yaml
 
 logging:
   file:
@@ -25,3 +22,4 @@ logging:
 
 jwt:
   secret: ${JWT_SECRET}
+  expiration: ${JWT_EXPIRATION:86400000}

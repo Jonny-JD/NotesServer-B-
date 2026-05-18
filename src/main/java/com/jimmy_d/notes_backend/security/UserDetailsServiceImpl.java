@@ -1,8 +1,7 @@
-package com.jimmy_d.notes_backend.service;
+package com.jimmy_d.notes_backend.security;
 
 import com.jimmy_d.notes_backend.database.repository.UserRepository;
 import com.jimmy_d.notes_backend.exceptions.rest.UserNotFoundException;
-import com.jimmy_d.notes_backend.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +31,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             new HashSet<>(user.getRoles())))
                     .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         } catch (UsernameNotFoundException exception) {
-
             throw new UserNotFoundException("username", username);
         }
     }

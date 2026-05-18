@@ -18,6 +18,10 @@ spring:
   web:
     locale: en_US
 
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
 logging:
   level:
     root: info
