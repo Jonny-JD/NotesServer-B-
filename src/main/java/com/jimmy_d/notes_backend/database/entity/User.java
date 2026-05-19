@@ -14,7 +14,6 @@ import java.util.Set;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Table(name = "users")
 public class User extends AuditingEntity<Long> {
 
@@ -34,9 +33,9 @@ public class User extends AuditingEntity<Long> {
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    @Builder.Default
     @Column(name = "role")
-    private Set<Role> roles = new HashSet<>();
+    @Setter(AccessLevel.NONE)
+    private Set<Role> roles = new HashSet<>(Set.of(Role.USER));
 
 
     @Override
@@ -61,7 +60,11 @@ public class User extends AuditingEntity<Long> {
     }
 
     public void addRole(Role role) {
-        roles.add(role);
+        this.roles.add(role);
+    }
+
+    public void removeRole(Role role) {
+        this.roles.remove(role);
     }
 
 }

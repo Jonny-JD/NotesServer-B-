@@ -1,19 +1,20 @@
 package com.jimmy_d.notes_backend.http.controller.rest;
 
 import com.jimmy_d.notes_backend.dto.UserCreateDto;
-import com.jimmy_d.notes_backend.dto.UserReadDto;
+import com.jimmy_d.notes_backend.dto.UserInfoDto;
 import com.jimmy_d.notes_backend.dto.UserUpdateDto;
 import com.jimmy_d.notes_backend.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
+
 @RestController
 @RequestMapping("/api/v1/users")
+@Validated
 @RequiredArgsConstructor
 public class UserRestController {
 
@@ -21,14 +22,14 @@ public class UserRestController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserReadDto create(@RequestBody @Validated UserCreateDto user) {
+    public UserInfoDto create(@RequestBody @Valid UserCreateDto user) {
         return userService.createUser(user);
     }
 
-    @PutMapping
+    @PatchMapping
     @PreAuthorize("hasAuthority(T(com.jimmy_d.notes_backend.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#user.id())")
-    public void update(@RequestBody UserUpdateDto user) {
-        userService.updateUser(user);
+    public UserInfoDto update(@RequestBody @Valid UserUpdateDto user) {
+        return userService.updateUser(user);
     }
 
     @DeleteMapping("/{id}")

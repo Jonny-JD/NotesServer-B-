@@ -15,7 +15,7 @@ public class UserNotFoundException extends ApiException {
     }
 
     @Override
-    public HttpStatus getStatus() {
+    public HttpStatus getHttpStatus() {
         return HttpStatus.NOT_FOUND;
     }
 }

@@ -10,5 +10,5 @@ public abstract class ApiException extends RuntimeException {
 
     public abstract String getKey();
 
-    public abstract HttpStatus getStatus();
+    public abstract HttpStatus getHttpStatus();
 }

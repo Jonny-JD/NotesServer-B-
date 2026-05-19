@@ -4,12 +4,14 @@ import com.jimmy_d.notes_backend.dto.ApiExceptionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Map;
@@ -27,7 +29,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiExceptionDto> handleApiException(ApiException exception) {
         log.warn("API exception: {} - {}", exception.getKey(), exception.getMessage());
-        return buildErrorResponse(exception.getStatus(), exception.getKey(), exception.getMessage());
+        return buildErrorResponse(exception.getHttpStatus(), exception.getKey(), exception.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -62,6 +64,12 @@ public class GlobalExceptionHandler {
         log.warn("Missing request parameter: {}", exception.getMessage());
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "parameter", exception.getMessage());
 
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)  // ловит этот тип
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ResponseEntity<ApiExceptionDto> handleBadCredentials(BadCredentialsException exception) {
+        return buildErrorResponse((HttpStatus.UNAUTHORIZED), "credentials", exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

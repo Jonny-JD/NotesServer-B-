@@ -15,7 +15,7 @@ public class InvalidNoteQueryException extends ApiException{
     }
 
     @Override
-    public HttpStatus getStatus() {
+    public HttpStatus getHttpStatus() {
         return HttpStatus.BAD_REQUEST;
     }
 }

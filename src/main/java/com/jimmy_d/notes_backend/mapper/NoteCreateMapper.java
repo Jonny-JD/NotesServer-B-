@@ -4,6 +4,7 @@ import com.jimmy_d.notes_backend.database.entity.Note;
 import com.jimmy_d.notes_backend.database.entity.User;
 import com.jimmy_d.notes_backend.database.repository.UserRepository;
 import com.jimmy_d.notes_backend.dto.NoteCreateDto;
+import com.jimmy_d.notes_backend.dto.UserDetailsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +29,7 @@ public class NoteCreateMapper implements Mapper<NoteCreateDto, Note> {
         note.setIsPrivate(noteCreateDto.isPrivate());
     }
 
-    private User getAuthor(com.jimmy_d.notes_backend.dto.UserReadDto author) {
+    private User getAuthor(UserDetailsDto author) {
         if (author == null || author.id() == null) {
             return null;
         }

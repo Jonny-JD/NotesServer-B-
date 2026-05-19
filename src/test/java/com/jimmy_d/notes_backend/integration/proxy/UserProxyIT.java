@@ -2,7 +2,7 @@ package com.jimmy_d.notes_backend.integration.proxy;
 
 import com.jimmy_d.notes_backend.database.entity.Note;
 import com.jimmy_d.notes_backend.database.entity.User;
-import com.jimmy_d.notes_backend.integration.IntegrationTestBase;
+import com.jimmy_d.notes_backend.IntegrationTestBase;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.proxy.HibernateProxy;
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 @RequiredArgsConstructor
-public class UserProxyIT extends IntegrationTestBase {
+class UserProxyIT extends IntegrationTestBase {
 
     private final EntityManager em;
 

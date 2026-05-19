@@ -15,7 +15,7 @@ public class UserExistsException extends ApiException {
     }
 
     @Override
-    public HttpStatus getStatus() {
+    public HttpStatus getHttpStatus() {
         return HttpStatus.CONFLICT;
     }
 }

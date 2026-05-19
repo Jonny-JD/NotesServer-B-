@@ -3,18 +3,19 @@ package com.jimmy_d.notes_backend.http.controller.rest;
 
 import com.jimmy_d.notes_backend.dto.NoteReadDto;
 import com.jimmy_d.notes_backend.service.NoteService;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Slf4j
 @RestController
-@RequestMapping("/api/admin/notes")
+@RequestMapping("/api/v1/admin/notes")
 @RequiredArgsConstructor
+@Validated
 @PreAuthorize("hasAuthority(T(com.jimmy_d.notes_backend.database.entity.Role).ADMIN)")
 public class AdminNoteController {
 
@@ -25,8 +26,8 @@ public class AdminNoteController {
         return noteService.findAllByTag(tag);
     }
 
-    @GetMapping("/all-by-author-id/{authorId}")
-    public List<NoteReadDto> getAllByAuthor(@PathVariable Long authorId) {
+    @GetMapping("/all-by-author/{authorId}")
+    public List<NoteReadDto> getAllByAuthor(@PathVariable @Positive Long authorId) {
         return noteService.findAllByAuthorId(authorId);
     }
 

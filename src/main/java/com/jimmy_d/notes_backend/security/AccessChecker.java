@@ -15,12 +15,12 @@ public class AccessChecker {
     private final NoteService noteService;
 
     public boolean isAccountOwner(Long userId) {
-        var user = userService.findById(userId);
+        var user = userService.getById(userId);
         return user.username().equals(getCurrentUserUsername());
     }
 
     public boolean isAccountOwner(String username) {
-        var user = userService.findByUsername(username);
+        var user = userService.getByUsername(username);
         return user.username().equals(getCurrentUserUsername());
     }
 

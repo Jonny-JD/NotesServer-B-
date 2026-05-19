@@ -13,9 +13,9 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Pattern.List({
-        @Pattern(regexp = "^(?=[a-zA-Z0-9._]{4,20}$)(?!.*[_.]{2})[^_.].*[^_.]$", message = "Username must be 5-20 chars, alphanumeric with dots or underscores but no consecutive or trailing dots/underscores")
-})
+
+@Pattern(regexp = "^(?=[a-zA-Z0-9._]{4,20}$)(?!.*[_.]{2})[^_.].*[^_.]$", message = "Username must be 5-20 chars, alphanumeric with dots or underscores but no consecutive or trailing dots/underscores")
+
 @Documented
 @NotBlank
 @Constraint(validatedBy = { })

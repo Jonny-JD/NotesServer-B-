@@ -4,7 +4,6 @@ import com.jimmy_d.notes_backend.dto.*;
 import com.jimmy_d.notes_backend.security.CustomUserDetails;
 import com.jimmy_d.notes_backend.service.NoteService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +14,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
-@Slf4j
+
 @RestController
 @RequestMapping("/api/v1/notes")
 @RequiredArgsConstructor
@@ -36,7 +35,6 @@ public class NoteRestController {
 
     @PutMapping("/{id}")
     @PreAuthorize("@accessChecker.isNoteOwner(#id)")
-    @ResponseStatus(HttpStatus.OK)
     public NoteReadDto updateNote(@PathVariable UUID id, @RequestBody @Validated NoteUpdateDto note) {
         return noteService.updateNote(id, note);
     }
