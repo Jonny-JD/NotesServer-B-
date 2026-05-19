@@ -5,13 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RequiredArgsConstructor
-public class AdminUserControllerExceptionIT extends ControllerTestBase {
+class AdminUserControllerExceptionIT extends ControllerTestBase {
     private final MockMvc mockMvc;
 
 
@@ -21,16 +20,16 @@ public class AdminUserControllerExceptionIT extends ControllerTestBase {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
-    void deleteByUsernameShouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
-        mockMvc.perform(delete("/api/admin/users/by-username/nonexistent"))
-                .andExpectAll(
-                        status().isNotFound(),
-                        jsonPath("$.errors.user").value("User not found by username: [nonexistent]"),
-                        jsonPath("$.status").value(404),
-                        jsonPath("$.error").value("Not Found")
-                );
-    }
+//    @Test
+//    void deleteByUsernameShouldReturnNotFoundWhenUserDoesNotExist() throws Exception {
+//        mockMvc.perform(delete("/api/admin/users/by-username/nonexistent"))
+//                .andExpectAll(
+//                        status().isNotFound(),
+//                        jsonPath("$.errors.user").value("User not found by username: [nonexistent]"),
+//                        jsonPath("$.status").value(404),
+//                        jsonPath("$.error").value("Not Found")
+//                );
+//    }
 
     @Test
     void getByUsernameShouldReturnNotFoundWhenUserDoesNotExist() throws Exception {

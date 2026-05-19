@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RequiredArgsConstructor
-public class AdminNoteControllerExceptionIT extends ControllerTestBase {
+class AdminNoteControllerExceptionIT extends ControllerTestBase {
     private final MockMvc mockMvc;
 
     @Test
@@ -33,7 +33,7 @@ public class AdminNoteControllerExceptionIT extends ControllerTestBase {
         mockMvc.perform(delete("/api/admin/notes/all-by-author/9999"))
                 .andExpectAll(
                         status().isNotFound(),
-                        jsonPath("$.errors.note").value("Note not found by author id: [9999]"),
+                        jsonPath("$.errors.note").value("Note not found by author Id: [9999]"),
                         jsonPath("$.status").value(404),
                         jsonPath("$.error").value("Not Found")
                 );

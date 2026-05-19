@@ -1,9 +1,9 @@
 package com.jimmy_d.notes_backend.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -51,14 +51,18 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/notes/search").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/notes").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/notes/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/auth/me").authenticated()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers(
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html"
+                                ).permitAll()
+                                .anyRequest().permitAll()
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(
+                                (request, response, authException) ->
+                                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized")
+                        )
                 )
                 .build();
     }

@@ -2,7 +2,6 @@ package com.jimmy_d.notes_backend.http.controller.rest;
 
 
 import com.jimmy_d.notes_backend.dto.NoteReadDto;
-import com.jimmy_d.notes_backend.exceptions.rest.NoteNotFoundException;
 import com.jimmy_d.notes_backend.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,16 +33,13 @@ public class AdminNoteController {
     @DeleteMapping("/all-by-tag/{tag}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAllByTag(@PathVariable String tag) {
-        if (!noteService.deleteAllByTag(tag)) {
-            throw new NoteNotFoundException("tag", tag);
-        }
+        noteService.deleteAllByTag(tag);
     }
 
     @DeleteMapping("/all-by-author/{authorId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAllByAuthorId(@PathVariable Long authorId) {
-        if (!noteService.deleteAllByAuthor(authorId)) {
-            throw new NoteNotFoundException("author id", authorId);
-        }
+        noteService.deleteAllByAuthor(authorId);
+
     }
 }

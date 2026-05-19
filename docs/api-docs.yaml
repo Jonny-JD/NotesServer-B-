@@ -1,0 +1,478 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/v1/users:
+    put:
+      tags:
+      - user-rest-controller
+      operationId: update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdateDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserReadDto"
+    post:
+      tags:
+      - user-rest-controller
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreateDto"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserReadDto"
+  /api/v1/notes/{id}:
+    get:
+      tags:
+      - note-rest-controller
+      operationId: getById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/NoteReadDto"
+    put:
+      tags:
+      - note-rest-controller
+      operationId: updateNote
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteUpdateDto"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/NoteReadDto"
+    delete:
+      tags:
+      - note-rest-controller
+      operationId: delete
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        "204":
+          description: No Content
+  /api/v1/notes:
+    post:
+      tags:
+      - note-rest-controller
+      operationId: save
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteCreateDto"
+        required: true
+      responses:
+        "201":
+          description: Created
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/NoteReadDto"
+  /api/v1/auth/logout:
+    post:
+      tags:
+      - auth-controller
+      operationId: logout
+      responses:
+        "200":
+          description: OK
+  /api/v1/auth/login:
+    post:
+      tags:
+      - auth-controller
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties: {}
+  /api/v1/notes/user-notes:
+    get:
+      tags:
+      - note-rest-controller
+      operationId: getUserNotes
+      parameters:
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NotePreviewDto"
+  /api/v1/notes/search:
+    get:
+      tags:
+      - note-rest-controller
+      operationId: getByFilter
+      parameters:
+      - name: title
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: tag
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: author
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: from
+        in: query
+        required: true
+        schema:
+          type: string
+          format: date-time
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NotePreviewDto"
+  /api/v1/auth/me:
+    get:
+      tags:
+      - auth-controller
+      operationId: me
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties: {}
+  /api/admin/users/{id}:
+    get:
+      tags:
+      - admin-user-controller
+      operationId: getById_1
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserReadDto"
+  /api/admin/users/by-username/{username}:
+    get:
+      tags:
+      - admin-user-controller
+      operationId: getByUsername
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserReadDto"
+    delete:
+      tags:
+      - admin-user-controller
+      operationId: deleteByUsername
+      parameters:
+      - name: username
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: No Content
+  /api/admin/notes/all-by-tag/{tag}:
+    get:
+      tags:
+      - admin-note-controller
+      operationId: getAllByTag
+      parameters:
+      - name: tag
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NoteReadDto"
+    delete:
+      tags:
+      - admin-note-controller
+      operationId: deleteAllByTag
+      parameters:
+      - name: tag
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: No Content
+  /api/admin/notes/all-by-author-id/{authorId}:
+    get:
+      tags:
+      - admin-note-controller
+      operationId: getAllByAuthor
+      parameters:
+      - name: authorId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NoteReadDto"
+  /api/v1/users/{id}:
+    delete:
+      tags:
+      - user-rest-controller
+      operationId: deleteById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: No Content
+  /api/admin/notes/all-by-author/{authorId}:
+    delete:
+      tags:
+      - admin-note-controller
+      operationId: deleteAllByAuthorId
+      parameters:
+      - name: authorId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: No Content
+components:
+  schemas:
+    UserUpdateDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        email:
+          type: string
+        currentPassword:
+          type: string
+        newPassword:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+    UserReadDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+    NoteUpdateDto:
+      type: object
+      properties:
+        title:
+          type: string
+        tag:
+          type: string
+        content:
+          type: string
+        isPrivate:
+          type: boolean
+    NoteAuthorDto:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+    NoteReadDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        tag:
+          type: string
+        content:
+          type: string
+        author:
+          $ref: "#/components/schemas/NoteAuthorDto"
+        isPrivate:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+    UserCreateDto:
+      type: object
+      properties:
+        username:
+          type: string
+        rawPassword:
+          type: string
+          minLength: 1
+        email:
+          type: string
+          minLength: 1
+          pattern: "^[a-zA-Z0-9._%+\\-]+@(?!.*xn--)[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}$"
+        roles:
+          type: array
+          items:
+            type: string
+          uniqueItems: true
+      required:
+      - email
+      - rawPassword
+    NoteCreateDto:
+      type: object
+      properties:
+        title:
+          type: string
+        tag:
+          type: string
+        content:
+          type: string
+        author:
+          $ref: "#/components/schemas/UserReadDto"
+        isPrivate:
+          type: boolean
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    NotePreviewDto:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        tag:
+          type: string
+        author:
+          type: string
+        createdAt:
+          type: string
+          format: date-time

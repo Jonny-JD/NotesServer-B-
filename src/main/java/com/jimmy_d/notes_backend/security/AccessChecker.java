@@ -15,21 +15,18 @@ public class AccessChecker {
     private final NoteService noteService;
 
     public boolean isAccountOwner(Long userId) {
-        return userService.findById(userId).map(user -> user.username()
-                        .equals(getCurrentUserUsername()))
-                .orElse(false);
+        var user = userService.findById(userId);
+        return user.username().equals(getCurrentUserUsername());
     }
 
     public boolean isAccountOwner(String username) {
-        return userService.findByUsername(username).map(user -> user.username()
-                        .equals(getCurrentUserUsername()))
-                .orElse(false);
+        var user = userService.findByUsername(username);
+        return user.username().equals(getCurrentUserUsername());
     }
 
     public boolean isNoteOwner(UUID noteId) {
-        return noteService.findById(noteId).map(note -> note.author().username()
-                        .equals(getCurrentUserUsername()))
-                .orElse(false);
+        var note = noteService.findById(noteId);
+        return note.author().username().equals(getCurrentUserUsername());
     }
 
     private String getCurrentUserUsername() {

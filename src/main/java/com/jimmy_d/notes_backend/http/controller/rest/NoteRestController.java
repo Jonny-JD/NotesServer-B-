@@ -1,7 +1,6 @@
 package com.jimmy_d.notes_backend.http.controller.rest;
 
 import com.jimmy_d.notes_backend.dto.*;
-import com.jimmy_d.notes_backend.exceptions.rest.NoteNotFoundException;
 import com.jimmy_d.notes_backend.security.CustomUserDetails;
 import com.jimmy_d.notes_backend.service.NoteService;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +31,7 @@ public class NoteRestController {
 
     @GetMapping("/{id}")
     public NoteReadDto getById(@PathVariable UUID id) {
-        return noteService.findById(id)
-                .orElseThrow(() -> new NoteNotFoundException("id", id));
+        return noteService.findById(id);
     }
 
     @PutMapping("/{id}")
@@ -62,8 +60,6 @@ public class NoteRestController {
     @PreAuthorize("hasAuthority(T(com.jimmy_d.notes_backend.database.entity.Role).ADMIN) or @accessChecker.isNoteOwner(#id)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID id) {
-        if (!noteService.deleteById(id)) {
-            throw new NoteNotFoundException("id", id);
-        }
+        noteService.deleteById(id);
     }
 }

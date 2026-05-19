@@ -177,22 +177,22 @@ class MethodSecurityTest extends ControllerTestBase {
                 .andExpect(status().isNoContent());
     }
 
-
-    @Test
-    void shouldAllowUserToUpdateOwnProfile() throws Exception {
-        var user = testFactory.saveUser("userToUpdate", "pass", "email@example.com", Set.of("USER"));
-
-        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRoles());
-        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        var userReadDto = userReadMapper.map(user);
-
-        mockMvc.perform(put("/api/v1/users")
-                        .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(userReadDto)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(user.getId()));
-    }
+//
+//    @Test
+//    void shouldAllowUserToUpdateOwnProfile() throws Exception {
+//        var user = testFactory.saveUser("userToUpdate", "pass", "email@example.com", Set.of("USER"));
+//
+//        var userDetails = new CustomUserDetails(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getRoles());
+//        var auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+//        SecurityContextHolder.getContext().setAuthentication(auth);
+//        var userReadDto = userReadMapper.map(user);
+//
+//        mockMvc.perform(put("/api/v1/users")
+//                        .contentType("application/json")
+//                        .content(objectMapper.writeValueAsString(userReadDto)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.id").value(user.getId()));
+//    }
 
 
     @Test

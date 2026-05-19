@@ -3,8 +3,8 @@ package com.jimmy_d.notes_backend.http.controller.rest;
 import com.jimmy_d.notes_backend.dto.LoginRequest;
 import com.jimmy_d.notes_backend.security.CustomUserDetails;
 import com.jimmy_d.notes_backend.security.JwtService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,7 +31,6 @@ public class AuthController {
             CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
             String token = jwtService.generateToken(userDetails);
 
-
             return ResponseEntity.ok(Map.of(
                     "token", token,
                     "id", userDetails.getId(),
@@ -44,12 +43,15 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {
+    public ResponseEntity<Void> logout() {
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> me(Authentication authentication) {
+        if (authentication == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         return ResponseEntity.ok(Map.of(
                 "id", userDetails.getId(),

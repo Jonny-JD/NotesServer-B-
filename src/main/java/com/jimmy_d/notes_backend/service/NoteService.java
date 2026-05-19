@@ -3,6 +3,8 @@ package com.jimmy_d.notes_backend.service;
 import com.jimmy_d.notes_backend.database.repository.NoteRepository;
 import com.jimmy_d.notes_backend.dto.*;
 import com.jimmy_d.notes_backend.exceptions.rest.NoteNotFoundException;
+import com.jimmy_d.notes_backend.exceptions.rest.Types;
+import com.jimmy_d.notes_backend.exceptions.rest.UserNotFoundException;
 import com.jimmy_d.notes_backend.mapper.NoteCreateMapper;
 import com.jimmy_d.notes_backend.mapper.NotePreviewMapper;
 import com.jimmy_d.notes_backend.mapper.NoteReadMapper;
@@ -14,8 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
+
+import static com.jimmy_d.notes_backend.exceptions.rest.Types.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,13 +37,16 @@ public class NoteService {
         return noteReadMapper.map(savedNote);
     }
 
-    public Optional<NoteReadDto> findById(UUID id) {
-        return noteRepository.findById(id).map(noteReadMapper::map);
+    public NoteReadDto findById(UUID id) {
+        var note = noteRepository.findById(id)
+                .orElseThrow(() -> new NoteNotFoundException(ID.value(), id));
+
+        return noteReadMapper.map(note);
     }
 
     @Transactional
     public NoteReadDto updateNote(UUID id, NoteUpdateDto dto) {
-        var note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException("id", id));
+        var note = noteRepository.findById(id).orElseThrow(() -> new NoteNotFoundException(ID.value(), id));
         note.setId(id);
         note.setTag(dto.tag().isEmpty() ? null : dto.tag());
         note.setTitle(dto.title().isEmpty() ? null : dto.title());
@@ -81,30 +87,27 @@ public class NoteService {
     }
 
     @Transactional
-    public boolean deleteById(UUID id) {
-        return noteRepository.findById(id)
-                .map(note -> {
-                    noteRepository.delete(note);
-                    return true;
-                }).orElse(false);
+    public void deleteById(UUID id) {
+        var note = noteRepository.findById(id)
+                .orElseThrow(() -> new NoteNotFoundException(ID.value(), id));
+
+        noteRepository.delete(note);
     }
 
 
     @Transactional
-    public boolean deleteAllByTag(String tag) {
-        return noteRepository.findFirstByTag(tag)
-                .map(note -> {
-                    noteRepository.deleteAllByTag(tag);
-                    return true;
-                }).orElse(false);
+    public void deleteAllByTag(String tag) {
+        var notes = noteRepository.findAllByTag(tag);
+        if (notes.isEmpty()) throw new NoteNotFoundException(TAG.value(), tag);
+
+        noteRepository.deleteAll(notes);
     }
 
     @Transactional
-    public boolean deleteAllByAuthor(Long authorId) {
-        return noteRepository.findFirstByAuthor_Id(authorId)
-                .map(note -> {
-                    noteRepository.deleteAllByAuthor_Id(authorId);
-                    return true;
-                }).orElse(false);
+    public void deleteAllByAuthor(Long authorId) {
+        var notes = noteRepository.findAllByAuthorId(authorId);
+        if (notes.isEmpty()) throw new UserNotFoundException(ID.value(), authorId);
+
+        noteRepository.deleteAll(notes);
     }
 }

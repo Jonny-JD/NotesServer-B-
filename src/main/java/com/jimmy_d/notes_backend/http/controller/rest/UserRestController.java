@@ -3,8 +3,6 @@ package com.jimmy_d.notes_backend.http.controller.rest;
 import com.jimmy_d.notes_backend.dto.UserCreateDto;
 import com.jimmy_d.notes_backend.dto.UserReadDto;
 import com.jimmy_d.notes_backend.dto.UserUpdateDto;
-import com.jimmy_d.notes_backend.exceptions.rest.UserNotExistsException;
-import com.jimmy_d.notes_backend.exceptions.rest.UserNotFoundException;
 import com.jimmy_d.notes_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,23 +22,19 @@ public class UserRestController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserReadDto create(@RequestBody @Validated UserCreateDto user) {
-        return userService.createUser(user).orElseThrow();
+        return userService.createUser(user);
     }
-
 
     @PutMapping
     @PreAuthorize("hasAuthority(T(com.jimmy_d.notes_backend.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#user.id())")
-    public UserReadDto update(@RequestBody UserUpdateDto user) {
-        return userService.updateUser(user)
-                .orElseThrow(() -> new UserNotExistsException("id", user.id()));
+    public void update(@RequestBody UserUpdateDto user) {
+        userService.updateUser(user);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(T(com.jimmy_d.notes_backend.database.entity.Role).ADMIN) or @accessChecker.isAccountOwner(#id)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
-        if (!userService.deleteById(id)) {
-            throw new UserNotFoundException("id", id);
-        }
+        userService.deleteById(id);
     }
 }

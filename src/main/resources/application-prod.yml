@@ -13,7 +13,7 @@ logging:
   file:
     path: "log/app.log"
   logback:
-    rollingpolicy:
+    rolling policy:
       clean-history-on-start: false
       max-file-size: 10MB
       file-name-pattern: log/app.%d{yyyy-MM-dd}.%i.gz

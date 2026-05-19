@@ -34,16 +34,14 @@ public class TestFactory {
     }
 
     public User createAndSaveUser() {
-        return userService.createUser(dummyUserCreateDto())
-                .map(userReadMapper::map)
-                .orElseThrow(() -> new RuntimeException("Failed to create user"));
+        var user = userService.createUser(dummyUserCreateDto());
+        return userReadMapper.map(user);
     }
 
     public User saveUser(String username, String password, String email, Set<String> roles) {
         var userCreateDto = new UserCreateDto(username, password, email, roles);
-        return userService.createUser(userCreateDto)
-                .map(userReadMapper::map)
-                .orElseThrow(() -> new RuntimeException("Failed to create user"));
+        var user = userService.createUser(userCreateDto);
+        return userReadMapper.map(user);
     }
 
     public NoteCreateDto dummyNoteCreateDto(UserReadDto author) {

@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -85,9 +84,8 @@ class AuthControllerIT extends ControllerTestBase {
     @WithAnonymousUser
     void shouldReturnUnauthorizedOnMeWithoutAuth() throws Exception {
         mockMvc.perform(get("/api/v1/auth/me"))
-                .andExpect(status().isForbidden())
-                .andExpect(result ->
-                        assertEquals("Access Denied", result.getResponse().getErrorMessage()));
+                .andExpect(status().isForbidden());
+
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.jimmy_d.notes_backend.security;
 
 import com.jimmy_d.notes_backend.database.repository.UserRepository;
+import com.jimmy_d.notes_backend.exceptions.rest.Types;
 import com.jimmy_d.notes_backend.exceptions.rest.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 
+import static com.jimmy_d.notes_backend.exceptions.rest.Types.*;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -19,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
 
         try {
             return userRepository.findByUsername(username)
@@ -31,7 +34,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                             new HashSet<>(user.getRoles())))
                     .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         } catch (UsernameNotFoundException exception) {
-            throw new UserNotFoundException("username", username);
+            throw new UserNotFoundException(USERNAME.value(), username);
         }
     }
 }

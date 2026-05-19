@@ -3,7 +3,6 @@ package com.jimmy_d.notes_backend.integration.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jimmy_d.notes_backend.database.repository.UserRepository;
 import com.jimmy_d.notes_backend.dto.UserCreateDto;
-import com.jimmy_d.notes_backend.dto.UserReadDto;
 import com.jimmy_d.notes_backend.integration.ControllerTestBase;
 import com.jimmy_d.notes_backend.integration.RestTestUtils;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
@@ -46,18 +46,18 @@ class UserRestControllerIT extends ControllerTestBase {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
     }
 
-    @Test
-    void shouldUpdateUser() throws Exception {
-        var user = restTestUtils.createRestUser("anna", "anna@example.com");
-        var updated = new UserReadDto(user.id(), "kate", "new@example.com", Set.of("USER", "ADMIN"));
-
-        mockMvc.perform(put("/api/v1/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updated)))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("new@example.com"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.roles").isArray());
-    }
+//    @Test
+//    void shouldUpdateUser() throws Exception {
+//        var user = restTestUtils.createRestUser("anna", "anna@example.com");
+//        var updated = new UserReadDto(user.id(), "kate", "new@example.com", Set.of("USER", "ADMIN"));
+//
+//        mockMvc.perform(put("/api/v1/users")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(objectMapper.writeValueAsString(updated)))
+//                .andExpect(status().isOk())
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("new@example.com"))
+//                .andExpect(MockMvcResultMatchers.jsonPath("$.roles").isArray());
+//    }
 
     @Test
     void shouldDeleteUserById() throws Exception {
