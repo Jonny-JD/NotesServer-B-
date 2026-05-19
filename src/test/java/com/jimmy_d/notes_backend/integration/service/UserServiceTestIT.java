@@ -1,6 +1,6 @@
 package com.jimmy_d.notes_backend.integration.service;
 
-import com.jimmy_d.notes_backend.IntegrationTestBase;
+import com.jimmy_d.notes_backend.integration.IntegrationTestBase;
 import com.jimmy_d.notes_backend.database.entity.Role;
 import com.jimmy_d.notes_backend.dto.UserCreateDto;
 import com.jimmy_d.notes_backend.dto.UserDetailsDto;

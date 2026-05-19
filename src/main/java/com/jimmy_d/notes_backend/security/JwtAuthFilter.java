@@ -22,6 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -40,13 +41,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         try {
             if (jwtService.isValidToken(token)) {
                 String username = jwtService.extractUsername(token);
-                List<GrantedAuthority> authorities = jwtService.extractAuthorities(token);
 
-
+                var userDetails = userDetailsService.loadUserByUsername(username);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                        username,
+                        userDetails,
                         null,
-                        authorities
+                        userDetails.getAuthorities()
                 );
 
 

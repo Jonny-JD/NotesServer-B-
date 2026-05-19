@@ -4,9 +4,9 @@ import com.jimmy_d.notes_backend.dto.ApiExceptionDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
                 .orElse(null);
 
         String errorMessage = fieldError != null
-                ? String.format("%s", fieldError.getDefaultMessage())
+                ? fieldError.getDefaultMessage()
                 : "Validation error";
 
         log.warn("Validation failed: {}", errorMessage);
@@ -53,28 +53,31 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "validation", exception.getMessage());
     }
 
-    @ExceptionHandler(AuthorizationDeniedException.class)
-    public ResponseEntity<ApiExceptionDto> handleAuthorizationDeniedException(AuthorizationDeniedException exception) {
-        log.warn("Authorization denied: {}", exception.getMessage());
-        return buildErrorResponse(HttpStatus.FORBIDDEN, "access", exception.getMessage());
-    }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ApiExceptionDto> handleMissingParam(MissingServletRequestParameterException exception) {
         log.warn("Missing request parameter: {}", exception.getMessage());
         return buildErrorResponse(HttpStatus.BAD_REQUEST, "parameter", exception.getMessage());
-
     }
 
-    @ExceptionHandler(BadCredentialsException.class)  // ловит этот тип
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiExceptionDto> handleBadCredentials(BadCredentialsException exception) {
-        return buildErrorResponse((HttpStatus.UNAUTHORIZED), "credentials", exception.getMessage());
+        return buildErrorResponse(
+                HttpStatus.UNAUTHORIZED,
+                "credentials",
+                "Invalid username or password"
+        );
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiExceptionDto> handleAllExceptions(Exception exception) {
         log.error("Unhandled exception caught: ", exception);
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "error", "Internal server error");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiExceptionDto> handleAccessDeniedException(AccessDeniedException exception) {
+        log.warn("Access denied: {}", exception.getMessage());
+        return buildErrorResponse(HttpStatus.FORBIDDEN, "access", exception.getMessage());
     }
 }
