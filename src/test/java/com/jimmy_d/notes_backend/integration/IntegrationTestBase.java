@@ -1,4 +1,4 @@
-package com.jimmy_d.notes_backend;
+package com.jimmy_d.notes_backend.integration;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.test.context.SpringBootTest;

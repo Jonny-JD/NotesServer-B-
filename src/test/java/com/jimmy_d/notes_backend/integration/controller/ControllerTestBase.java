@@ -1,14 +1,25 @@
-package com.jimmy_d.notes_backend;
+package com.jimmy_d.notes_backend.integration.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import com.jimmy_d.notes_backend.integration.IntegrationTestBase;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.web.servlet.MockMvc;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class ControllerTestBase extends IntegrationTestBase {
+public class ControllerTestBase extends IntegrationTestBase {
+
+    @Autowired
+    protected MockMvc mockMvc;
+
+    @Autowired
+    protected ObjectMapper objectMapper;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

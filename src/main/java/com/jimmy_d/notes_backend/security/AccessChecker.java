@@ -3,11 +3,13 @@ package com.jimmy_d.notes_backend.security;
 import com.jimmy_d.notes_backend.service.NoteService;
 import com.jimmy_d.notes_backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
-
+@Slf4j
 @Component("accessChecker")
 @RequiredArgsConstructor
 public class AccessChecker {
@@ -30,9 +32,20 @@ public class AccessChecker {
     }
 
     private String getCurrentUserUsername() {
-        return ((CustomUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal())
-                .getUsername();
+        var authentication = SecurityContextHolder
+                .getContext()
+                .getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new AccessDeniedException("Not authenticated");
+        }
+
+        var principal = authentication.getPrincipal();
+
+        if (principal instanceof CustomUserDetails userDetails) {
+            return userDetails.getUsername();
+        }
+
+        throw new AccessDeniedException("Not authenticated");
     }
 }
